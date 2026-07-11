@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Netra UI — Form Wizard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <!-- TomSelect -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css" />
+  <!-- ✅ Netra UI shared stylesheet — jangan tambahkan CSS layout/sidebar/form di sini lagi -->
+  <link rel="stylesheet" href="../assets/css/netra-base.css">
+  <link rel="stylesheet" href="../assets/css/netra-forms.css">
+  <link rel="stylesheet" href="../assets/css/netra-form-wizard.css">
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['DM Sans', 'sans-serif'], mono: ['DM Mono', 'monospace'] }, colors: { brand: { 50: '#f0f4ff', 100: '#e0eaff', 200: '#bfd2ff', 300: '#90aeff', 400: '#5a82ff', 500: '#2d5aff', 600: '#1a3ff5', 700: '#142ed1', 800: '#1428a8', 900: '#162885' }, surface: { 50: '#fafafa', 100: '#f5f5f5', 200: '#eeeeee', 300: '#e0e0e0', 400: '#bdbdbd', 500: '#9e9e9e', 600: '#757575', 700: '#616161', 800: '#424242', 900: '#212121' } } } } }
+  </script>
+  <!-- Dark mode init: harus inline agar tidak ada flash saat load -->
+  <script>(function () { const s = localStorage.getItem('theme'); const isDark = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches); if (isDark) { document.documentElement.classList.add('dark'); document.documentElement.setAttribute('data-theme', 'dark'); } else { document.documentElement.setAttribute('data-theme', 'light'); } })()</script>
+  <!-- Anti-flash handled by netra-ui.css :root vars -->
+  <!-- Page component styles defined in netra-ui.css -->
+</head>
+
+<body class="h-full overflow-hidden">
+
+  <div id="mob-overlay" class="fixed inset-0 bg-black/40 z-30 hidden opacity-0 lg:hidden"
+    onclick="closeMobileSidebar()"></div>
+
+  <div id="app">
+
+    <!-- ═══════ SIDEBAR ═══════ -->
+    <aside id="sidebar" class="flex flex-col">
+      <div class="sidebar-logo flex items-center gap-3 px-4 h-16 shrink-0">
+        <div class="sidebar-logo-mark w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
+          <i class="fa-solid fa-eye text-white text-[13px]"></i>
+        </div>
+        <div
+          class="sidebar-brand-text flex flex-col leading-tight overflow-hidden whitespace-nowrap transition-all duration-200">
+          <span class="font-bold text-[15px] tracking-tight user-name">Netra UI<span class="brand-dot"></span></span>
+          <span class="text-[10.5px] font-normal user-role">Enterprise Suite</span>
+        </div>
+        <button onclick="closeMobileSidebar()" class="close-btn ml-auto lg:hidden p-1 rounded">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <nav class="flex-1 overflow-y-auto overflow-x-hidden py-3 px-2 space-y-0.5">
+        <div
+          class="nav-section-label nav-section-title px-2 pt-1 pb-1.5 text-[10px] font-semibold uppercase tracking-widest whitespace-nowrap transition-all duration-200">
+          Main</div>
+        <div class="nav-item relative">
+          <a href="admin-dashboard.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-solid fa-house text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Dashboard</span>
+          </a><span class="nav-tooltip">Dashboard</span>
+        </div>
+        <div
+          class="nav-section-label nav-section-title px-2 pt-4 pb-1.5 text-[10px] font-semibold uppercase tracking-widest whitespace-nowrap transition-all duration-200">
+          UI Components</div>
+        <div class="nav-item relative">
+          <a href="form-components.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-solid fa-swatchbook text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Form Components</span>
+          </a><span class="nav-tooltip">Forms</span>
+        </div>
+        <div class="nav-item active relative">
+          <a href="form-wizard-components.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-solid fa-shoe-prints text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Form Wizard</span>
+          </a><span class="nav-tooltip">Wizard</span>
+        </div>
+        <div class="nav-item relative">
+          <a href="modal-components.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-regular fa-window-restore text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Modal Components</span>
+          </a><span class="nav-tooltip">Modals</span>
+        </div>
+        <div class="nav-item relative">
+          <a href="button-components.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-regular fa-hand-pointer text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Button &amp; Dropdown</span>
+          </a><span class="nav-tooltip">Buttons</span>
+        </div>
+        <div class="nav-item relative">
+          <a href="#" onclick="toggleSubmenu(this,event)"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+
+            <i class="nav-icon fa-solid fa-table text-[14px] shrink-0 w-5 text-center"></i>
+
+            <span class="nav-label whitespace-nowrap transition-all duration-200">
+              Table Components
+            </span>
+
+            <i class="chevron fa-solid fa-chevron-right text-[10px] ml-auto"></i>
+          </a>
+
+          <div class="submenu pl-8 mt-1 space-y-0.5">
+            <div class="nav-item">
+              <a href="basic-table.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
+                <span class="nav-label">Basic Table</span>
+              </a>
+            </div>
+
+            <div class="nav-item">
+              <a href="advance-table.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
+                <span class="nav-label">Advance Table</span>
+              </a>
+            </div>
+
+            <div class="nav-item">
+              <a href="premium-table.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
+                <span class="nav-label">Premium Table</span>
+              </a>
+            </div>
+
+            <div class="nav-item">
+              <a href="ultimate-table.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
+                <span class="nav-label">Ultimate Table</span>
+              </a>
+            </div>
+          </div>
+
+          <span class="nav-tooltip">Tables</span>
+        </div>
+      </nav>
+      <div class="sidebar-footer shrink-0 p-3 space-y-0.5">
+        <button onclick="toggleSidebar()"
+          class="collapse-btn hidden lg:flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors">
+          <i id="collapse-icon"
+            class="fa-solid fa-angles-left text-[14px] shrink-0 w-5 text-center transition-transform duration-250"></i>
+          <span class="nav-label whitespace-nowrap transition-all duration-200">Collapse</span>
+        </button>
+        <div class="user-row flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors">
+          <div
+            class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[11px] font-bold shrink-0">
+            GD</div>
+          <div class="sidebar-user-info overflow-hidden min-w-0">
+            <p class="user-name text-[13px] font-medium whitespace-nowrap leading-tight">Gading Dev</p>
+            <p class="user-role text-[11px] whitespace-nowrap leading-tight">Administrator</p>
+          </div>
+          <i class="user-dots fa-solid fa-ellipsis-vertical text-xs ml-auto nav-label transition-all duration-200"></i>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════ MAIN COLUMN ═══════ -->
+    <div id="main-col">
+
+      <!-- Header -->
+      <header class="sticky top-0 z-20 h-16 flex items-center px-4 lg:px-6 gap-2 shrink-0">
+        <button onclick="openMobileSidebar()" class="topbar-icon-btn lg:hidden p-2 rounded-lg transition-colors">
+          <i class="fa-solid fa-bars text-[16px]"></i>
+        </button>
+        <button onclick="toggleSidebar()" class="topbar-icon-btn hidden lg:flex p-2 rounded-lg transition-colors">
+          <i class="fa-solid fa-bars text-[15px]"></i>
+        </button>
+        <nav class="topbar-breadcrumb hidden sm:flex items-center text-[13px] font-medium ml-1 gap-1.5">
+          <a href="admin-dashboard.html" class="hover:text-indigo-600 transition-colors">Home</a>
+          <i class="fa-solid fa-chevron-right text-[8px]"></i>
+          <span class="topbar-breadcrumb-active">Form Wizard</span>
+        </nav>
+        <div class="ml-auto flex items-center gap-1">
+          <div
+            class="topbar-search hidden md:flex items-center gap-2 rounded-lg px-3 py-2 transition-all w-44 focus-within:w-60 mr-1">
+            <i class="fa-solid fa-magnifying-glass text-[12px] topbar-search-icon"></i>
+            <input type="text" placeholder="Search…"
+              class="bg-transparent border-none outline-none text-[13px] placeholder:text-[#B0B5D8] w-full"
+              class="topbar-search-input" />
+          </div>
+          <div class="relative" id="notif-wrap">
+            <button onclick="toggleDropdown('notif')"
+              class="topbar-icon-btn relative p-2.5 rounded-lg transition-colors">
+              <i class="fa-regular fa-bell text-[16px]"></i><span class="notif-dot"></span>
+            </button>
+            <div id="notif-dropdown" class="dropdown-panel w-80">
+              <div
+                class="px-4 py-3 border-b border-surface-200 dark:border-slate-700 flex items-center justify-between">
+                <span class="text-[14px] font-semibold text-surface-900 dark:text-white">Notifications</span>
+                <span class="text-[11px] text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline">Mark all
+                  read</span>
+              </div>
+              <div class="px-4 py-4 text-center text-[13px] text-surface-400">No new notifications</div>
+            </div>
+          </div>
+          <div class="relative" id="msg-wrap">
+            <button onclick="toggleDropdown('msg')" class="topbar-icon-btn relative p-2.5 rounded-lg transition-colors">
+              <i class="fa-regular fa-comment-dots text-[16px]"></i>
+            </button>
+            <div id="msg-dropdown" class="dropdown-panel w-72">
+              <div class="px-4 py-3 border-b border-surface-200 dark:border-slate-700">
+                <span class="text-[14px] font-semibold text-surface-900 dark:text-white">Messages</span>
+              </div>
+              <div class="px-4 py-4 text-center text-[13px] text-surface-400">No new messages</div>
+            </div>
+          </div>
+          <button onclick="toggleDark()" class="topbar-icon-btn p-2.5 rounded-lg transition-colors">
+            <i class="fa-regular fa-moon text-[15px] dark:hidden"></i>
+            <i class="fa-regular fa-sun text-[15px] hidden dark:block"></i>
+          </button>
+          <div class="topbar-divider w-px h-5 mx-0.5"></div>
+          <div class="relative" id="acct-wrap">
+            <button onclick="toggleDropdown('acct')"
+              class="topbar-icon-btn flex items-center gap-2 pl-1 pr-2 py-1.5 rounded-lg transition-colors">
+              <div
+                class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[11px] font-bold">
+                GD</div>
+              <div class="hidden md:block text-left">
+                <p class="text-[13px] font-medium leading-none topbar-acct-name">Gading</p>
+                <p class="text-[11px] leading-none mt-0.5 topbar-acct-role">Admin</p>
+              </div>
+              <i class="fa-solid fa-chevron-down text-[9px] hidden md:block ml-0.5 topbar-chevron"></i>
+            </button>
+            <div id="acct-dropdown" class="dropdown-panel w-52">
+              <div class="px-4 py-3 border-b border-surface-200 dark:border-slate-700">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-white text-[12px] font-bold">
+                    GD</div>
+                  <div>
+                    <p class="text-[13px] font-semibold text-surface-900 dark:text-white leading-tight">Gading Dev</p>
+                    <p class="text-[11px] text-surface-400 leading-tight">gading@netra-ui.io</p>
+                  </div>
+                </div>
+              </div>
+              <div class="py-1.5">
+                <a href="#"
+                  class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-surface-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors"><i
+                    class="fa-regular fa-user text-indigo-400 w-4 text-center text-[13px]"></i>My Profile</a>
+                <a href="#"
+                  class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-surface-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors"><i
+                    class="fa-solid fa-gear text-indigo-400 w-4 text-center text-[13px]"></i>Settings</a>
+              </div>
+              <div class="py-1.5 border-t border-surface-100 dark:border-slate-700">
+                <a href="#"
+                  class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"><i
+                    class="fa-solid fa-right-from-bracket w-4 text-center text-[13px]"></i>Sign out</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Title -->
+      <div class="page-title-bar px-4 lg:px-8 py-5 shrink-0">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h1 class="text-xl font-semibold text-slate-900 dark:text-white tracking-tight">Form Wizard</h1>
+            <p class="text-[13px] text-indigo-400 dark:text-indigo-400 mt-0.5">Komponen multi-step form — horizontal,
+              vertical, dan minimal stepper, dikendalikan via attribute.</p>
+          </div>
+
+        </div>
+      </div>
+      <!-- ═══════════════════════════════════════
+       MAIN CONTENT — FORM COMPONENTS
+  ═══════════════════════════════════════ -->
+      <main class="flex-1 px-4 lg:px-8 py-6 space-y-6">
+
+        <!-- ═══════════════════════════════════════
+             DEMO 1 — HORIZONTAL STEPPER (default)
+             4 step + review/summary
+        ═══════════════════════════════════════ -->
+        <div class="comp-section">
+          <div
+            class="comp-section-header flex items-start justify-between gap-4 px-5 py-4 border-b border-[#E8EBFF] dark:border-slate-700">
+            <div>
+              <p class="comp-section-title">Form Wizard — Horizontal Stepper</p>
+              <p class="comp-section-desc">Default style. Numbered circle + label di atas, dengan step Review di
+                akhir. Blade: <code
+                  class="font-mono text-brand-600 dark:text-brand-400 text-[11px] bg-brand-50 dark:bg-brand-900/20 px-1.5 py-0.5 rounded">&lt;x-wizard
+                  style="horizontal"&gt;</code>
+              </p>
+            </div>
+            <span
+              class="text-[11px] font-mono bg-indigo-50 dark:bg-slate-800 text-indigo-400 dark:text-slate-400 px-2 py-1 rounded shrink-0 font-mono">data-style="horizontal"</span>
+          </div>
+          <div class="comp-section-body">
+
+            <form id="wizard-register"
+              class="nt-wizard"
+              data-style="horizontal"
+              data-validate="true"
+              data-allow-step-click="true"
+              data-persist="true"
+              data-persist-key="wizard-register-demo"
+              data-labels-prev="Kembali"
+              data-labels-next="Lanjut"
+              data-labels-submit="Daftar Sekarang">
+
+              <!-- nt-wizard-head di-generate otomatis oleh JS -->
+
+              <div class="nt-wizard-body">
+
+                <!-- STEP 1 — Akun -->
+                <section class="nt-wizard-step"
+                  data-step-title="Akun"
+                  data-step-subtitle="Email & password"
+                  data-step-icon="fa-solid fa-user">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="form-group md:col-span-2">
+                      <label class="form-label">Nama Lengkap <span class="required">*</span></label>
+                      <input type="text" name="full_name" class="form-input" placeholder="Gading Nurfajri" required
+                        data-error-text="Nama lengkap wajib diisi." />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Email <span class="required">*</span></label>
+                      <input type="email" name="email" class="form-input" placeholder="nama@domain.com" required
+                        data-error-text="Masukkan email yang valid." />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">No. HP</label>
+                      <div class="input-group">
+                        <span class="input-addon">+62</span>
+                        <input type="text" name="phone" class="form-input" placeholder="812xxxxxxx" />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Password <span class="required">*</span></label>
+                      <input type="password" name="password" class="form-input" placeholder="Minimal 8 karakter"
+                        required minlength="8" data-error-text="Password minimal 8 karakter." />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Konfirmasi Password <span class="required">*</span></label>
+                      <input type="password" name="password_confirmation" class="form-input"
+                        placeholder="Ulangi password" required data-error-text="Konfirmasi password wajib diisi." />
+                    </div>
+                  </div>
+                </section>
+
+                <!-- STEP 2 — Profil -->
+                <section class="nt-wizard-step"
+                  data-step-title="Profil"
+                  data-step-subtitle="Informasi tambahan"
+                  data-step-icon="fa-regular fa-id-card">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="form-group">
+                      <label class="form-label">Perusahaan</label>
+                      <input type="text" name="company" class="form-input" placeholder="PT Netra Digital" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Jabatan</label>
+                      <input type="text" name="job_title" class="form-input" placeholder="Frontend Developer" />
+                    </div>
+                    <div class="form-group md:col-span-2">
+                      <label class="form-label">Bio Singkat</label>
+                      <textarea name="bio" class="form-textarea" rows="3"
+                        placeholder="Ceritakan sedikit tentang dirimu…"></textarea>
+                      <span class="form-hint">Opsional, maksimal 200 karakter.</span>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Negara <span class="required">*</span></label>
+                      <select name="country" class="form-select" required data-error-text="Pilih negara terlebih dahulu.">
+                        <option value="">Pilih negara…</option>
+                        <option value="ID">Indonesia</option>
+                        <option value="MY">Malaysia</option>
+                        <option value="SG">Singapura</option>
+                        <option value="US">Amerika Serikat</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Tanggal Lahir</label>
+                      <input type="text" name="birthdate" class="nt-datepicker form-input"
+                        placeholder="Pilih tanggal…" data-date-format="d/m/Y" data-max-date="today" />
+                    </div>
+                  </div>
+                </section>
+
+                <!-- STEP 3 — Preferensi -->
+                <section class="nt-wizard-step"
+                  data-step-title="Preferensi"
+                  data-step-subtitle="Paket & notifikasi"
+                  data-step-icon="fa-solid fa-sliders"
+                  data-step-optional="true">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="form-group">
+                      <label class="form-label">Pilih Paket</label>
+                      <div class="space-y-2.5">
+                        <label
+                          class="radio-card flex items-start gap-3 p-3 rounded-xl border border-surface-200 dark:border-slate-600 cursor-pointer transition-colors">
+                          <input type="radio" name="plan" value="free" class="form-radio mt-0.5" checked />
+                          <span>
+                            <span class="form-radio-label block font-semibold">Free</span>
+                            <span class="form-hint block mt-0.5">Fitur dasar, cocok untuk personal.</span>
+                          </span>
+                        </label>
+                        <label
+                          class="radio-card flex items-start gap-3 p-3 rounded-xl border border-surface-200 dark:border-slate-600 cursor-pointer transition-colors">
+                          <input type="radio" name="plan" value="pro" class="form-radio mt-0.5" />
+                          <span>
+                            <span class="form-radio-label block font-semibold">Pro</span>
+                            <span class="form-hint block mt-0.5">Untuk tim kecil, fitur lengkap.</span>
+                          </span>
+                        </label>
+                        <label
+                          class="radio-card flex items-start gap-3 p-3 rounded-xl border border-surface-200 dark:border-slate-600 cursor-pointer transition-colors">
+                          <input type="radio" name="plan" value="enterprise" class="form-radio mt-0.5" />
+                          <span>
+                            <span class="form-radio-label block font-semibold">Enterprise</span>
+                            <span class="form-hint block mt-0.5">Custom limit &amp; dukungan prioritas.</span>
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Notifikasi</label>
+                      <div class="space-y-3 pt-1">
+                        <label class="toggle-wrap">
+                          <input type="checkbox" name="notify_email" class="toggle-input" checked />
+                          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                          <span class="toggle-label">Notifikasi via Email</span>
+                        </label>
+                        <label class="toggle-wrap">
+                          <input type="checkbox" name="notify_sms" class="toggle-input" />
+                          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                          <span class="toggle-label">Notifikasi via SMS</span>
+                        </label>
+                        <label class="toggle-wrap">
+                          <input type="checkbox" name="notify_newsletter" class="toggle-input" checked />
+                          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                          <span class="toggle-label">Newsletter bulanan</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="form-group md:col-span-2">
+                      <label class="form-checkbox-wrap">
+                        <input type="checkbox" name="terms" class="form-checkbox" required
+                          data-error-text="Anda harus menyetujui syarat &amp; ketentuan." />
+                        <span class="form-checkbox-label">Saya menyetujui <a href="#"
+                            class="text-indigo-600 dark:text-indigo-400 hover:underline">Syarat &amp; Ketentuan</a> serta
+                          <a href="#" class="text-indigo-600 dark:text-indigo-400 hover:underline">Kebijakan
+                            Privasi</a>.</span>
+                      </label>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- STEP 4 — Review -->
+                <section class="nt-wizard-step"
+                  data-step-title="Review"
+                  data-step-subtitle="Periksa kembali"
+                  data-step-icon="fa-solid fa-clipboard-check">
+                  <div class="space-y-4" id="wizard-register-review">
+                    <p class="text-[13px] text-surface-500 dark:text-slate-400">
+                      Periksa kembali data berikut sebelum mengirim. Klik <span
+                        class="font-semibold text-indigo-600 dark:text-indigo-400">Ubah</span> untuk kembali ke step
+                      terkait.
+                    </p>
+
+                    <div class="nt-wizard-review-group">
+                      <div class="nt-wizard-review-head">
+                        <span><i class="fa-solid fa-user mr-2 text-indigo-400"></i>Akun</span>
+                        <span class="nt-wizard-review-edit" data-wizard-goto="0"><i
+                            class="fa-solid fa-pen text-[10px]"></i>Ubah</span>
+                      </div>
+                      <dl class="nt-wizard-review-body">
+                        <div class="nt-wizard-review-item">
+                          <dt>Nama Lengkap</dt>
+                          <dd data-review-field="full_name">—</dd>
+                        </div>
+                        <div class="nt-wizard-review-item">
+                          <dt>Email</dt>
+                          <dd data-review-field="email">—</dd>
+                        </div>
+                        <div class="nt-wizard-review-item">
+                          <dt>No. HP</dt>
+                          <dd data-review-field="phone">—</dd>
+                        </div>
+                      </dl>
+                    </div>
+
+                    <div class="nt-wizard-review-group">
+                      <div class="nt-wizard-review-head">
+                        <span><i class="fa-regular fa-id-card mr-2 text-indigo-400"></i>Profil</span>
+                        <span class="nt-wizard-review-edit" data-wizard-goto="1"><i
+                            class="fa-solid fa-pen text-[10px]"></i>Ubah</span>
+                      </div>
+                      <dl class="nt-wizard-review-body">
+                        <div class="nt-wizard-review-item">
+                          <dt>Perusahaan</dt>
+                          <dd data-review-field="company">—</dd>
+                        </div>
+                        <div class="nt-wizard-review-item">
+                          <dt>Jabatan</dt>
+                          <dd data-review-field="job_title">—</dd>
+                        </div>
+                        <div class="nt-wizard-review-item">
+                          <dt>Negara</dt>
+                          <dd data-review-field="country">—</dd>
+                        </div>
+                        <div class="nt-wizard-review-item">
+                          <dt>Tanggal Lahir</dt>
+                          <dd data-review-field="birthdate">—</dd>
+                        </div>
+                      </dl>
+                    </div>
+
+                    <div class="nt-wizard-review-group">
+                      <div class="nt-wizard-review-head">
+                        <span><i class="fa-solid fa-sliders mr-2 text-indigo-400"></i>Preferensi</span>
+                        <span class="nt-wizard-review-edit" data-wizard-goto="2"><i
+                            class="fa-solid fa-pen text-[10px]"></i>Ubah</span>
+                      </div>
+                      <dl class="nt-wizard-review-body">
+                        <div class="nt-wizard-review-item">
+                          <dt>Paket</dt>
+                          <dd data-review-field="plan">—</dd>
+                        </div>
+                        <div class="nt-wizard-review-item">
+                          <dt>Notifikasi Email</dt>
+                          <dd data-review-field="notify_email">—</dd>
+                        </div>
+                        <div class="nt-wizard-review-item">
+                          <dt>Notifikasi SMS</dt>
+                          <dd data-review-field="notify_sms">—</dd>
+                        </div>
+                        <div class="nt-wizard-review-item">
+                          <dt>Newsletter</dt>
+                          <dd data-review-field="notify_newsletter">—</dd>
+                        </div>
+                      </dl>
+                    </div>
+                  </div>
+                </section>
+
+              </div>
+              <!-- end nt-wizard-body -->
+
+              <!-- nt-wizard-foot di-generate otomatis oleh JS (tombol Kembali/Lanjut/Daftar) -->
+
+            </form>
+
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════
+             DEMO 2 — VERTICAL STEPPER
+             3 step, list step di sisi kiri
+        ═══════════════════════════════════════ -->
+        <div class="comp-section">
+          <div
+            class="comp-section-header flex items-start justify-between gap-4 px-5 py-4 border-b border-[#E8EBFF] dark:border-slate-700">
+            <div>
+              <p class="comp-section-title">Form Wizard — Vertical Stepper</p>
+              <p class="comp-section-desc">Step list ditampilkan di sisi kiri dalam grid 2 kolom. Cocok untuk wizard
+                checkout / order. Blade: <code
+                  class="font-mono text-brand-600 dark:text-brand-400 text-[11px] bg-brand-50 dark:bg-brand-900/20 px-1.5 py-0.5 rounded">&lt;x-wizard
+                  style="vertical"&gt;</code>
+              </p>
+            </div>
+            <span
+              class="text-[11px] font-mono bg-indigo-50 dark:bg-slate-800 text-indigo-400 dark:text-slate-400 px-2 py-1 rounded shrink-0 font-mono">data-style="vertical"</span>
+          </div>
+          <div class="comp-section-body">
+
+            <form id="wizard-checkout"
+              class="nt-wizard"
+              data-style="vertical"
+              data-validate="true"
+              data-allow-step-click="true"
+              data-labels-prev="Kembali"
+              data-labels-next="Lanjut"
+              data-labels-submit="Bayar Sekarang">
+
+              <div class="nt-wizard-body">
+
+                <!-- STEP 1 — Pengiriman -->
+                <section class="nt-wizard-step"
+                  data-step-title="Pengiriman"
+                  data-step-subtitle="Alamat tujuan"
+                  data-step-icon="fa-solid fa-truck">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="form-group md:col-span-2">
+                      <label class="form-label">Nama Penerima <span class="required">*</span></label>
+                      <input type="text" name="recipient_name" class="form-input" placeholder="Nama penerima"
+                        required data-error-text="Nama penerima wajib diisi." />
+                    </div>
+                    <div class="form-group md:col-span-2">
+                      <label class="form-label">Alamat Lengkap <span class="required">*</span></label>
+                      <textarea name="address" class="form-textarea" rows="3"
+                        placeholder="Jalan, nomor rumah, RT/RW, kelurahan…" required
+                        data-error-text="Alamat wajib diisi."></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Kota <span class="required">*</span></label>
+                      <input type="text" name="city" class="form-input" placeholder="Surakarta" required
+                        data-error-text="Kota wajib diisi." />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Kode Pos</label>
+                      <input type="text" name="postal_code" class="form-input" placeholder="57100" />
+                    </div>
+                    <div class="form-group md:col-span-2">
+                      <label class="form-label">Metode Pengiriman</label>
+                      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                        <label
+                          class="radio-card flex items-center gap-2.5 p-3 rounded-xl border border-surface-200 dark:border-slate-600 cursor-pointer transition-colors">
+                          <input type="radio" name="shipping" value="reguler" class="form-radio" checked />
+                          <span class="form-radio-label">Reguler (3-4 hari)</span>
+                        </label>
+                        <label
+                          class="radio-card flex items-center gap-2.5 p-3 rounded-xl border border-surface-200 dark:border-slate-600 cursor-pointer transition-colors">
+                          <input type="radio" name="shipping" value="express" class="form-radio" />
+                          <span class="form-radio-label">Express (1-2 hari)</span>
+                        </label>
+                        <label
+                          class="radio-card flex items-center gap-2.5 p-3 rounded-xl border border-surface-200 dark:border-slate-600 cursor-pointer transition-colors">
+                          <input type="radio" name="shipping" value="same_day" class="form-radio" />
+                          <span class="form-radio-label">Same Day</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- STEP 2 — Pembayaran -->
+                <section class="nt-wizard-step"
+                  data-step-title="Pembayaran"
+                  data-step-subtitle="Pilih metode bayar"
+                  data-step-icon="fa-regular fa-credit-card">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="form-group md:col-span-2">
+                      <label class="form-label">Metode Pembayaran <span class="required">*</span></label>
+                      <select name="payment_method" class="form-select" required
+                        data-error-text="Pilih metode pembayaran.">
+                        <option value="">Pilih metode…</option>
+                        <option value="bank_transfer">Transfer Bank</option>
+                        <option value="virtual_account">Virtual Account</option>
+                        <option value="credit_card">Kartu Kredit</option>
+                        <option value="ewallet">E-Wallet</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Nomor Kartu</label>
+                      <div class="input-group">
+                        <span class="input-addon"><i class="fa-regular fa-credit-card"></i></span>
+                        <input type="text" name="card_number" class="form-input" placeholder="0000 0000 0000 0000" />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Berlaku Hingga</label>
+                      <input type="text" name="card_expiry" class="form-input" placeholder="MM/YY" />
+                    </div>
+                    <div class="form-group md:col-span-2">
+                      <label class="form-checkbox-wrap">
+                        <input type="checkbox" name="save_card" class="form-checkbox" />
+                        <span class="form-checkbox-label">Simpan informasi kartu untuk pembayaran berikutnya.</span>
+                      </label>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- STEP 3 — Konfirmasi -->
+                <section class="nt-wizard-step"
+                  data-step-title="Konfirmasi"
+                  data-step-subtitle="Selesai"
+                  data-step-icon="fa-solid fa-check-double">
+                  <div class="nt-wizard-success">
+                    <div class="nt-wizard-success-icon">
+                      <i class="fa-solid fa-bag-shopping"></i>
+                    </div>
+                    <p class="nt-wizard-success-title">Siap diproses!</p>
+                    <p class="nt-wizard-success-desc">
+                      Klik <strong>Bayar Sekarang</strong> untuk menyelesaikan pesanan. Kamu akan menerima email
+                      konfirmasi setelah pembayaran berhasil diverifikasi.
+                    </p>
+                  </div>
+                </section>
+
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════
+             DEMO 3 — MINIMAL (progress bar)
+             3 step, ringkas, untuk survey / onboarding
+        ═══════════════════════════════════════ -->
+        <div class="comp-section">
+          <div
+            class="comp-section-header flex items-start justify-between gap-4 px-5 py-4 border-b border-[#E8EBFF] dark:border-slate-700">
+            <div>
+              <p class="comp-section-title">Form Wizard — Minimal (Progress Bar)</p>
+              <p class="comp-section-desc">Progress bar tipis + judul step saat ini. Cocok untuk onboarding singkat
+                atau survey. Blade: <code
+                  class="font-mono text-brand-600 dark:text-brand-400 text-[11px] bg-brand-50 dark:bg-brand-900/20 px-1.5 py-0.5 rounded">&lt;x-wizard
+                  style="minimal"&gt;</code>
+              </p>
+            </div>
+            <span
+              class="text-[11px] font-mono bg-indigo-50 dark:bg-slate-800 text-indigo-400 dark:text-slate-400 px-2 py-1 rounded shrink-0 font-mono">data-style="minimal"</span>
+          </div>
+          <div class="comp-section-body">
+
+            <form id="wizard-survey"
+              class="nt-wizard max-w-xl mx-auto"
+              data-style="minimal"
+              data-validate="true"
+              data-allow-skip="true"
+              data-show-step-count="true"
+              data-labels-prev="Kembali"
+              data-labels-next="Berikutnya"
+              data-labels-submit="Kirim Survey">
+
+              <div class="nt-wizard-body">
+
+                <!-- STEP 1 -->
+                <section class="nt-wizard-step" data-step-title="Seberapa puas Anda dengan layanan kami?">
+                  <div class="form-group">
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5">
+                      <label
+                        class="radio-card flex flex-col items-center gap-1.5 p-3 rounded-xl border border-surface-200 dark:border-slate-600 cursor-pointer transition-colors text-center">
+                        <input type="radio" name="satisfaction" value="1" class="form-radio" required
+                          data-error-text="Pilih salah satu rating." />
+                        <span class="text-lg">😞</span>
+                        <span class="form-radio-label text-[11px]">Sangat Buruk</span>
+                      </label>
+                      <label
+                        class="radio-card flex flex-col items-center gap-1.5 p-3 rounded-xl border border-surface-200 dark:border-slate-600 cursor-pointer transition-colors text-center">
+                        <input type="radio" name="satisfaction" value="2" class="form-radio" />
+                        <span class="text-lg">🙁</span>
+                        <span class="form-radio-label text-[11px]">Buruk</span>
+                      </label>
+                      <label
+                        class="radio-card flex flex-col items-center gap-1.5 p-3 rounded-xl border border-surface-200 dark:border-slate-600 cursor-pointer transition-colors text-center">
+                        <input type="radio" name="satisfaction" value="3" class="form-radio" />
+                        <span class="text-lg">😐</span>
+                        <span class="form-radio-label text-[11px]">Biasa</span>
+                      </label>
+                      <label
+                        class="radio-card flex flex-col items-center gap-1.5 p-3 rounded-xl border border-surface-200 dark:border-slate-600 cursor-pointer transition-colors text-center">
+                        <input type="radio" name="satisfaction" value="4" class="form-radio" />
+                        <span class="text-lg">🙂</span>
+                        <span class="form-radio-label text-[11px]">Baik</span>
+                      </label>
+                      <label
+                        class="radio-card flex flex-col items-center gap-1.5 p-3 rounded-xl border border-surface-200 dark:border-slate-600 cursor-pointer transition-colors text-center">
+                        <input type="radio" name="satisfaction" value="5" class="form-radio" />
+                        <span class="text-lg">😄</span>
+                        <span class="form-radio-label text-[11px]">Sangat Baik</span>
+                      </label>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- STEP 2 (optional, allow-skip) -->
+                <section class="nt-wizard-step" data-step-title="Apa yang bisa kami tingkatkan?"
+                  data-step-optional="true">
+                  <div class="form-group">
+                    <textarea name="feedback" class="form-textarea" rows="4"
+                      placeholder="Tulis saran atau masukan Anda… (opsional)"></textarea>
+                    <span class="form-hint">Step ini opsional — boleh dilewati tanpa diisi.</span>
+                  </div>
+                </section>
+
+                <!-- STEP 3 -->
+                <section class="nt-wizard-step" data-step-title="Bagaimana kami dapat menghubungi Anda?">
+                  <div class="grid grid-cols-1 gap-5">
+                    <div class="form-group">
+                      <label class="form-label">Email <span class="required">*</span></label>
+                      <input type="email" name="survey_email" class="form-input" placeholder="nama@domain.com"
+                        required data-error-text="Masukkan email yang valid." />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-checkbox-wrap">
+                        <input type="checkbox" name="survey_followup" class="form-checkbox" />
+                        <span class="form-checkbox-label">Boleh menghubungi saya untuk follow-up.</span>
+                      </label>
+                    </div>
+                  </div>
+                </section>
+
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════
+             DOKUMENTASI ATTRIBUTE
+        ═══════════════════════════════════════ -->
+        <div class="comp-section">
+          <div
+            class="comp-section-header flex items-start justify-between gap-4 px-5 py-4 border-b border-[#E8EBFF] dark:border-slate-700">
+            <div>
+              <p class="comp-section-title">Referensi Attribute</p>
+              <p class="comp-section-desc">Semua pengaturan wizard dilakukan lewat <code
+                  class="font-mono text-brand-600 dark:text-brand-400 text-[11px] bg-brand-50 dark:bg-brand-900/20 px-1.5 py-0.5 rounded">data-*</code>
+                pada elemen <code
+                  class="font-mono text-brand-600 dark:text-brand-400 text-[11px] bg-brand-50 dark:bg-brand-900/20 px-1.5 py-0.5 rounded">.nt-wizard</code>
+                — tidak perlu menulis JS tambahan.</p>
+            </div>
+          </div>
+          <div class="comp-section-body space-y-6">
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-[12.5px]">
+                <thead class="nt-demo-table-head">
+                  <tr>
+                    <th class="nt-demo-table-th text-left px-3 py-2 font-semibold">Attribute</th>
+                    <th class="nt-demo-table-th text-left px-3 py-2 font-semibold">Nilai</th>
+                    <th class="nt-demo-table-th text-left px-3 py-2 font-semibold">Default</th>
+                    <th class="nt-demo-table-th text-left px-3 py-2 font-semibold">Keterangan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="nt-demo-table-row nt-demo-table-row-border">
+                    <td class="px-3 py-2"><span class="nt-code">data-style</span></td>
+                    <td class="px-3 py-2">horizontal · vertical · minimal</td>
+                    <td class="px-3 py-2">horizontal</td>
+                    <td class="px-3 py-2 text-surface-500 dark:text-slate-400">Tampilan navigasi step.</td>
+                  </tr>
+                  <tr class="nt-demo-table-row nt-demo-table-row-border">
+                    <td class="px-3 py-2"><span class="nt-code">data-validate</span></td>
+                    <td class="px-3 py-2">true · false</td>
+                    <td class="px-3 py-2">true</td>
+                    <td class="px-3 py-2 text-surface-500 dark:text-slate-400">Validasi field <span
+                        class="nt-code">required</span> pada step sebelum lanjut.</td>
+                  </tr>
+                  <tr class="nt-demo-table-row nt-demo-table-row-border">
+                    <td class="px-3 py-2"><span class="nt-code">data-allow-step-click</span></td>
+                    <td class="px-3 py-2">true · false</td>
+                    <td class="px-3 py-2">false</td>
+                    <td class="px-3 py-2 text-surface-500 dark:text-slate-400">Klik langsung pada header step untuk
+                      pindah (hanya step yang sudah dilewati).</td>
+                  </tr>
+                  <tr class="nt-demo-table-row nt-demo-table-row-border">
+                    <td class="px-3 py-2"><span class="nt-code">data-allow-skip</span></td>
+                    <td class="px-3 py-2">true · false</td>
+                    <td class="px-3 py-2">false</td>
+                    <td class="px-3 py-2 text-surface-500 dark:text-slate-400">Lewati validasi untuk semua step, atau
+                      step dengan <span class="nt-code">data-step-optional="true"</span>.</td>
+                  </tr>
+                  <tr class="nt-demo-table-row nt-demo-table-row-border">
+                    <td class="px-3 py-2"><span class="nt-code">data-persist</span></td>
+                    <td class="px-3 py-2">true · false</td>
+                    <td class="px-3 py-2">false</td>
+                    <td class="px-3 py-2 text-surface-500 dark:text-slate-400">Simpan posisi step ke
+                      <span class="nt-code">sessionStorage</span> agar tidak hilang saat refresh.</td>
+                  </tr>
+                  <tr class="nt-demo-table-row nt-demo-table-row-border">
+                    <td class="px-3 py-2"><span class="nt-code">data-persist-key</span></td>
+                    <td class="px-3 py-2">string</td>
+                    <td class="px-3 py-2">nt-wizard-{index}</td>
+                    <td class="px-3 py-2 text-surface-500 dark:text-slate-400">Key custom untuk
+                      <span class="nt-code">sessionStorage</span>, berguna jika ada beberapa wizard di satu
+                      halaman.</td>
+                  </tr>
+                  <tr class="nt-demo-table-row nt-demo-table-row-border">
+                    <td class="px-3 py-2"><span class="nt-code">data-scroll-top</span></td>
+                    <td class="px-3 py-2">true · false</td>
+                    <td class="px-3 py-2">true</td>
+                    <td class="px-3 py-2 text-surface-500 dark:text-slate-400">Auto-scroll ke atas wizard saat
+                      pindah step.</td>
+                  </tr>
+                  <tr class="nt-demo-table-row nt-demo-table-row-border">
+                    <td class="px-3 py-2"><span class="nt-code">data-show-step-count</span></td>
+                    <td class="px-3 py-2">true · false</td>
+                    <td class="px-3 py-2">true</td>
+                    <td class="px-3 py-2 text-surface-500 dark:text-slate-400">Tampilkan teks "Langkah X dari Y"
+                      (khusus style minimal).</td>
+                  </tr>
+                  <tr class="nt-demo-table-row nt-demo-table-row-border">
+                    <td class="px-3 py-2"><span class="nt-code">data-labels-prev / -next / -submit</span></td>
+                    <td class="px-3 py-2">string</td>
+                    <td class="px-3 py-2">Sebelumnya / Selanjutnya / Simpan</td>
+                    <td class="px-3 py-2 text-surface-500 dark:text-slate-400">Label tombol footer.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div>
+              <p class="text-[13px] font-semibold text-surface-700 dark:text-slate-300 mb-2">Per-step
+                (<span class="nt-code">.nt-wizard-step</span>)</p>
+              <div class="overflow-x-auto">
+                <table class="w-full text-[12.5px]">
+                  <thead class="nt-demo-table-head">
+                    <tr>
+                      <th class="nt-demo-table-th text-left px-3 py-2 font-semibold">Attribute</th>
+                      <th class="nt-demo-table-th text-left px-3 py-2 font-semibold">Contoh</th>
+                      <th class="nt-demo-table-th text-left px-3 py-2 font-semibold">Keterangan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="nt-demo-table-row nt-demo-table-row-border">
+                      <td class="px-3 py-2"><span class="nt-code">data-step-title</span></td>
+                      <td class="px-3 py-2">"Akun"</td>
+                      <td class="px-3 py-2 text-surface-500 dark:text-slate-400">Judul step (wajib).</td>
+                    </tr>
+                    <tr class="nt-demo-table-row nt-demo-table-row-border">
+                      <td class="px-3 py-2"><span class="nt-code">data-step-subtitle</span></td>
+                      <td class="px-3 py-2">"Email & password"</td>
+                      <td class="px-3 py-2 text-surface-500 dark:text-slate-400">Deskripsi singkat (opsional, tidak
+                        tampil di mobile pada style horizontal).</td>
+                    </tr>
+                    <tr class="nt-demo-table-row nt-demo-table-row-border">
+                      <td class="px-3 py-2"><span class="nt-code">data-step-icon</span></td>
+                      <td class="px-3 py-2">"fa-solid fa-user"</td>
+                      <td class="px-3 py-2 text-surface-500 dark:text-slate-400">Class FontAwesome, ditampilkan pada
+                        marker step yang belum aktif (digantikan nomor jika kosong).</td>
+                    </tr>
+                    <tr class="nt-demo-table-row nt-demo-table-row-border">
+                      <td class="px-3 py-2"><span class="nt-code">data-step-optional</span></td>
+                      <td class="px-3 py-2">true</td>
+                      <td class="px-3 py-2 text-surface-500 dark:text-slate-400">Step ini tidak divalidasi & diberi
+                        badge "Opsional".</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-[13px] font-semibold text-surface-700 dark:text-slate-300 mb-2">Event JavaScript
+                (untuk integrasi)</p>
+              <pre
+                class="bg-[#0F172A] text-[#cbd5e1] rounded-xl p-4 text-[12px] font-mono overflow-x-auto leading-relaxed"><code>document.getElementById('wizard-register')
+  .addEventListener('nt-wizard:submit', (e) =&gt; {
+    console.log(e.detail.formData); // semua field di seluruh step
+    // contoh: kirim via fetch ke endpoint Laravel
+    // fetch('/api/register', { method: 'POST', body: JSON.stringify(e.detail.formData) })
+  });
+
+document.getElementById('wizard-register')
+  .addEventListener('nt-wizard:step-change', (e) =&gt; {
+    console.log(e.detail.from, '-&gt;', e.detail.to);
+  });</code></pre>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="h-4"></div>
+      </main>
+
+      <!-- FOOTER -->
+      <footer
+        class="border-t border-indigo-100 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 lg:px-8 py-4 shrink-0">
+        <div
+          class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[12px] text-surface-400 dark:text-slate-500">
+          <p>© 2026 <span class="font-medium text-indigo-600 dark:text-indigo-400">Netra UI</span>. All rights reserved.
+          </p>
+          <div class="flex items-center gap-4">
+            <a href="#" class="hover:text-indigo-600 transition-colors">Privacy</a>
+            <a href="#" class="hover:text-indigo-600 transition-colors">Terms</a>
+            <a href="#" class="hover:text-indigo-600 transition-colors">Support</a>
+            <span class="text-surface-300 dark:text-slate-700">v1.0.0</span>
+          </div>
+        </div>
+      </footer>
+
+    </div><!-- end main-col -->
+  </div><!-- end app -->
+
+  <!-- ✅ Netra UI shared script — semua fungsi sidebar/dropdown/dark-mode ada di sini -->
+  <!-- TomSelect -->
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+  <script src="../assets/js/netra-base.js"></script>
+  <script src="../assets/js/netra-forms.js"></script>
+  <script src="../assets/js/netra-form-wizard.js"></script>
+
+</body>
+
+</html>

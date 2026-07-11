@@ -1,0 +1,162 @@
+/* ═══════════════════════════════════════════════════════
+   Netra UI — Utility Classes
+   Bagian dari Netra UI Design System (modular split)
+   Membutuhkan netra-base.css (CSS variables --nt-*).
+   ═══════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════
+   UTILITY CLASSES — pengganti inline style di table pages
+   (basic-table, advance-table, premium-table)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Font sizes ── */
+.nt-text-2xs { font-size: 10.5px; }
+.nt-text-xs  { font-size: 11px; }
+.nt-text-sm  { font-size: 13px; }
+
+/* ── Text colors (dengan dark mode) ── */
+.nt-text-strong { color: #0F172A; }
+.dark .nt-text-strong { color: #e2e8f0; }
+
+.nt-text-faint { color: #94A3B8; }
+.dark .nt-text-faint { color: #475569; }
+
+.nt-text-muted2 { color: #9199CC; }
+.dark .nt-text-muted2 { color: #4a5070; }
+
+.nt-text-soft { color: #B0B5D8; }
+.dark .nt-text-soft { color: #4a4870; }
+
+.nt-text-accent { color: #3730A3; }
+.dark .nt-text-accent { color: #a5b4fc; }
+
+.nt-text-primary { color: var(--nt-primary); }
+.dark .nt-text-primary { color: #a5b4fc; }
+
+/* ── Numeric / monospace cells ── */
+.nt-num {
+  text-align: right;
+  font-family: 'DM Mono', monospace;
+}
+
+.nt-num-strong {
+  text-align: right;
+  font-family: 'DM Mono', monospace;
+  font-weight: 600;
+  color: #1e1b4b;
+}
+.dark .nt-num-strong { color: #e2e8f0; }
+
+.nt-text-center { text-align: center; }
+.nt-text-right  { text-align: right; }
+
+/* ── Score / metric cells (table performa) ── */
+.nt-score-primary { color: var(--nt-primary); font-weight: 600; font-size: 13px; }
+.nt-score-primary-bold { color: var(--nt-primary); font-weight: 700; }
+.dark .nt-score-primary,
+.dark .nt-score-primary-bold { color: #a5b4fc; }
+
+.nt-score-success { color: #16A34A; font-weight: 600; font-size: 13px; }
+.nt-score-success-bold { color: #16A34A; font-weight: 700; }
+.dark .nt-score-success,
+.dark .nt-score-success-bold { color: #86efac; }
+
+.nt-score-warning { color: #D97706; font-weight: 600; font-size: 13px; }
+.dark .nt-score-warning { color: #fcd34d; }
+
+/* ── Tree table indentation (org structure) ── */
+.nt-tree-indent {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.nt-tree-indent-1 { padding-left: 0; }
+.nt-tree-indent-2 { padding-left: 24px; }
+.nt-tree-indent-3 { padding-left: 48px; }
+
+/* Spacer selebar icon, untuk menjaga alignment baris tanpa icon */
+.nt-tree-spacer {
+  width: 18px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ── Progress bar (mini, dengan track custom seperti Gantt) ── */
+.nt-progress-track-sm {
+  flex: 1;
+  height: 5px;
+  background: #E8EAFF;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.dark .nt-progress-track-sm { background: #1e293b; }
+
+.nt-progress-fill-sm {
+  height: 100%;
+  border-radius: 99px;
+}
+
+.nt-progress-label-sm {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #9199CC;
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.dark .nt-progress-label-sm { color: #475569; }
+
+/* ── Fill / dot / badge color modifiers ──
+   Dipakai untuk progress-fill, avatar bg, legend dot, dll. */
+.nt-bg-indigo  { background: #4F46E5; }
+.nt-bg-green   { background: #16A34A; }
+.nt-bg-amber   { background: #D97706; }
+.nt-bg-red     { background: #DC2626; }
+.nt-bg-cyan    { background: #0891B2; }
+.nt-bg-slate   { background: #64748B; }
+.nt-bg-violet  { background: #7C3AED; }
+.nt-bg-pink    { background: #DB2777; }
+.nt-bg-orange  { background: #EA580C; }
+.nt-bg-sky     { background: #0369A1; }
+
+/* ── Small icon utility (untuk i.fa-* berukuran 9px, warna primary) ── */
+.nt-icon-primary-2xs {
+  font-size: 9px;
+  color: var(--nt-primary);
+}
+.dark .nt-icon-primary-2xs { color: #a5b4fc; }
+
+/* ── Pill kecil dengan background soft + teks primary ── */
+.nt-pill-primary-soft {
+  background: #EEF0FF;
+  color: var(--nt-primary);
+}
+.dark .nt-pill-primary-soft {
+  background: rgba(79,70,229,.15);
+  color: #a5b4fc;
+}
+
+/* ── Badge size override (badge biasa tapi font lebih kecil) ── */
+.nt-badge-compact { padding: 1px 6px; font-size: 10.5px; }
+
+/* ── Table wrap variant: tanpa border & radius sama sekali ── */
+.nt-table-wrap-bare {
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+/* ── Column width helpers ── */
+.nt-w-30  { width: 30px; }
+.nt-w-44  { width: 44px; }
+.nt-min-w-120  { min-width: 120px; }
+.nt-min-w-180  { min-width: 180px; }
+.nt-min-w-260  { min-width: 260px; }
+.nt-min-w-1100 { min-width: 1100px; }
+
+/* ── Input text color (search box, dsb) ── */
+.nt-input-text-strong { color: #1e1b4b; }
+.dark .nt-input-text-strong { color: #e2e8f0; }
+
+/* ── Text color: cyan (folder/tree icons) ── */
+.nt-text-cyan { color: #0891B2; }
+.dark .nt-text-cyan { color: #67e8f9; }

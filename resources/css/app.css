@@ -1,0 +1,17 @@
+/* @import HARUS di baris paling atas, sebelum statement lain */
+@import './netra-base.css';
+@import './netra-buttons.css';
+@import './netra-auth.css';
+@import './netra-avatar.css';
+@import './netra-form-wizard.css';
+@import './netra-forms.css';
+@import './netra-kanban.css';
+@import './netra-modal.css';
+@import './netra-tables.css';
+@import './netra-utilities.css';
+@import './netra-wizard-lazy.css';
+@import './ai-widget.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

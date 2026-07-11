@@ -1,0 +1,832 @@
+/* ═══════════════════════════════════════════════════════
+   Netra UI — Base (Variables, Layout, Sidebar, Topbar)
+   Bagian dari Netra UI Design System (modular split)
+   Wajib dimuat di semua halaman, sebelum modul lain.
+   ═══════════════════════════════════════════════════════ */
+
+/* ── CSS Variables (Customizable) ── */
+:root {
+  /* =========================
+     BRAND - INDIGO VISION
+     ========================= */
+
+  --nt-primary: #4F46E5;
+  --nt-primary-hover: #4338CA;
+  --nt-primary-dark: #3730A3;
+  --nt-primary-light: #EEF2FF;
+  --nt-primary-border: #C7D2FE;
+  --nt-primary-ring: rgba(79, 70, 229, .14);
+
+  /* Secondary Accent */
+  --nt-accent: #06B6D4;
+  --nt-accent-light: #ECFEFF;
+  --nt-accent-border: #A5F3FC;
+
+  /* Brand dot / logo */
+  --nt-brand-bg: #4F46E5;
+
+  /* =========================
+     SURFACES
+     90% SOLID
+     ========================= */
+
+  --nt-body-bg: #F4F5FF;
+  --nt-surface: #FFFFFF;
+
+  --nt-card-bg: #FFFFFF;
+  --nt-card-border: #E4E7FF;
+  --nt-card-radius: 16px;
+
+  --nt-sidebar-bg: #F0F1FF;
+  --nt-sidebar-bg-deep: #E6E8FF;
+  --nt-sidebar-border: #DCDEFF;
+  --nt-sidebar-text: #4A5180;
+  --nt-sidebar-text-active: #3730A3;
+  --nt-sidebar-icon: #9DA3CB;
+  --nt-sidebar-hover-bg: #E6E8FF;
+  --nt-sidebar-active-bg: #FFFFFF;
+  --nt-sidebar-section-label: #9DA3CB;
+
+  --nt-header-bg: rgba(255, 255, 255, .95);
+  --nt-header-border: #E4E7FF;
+
+  /* =========================
+     TYPOGRAPHY
+     ========================= */
+
+  --nt-text: #0F172A;
+  --nt-text-secondary: #475569;
+  --nt-text-muted: #64748B;
+
+  --nt-label-color: #334155;
+  --nt-hint-color: #94A3B8;
+
+  /* =========================
+     INPUT
+     ========================= */
+
+  --nt-input-bg: #FFFFFF;
+  --nt-input-border: #CBD5E1;
+  --nt-input-border-hover: #94A3B8;
+
+  --nt-input-color: #0F172A;
+  --nt-input-placeholder: #94A3B8;
+
+  --nt-input-disabled-bg: #F1F5F9;
+  --nt-input-disabled-color: #94A3B8;
+
+  --nt-input-radius: 12px;
+  --nt-input-height: 40px;
+  --nt-input-font-size: 13.5px;
+
+  /* =========================
+     SEMANTIC
+     ========================= */
+
+  --nt-success: #22C55E;
+  --nt-success-ring: rgba(34, 197, 94, .15);
+
+  --nt-error: #EF4444;
+  --nt-error-ring: rgba(239, 68, 68, .15);
+
+  --nt-warning: #F59E0B;
+  --nt-warning-ring: rgba(245, 158, 11, .15);
+
+  /* =========================
+     ADDON
+     ========================= */
+
+  --nt-addon-bg: #F8FAFC;
+  --nt-addon-color: #64748B;
+
+  /* =========================
+     TOGGLE
+     ========================= */
+
+  --nt-toggle-off: #CBD5E1;
+
+  /* =========================
+     DROPDOWN
+     10% GLASS ACCENT
+     ========================= */
+
+  --nt-dropdown-bg: #ffffff;
+  --nt-dropdown-border: #e2e8f0;
+
+  --nt-dropdown-shadow:
+    0 10px 25px rgba(15, 23, 42, .08),
+    0 4px 10px rgba(15, 23, 42, .04);
+
+  --nt-dropdown-radius: 14px;
+  --nt-dropdown-item-hover: #F5F7FF;
+
+  /* =========================
+     GLASS TOKENS
+     ========================= */
+
+  --nt-glass-bg: rgba(255, 255, 255, .72);
+  --nt-glass-border: rgba(255, 255, 255, .35);
+
+  --nt-glass-shadow:
+    0 8px 32px rgba(15, 23, 42, .08);
+
+  --nt-glass-blur: 16px;
+
+  /* =========================
+     ELEVATION
+     ========================= */
+
+  --nt-shadow-sm:
+    0 1px 2px rgba(15, 23, 42, .04);
+
+  --nt-shadow-md:
+    0 4px 12px rgba(15, 23, 42, .06);
+
+  --nt-shadow-lg:
+    0 12px 32px rgba(15, 23, 42, .08);
+}
+
+/* ── Reset ── */
+* {
+  box-sizing: border-box
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0
+}
+
+body {
+  font-family: 'DM Sans', sans-serif
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px
+}
+
+::-webkit-scrollbar-track {
+  background: transparent
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #374151
+}
+
+/* ── Layout shell ── */
+#app {
+  display: flex;
+  height: 100%;
+  overflow: hidden
+}
+
+/* ── Sidebar ── */
+#sidebar {
+  width: 256px;
+  min-width: 256px;
+  flex-shrink: 0;
+  transition: width 250ms cubic-bezier(.4, 0, .2, 1), min-width 250ms cubic-bezier(.4, 0, .2, 1), transform 250ms cubic-bezier(.4, 0, .2, 1);
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 40;
+  background: #F0F1FF;
+  border-right: 1px solid #DCDEFF;
+}
+
+#sidebar.collapsed {
+  width: 68px;
+  min-width: 68px
+}
+
+@media(max-width:1023px) {
+  #sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    width: 256px !important;
+    min-width: 256px !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, .12)
+  }
+
+  #sidebar.mobile-open {
+    transform: translateX(0)
+  }
+}
+
+#main-col {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden; /* jangan scroll di sini */
+}
+
+#page-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.page-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 1.5rem 2rem;
+}
+
+.submenu {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 300ms cubic-bezier(.4, 0, .2, 1), opacity 200ms ease;
+  opacity: 0
+}
+
+.submenu.open {
+  max-height: 600px;
+  opacity: 1
+}
+
+.chevron {
+  transition: transform 200ms ease
+}
+
+.chevron.open {
+  transform: rotate(90deg)
+}
+
+#sidebar.collapsed .nav-label,
+#sidebar.collapsed .nav-section-title,
+#sidebar.collapsed .nav-badge,
+#sidebar.collapsed .sidebar-brand-text,
+#sidebar.collapsed .chevron {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  pointer-events: none
+}
+
+#sidebar.collapsed .submenu {
+  display: none !important
+}
+
+#sidebar.collapsed .sidebar-logo {
+  justify-content: center
+}
+
+#sidebar.collapsed .sidebar-user-info {
+  display: none
+}
+
+.nav-tooltip {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1e293b;
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease;
+  z-index: 999
+}
+
+.nav-tooltip::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-right-color: #1e293b
+}
+
+.dark .nav-tooltip {
+  background: #0f172a;
+  color: #e2e8f0
+}
+
+.dark .nav-tooltip::before {
+  border-right-color: #0f172a
+}
+
+#sidebar.collapsed .nav-item:hover .nav-tooltip {
+  opacity: 1
+}
+
+.nav-item.active>.nav-link {
+  background: #EEF0FF;
+  color: #3730A3;
+}
+
+.nav-item.active>.nav-link .nav-label {
+  font-weight: 600;
+}
+
+.dark .nav-item.active>.nav-link {
+  background: rgba(99, 102, 241, .12);
+  color: #a5b4fc;
+}
+
+.nav-item.active>.nav-link .nav-icon {
+  color: #4F46E5;
+}
+
+.dark .nav-item.active>.nav-link .nav-icon {
+  color: #a5b4fc;
+}
+
+/* ── Parent item dengan submenu aktif (has-active) ──
+   Diset oleh JS (initNavActive / click handler) saat salah satu
+   sub-item aktif. Memberi highlight warna pada parent link +
+   icon walaupun submenu sedang tertutup (collapsed). */
+.nav-item.has-active>.nav-link {
+  color: #3730A3;
+}
+
+.nav-item.has-active>.nav-link .nav-icon {
+  color: #4F46E5;
+}
+
+.dark .nav-item.has-active>.nav-link {
+  color: #a5b4fc;
+}
+
+.dark .nav-item.has-active>.nav-link .nav-icon {
+  color: #a5b4fc;
+}
+
+.notif-dot {
+  width: 7px;
+  height: 7px;
+  background: #ef4444;
+  border-radius: 50%;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  border: 1.5px solid white
+}
+
+.dark .notif-dot {
+  border-color: #1e293b
+}
+
+/* ── Sidebar shared component classes ──
+   Digunakan di semua halaman. Scoped ke #sidebar untuk
+   menghindari konflik dengan komponen lain.
+*/
+#sidebar .sidebar-logo {
+  border-bottom: 1px solid #EAECFF;
+}
+
+.dark #sidebar .sidebar-logo {
+  border-bottom-color: rgba(99, 102, 241, .1);
+}
+
+.sidebar-logo-mark {
+  background: #EEF0FF;
+  border: 1px solid #DDE1FF;
+}
+
+.sidebar-logo-mark i {
+  color: #4F46E5;
+}
+
+.dark .sidebar-logo-mark {
+  background: rgba(99, 102, 241, .15);
+  border-color: rgba(99, 102, 241, .2);
+}
+
+.dark .sidebar-logo-mark i {
+  color: #a5b4fc;
+}
+
+#sidebar .nav-section-label {
+  color: #B0B5D8;
+}
+
+.dark #sidebar .nav-section-label {
+  color: #4a4870;
+}
+
+#sidebar .nav-link {
+  color: #525A8A;
+}
+
+.dark #sidebar .nav-link {
+  color: #6868a0;
+}
+
+#sidebar .nav-link .nav-icon {
+  color: #B0B5D8;
+}
+
+.dark #sidebar .nav-link .nav-icon {
+  color: #4a4870;
+}
+
+#sidebar .nav-link:hover {
+  background: #EEF0FF;
+  color: #3730A3;
+}
+
+.dark #sidebar .nav-link:hover {
+  background: rgba(99, 102, 241, .08);
+  color: #a5b4fc;
+}
+
+#sidebar .nav-link:hover .nav-icon {
+  color: #6366f1;
+}
+
+.dark #sidebar .nav-link:hover .nav-icon {
+  color: #a5b4fc;
+}
+
+#sidebar .sidebar-footer {
+  border-top: 1px solid #EAECFF;
+}
+
+.dark #sidebar .sidebar-footer {
+  border-top-color: rgba(99, 102, 241, .1);
+}
+
+#sidebar .collapse-btn {
+  color: #9199CC;
+}
+
+#sidebar .collapse-btn:hover {
+  background: #EEF0FF;
+  color: #3730A3;
+}
+
+.dark #sidebar .collapse-btn {
+  color: #6868a0;
+}
+
+.dark #sidebar .collapse-btn:hover {
+  background: rgba(99, 102, 241, .08);
+  color: #a5b4fc;
+}
+
+#sidebar .user-row:hover {
+  background: #EEF0FF;
+}
+
+.dark #sidebar .user-row:hover {
+  background: rgba(99, 102, 241, .07);
+}
+
+#sidebar .user-name {
+  color: #1e1b4b;
+}
+
+.dark #sidebar .user-name {
+  color: #b0b0d8;
+}
+
+#sidebar .user-role {
+  color: #9199CC;
+}
+
+.dark #sidebar .user-role {
+  color: #6868a0;
+}
+
+#sidebar .user-dots {
+  color: #C4C8E0;
+}
+
+.dark #sidebar .user-dots {
+  color: #4a4870;
+}
+
+#sidebar .close-btn {
+  color: #9199CC;
+}
+
+#sidebar .close-btn:hover {
+  color: #3730A3;
+}
+
+.dark #sidebar .close-btn {
+  color: #6868a0;
+}
+
+/* ── Global sidebar background (semua halaman) ── */
+#sidebar {
+  background: #FAFBFF;
+  border-right: 1px solid #EAECFF;
+}
+
+.dark #sidebar {
+  background: #131225;
+  border-right-color: rgba(99, 102, 241, .1);
+}
+
+/* ── Topbar global styles ── */
+#main-col>header {
+  background: rgba(250, 251, 255, .96);
+  border-bottom: 1px solid #E4E7FF;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dark #main-col>header {
+  background: rgba(19, 18, 37, .96);
+  border-bottom-color: rgba(99, 102, 241, .1);
+}
+
+.topbar-search {
+  background: #F0F2FF;
+  border: 1px solid #E0E3FF;
+  border-radius: 8px;
+}
+
+.topbar-search:focus-within {
+  border-color: #a5b4fc;
+  background: #fff;
+}
+
+.topbar-icon-btn {
+  color: #7B82B0;
+}
+
+.topbar-icon-btn:hover {
+  background: #EEF0FF;
+  color: #3730A3;
+}
+
+.dark .topbar-icon-btn {
+  color: #6868a0;
+}
+
+.dark .topbar-icon-btn:hover {
+  background: rgba(99, 102, 241, .1);
+  color: #a5b4fc;
+}
+
+.topbar-divider {
+  background: #E4E7FF;
+}
+
+.dark .topbar-divider {
+  background: rgba(99, 102, 241, .2);
+}
+
+/* ── Body background (prevent flash) ── */
+body {
+  background: #F4F5FF;
+}
+
+.dark body {
+  background: #0f0f1a;
+}
+
+.dropdown-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, .12), 0 2px 8px rgba(0, 0, 0, .06);
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(-6px) scale(.98);
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+  transform-origin: top right
+}
+
+.dropdown-panel.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto
+}
+
+.dark .dropdown-panel {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, .4)
+}
+
+#mob-overlay {
+  transition: opacity 250ms ease
+}
+
+
+/* ── Page title bar ── */
+.page-title-bar {
+  background: #ffffff;
+  border-bottom: 1px solid #E8EBFF;
+}
+
+.dark .page-title-bar {
+  background: #0f0e1e;
+  border-bottom-color: rgba(99, 102, 241, .1);
+}
+
+/* ── Code snippet ── */
+.nt-code {
+  font-family: 'DM Mono', monospace;
+  font-size: 11.5px;
+  background: #F0F2FF;
+  color: #4338CA;
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+
+.dark .nt-code {
+  background: rgba(79, 70, 229, .15);
+  color: #a5b4fc;
+}
+
+/* ── Demo layout helpers ── */
+.demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.demo-dark-canvas {
+  background: #1e1b4b;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ── Comp section ── */
+.comp-section {
+  background: #ffffff;
+  border: 1px solid #E8EBFF;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.dark .comp-section {
+  background: #0f0e1e;
+  border-color: rgba(99, 102, 241, .12);
+}
+
+.comp-section-header {
+  background: #FAFBFF;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E8EBFF;
+}
+
+.dark .comp-section-header {
+  background: #0d0c1d;
+  border-bottom-color: rgba(99, 102, 241, .12);
+}
+
+.comp-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e1b4b;
+}
+
+.dark .comp-section-title {
+  color: #c7c7e8;
+}
+
+.comp-section-desc {
+  font-size: 12.5px;
+  color: #6B7280;
+  margin-top: 2px;
+}
+
+.dark .comp-section-desc {
+  color: #4a5070;
+}
+
+.comp-section-body {
+  padding: 20px;
+}
+
+
+/* ── Table demo (inside comp-section) ── */
+.nt-demo-table-head {
+  background: #F5F7FF;
+  border-bottom: 1px solid #E8EBFF;
+}
+
+.dark .nt-demo-table-head {
+  background: rgba(30, 41, 59, .5);
+  border-bottom-color: rgba(51, 65, 85, 1);
+}
+
+.nt-demo-table-th {
+  color: #525A8A;
+}
+
+.dark .nt-demo-table-th {
+  color: #94a3b8;
+}
+
+.nt-demo-table-row-border {
+  border-bottom: 1px solid #F0F2FF;
+}
+
+.dark .nt-demo-table-row-border {
+  border-bottom-color: #1e293b;
+}
+
+.nt-demo-table-row:hover {
+  background: #FAFBFF;
+}
+
+.dark .nt-demo-table-row:hover {
+  background: rgba(30, 41, 59, .3);
+}
+
+/* Name / email in table cell */
+.nt-cell-name {
+  color: #0F172A;
+  font-weight: 500;
+}
+
+.dark .nt-cell-name {
+  color: #e2e8f0;
+}
+
+.nt-cell-email {
+  color: #94a3b8;
+  font-size: 11.5px;
+}
+
+/* Topbar breadcrumb */
+.topbar-breadcrumb {
+  color: #9199CC;
+}
+
+.topbar-breadcrumb-active {
+  color: #3730A3;
+}
+
+.dark .topbar-breadcrumb-active {
+  color: #a5b4fc;
+}
+
+/* Topbar user name / meta */
+.topbar-user-name {
+  color: #1e1b4b;
+}
+
+.dark .topbar-user-name {
+  color: #e2e8f0;
+}
+
+.topbar-user-meta {
+  color: #9199CC;
+}
+
+.topbar-chevron {
+  color: #B0B5D8;
+}
+
+/* Search input text */
+.topbar-search-input {
+  color: #1e1b4b;
+}
+
+.dark .topbar-search-input {
+  color: #e2e8f0;
+}
+
+.topbar-search-icon {
+  color: #9199CC;
+}
+
+/* ── Brand dot (sidebar logo) ── */
+.nt-brand-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #818cf8;
+  margin-left: 2px;
+  margin-bottom: 5px;
+  vertical-align: middle;
+}

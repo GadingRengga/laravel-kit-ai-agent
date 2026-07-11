@@ -1,0 +1,47 @@
+/* ═══════════════════════════════════════════════════════
+   Netra UI — Wizard lazy-step states
+   Tambahan kecil di luar netra-form-wizard.css bawaan.
+   Muat setelah netra-form-wizard.css.
+   ═══════════════════════════════════════════════════════ */
+
+.nt-wizard-step-skeleton {
+  padding: 4px 0 8px;
+}
+
+.nt-wizard-step-skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  background: linear-gradient(90deg, var(--nt-card-border) 25%, var(--nt-surface) 37%, var(--nt-card-border) 63%);
+  background-size: 400% 100%;
+  animation: nt-wizard-shimmer 1.4s ease infinite;
+}
+
+@keyframes nt-wizard-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+.nt-wizard-step-error {
+  text-align: center;
+  padding: 28px 20px;
+}
+
+.nt-wizard-step-error p {
+  color: var(--nt-text-muted);
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.nt-wizard-guard-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--nt-error, #DC2626);
+  background: color-mix(in srgb, var(--nt-error, #DC2626) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--nt-error, #DC2626) 25%, transparent);
+}

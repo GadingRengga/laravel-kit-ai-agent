@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Netra UI — Avatar Components</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="../assets/css/netra-base.css" />
+  <link rel="stylesheet" href="../assets/css/netra-avatar.css" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['DM Sans', 'sans-serif'], mono: ['DM Mono', 'monospace'] },
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+            surface: { 50: '#fafafa', 100: '#f5f5f5', 200: '#eeeeee', 300: '#e0e0e0', 400: '#bdbdbd', 500: '#9e9e9e', 600: '#757575', 700: '#616161', 800: '#424242', 900: '#212121' }
+          }
+        }
+      }
+    }
+  </script>
+  <script>(function () { const s = localStorage.getItem('theme'); const isDark = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches); if (isDark) { document.documentElement.classList.add('dark'); document.documentElement.setAttribute('data-theme', 'dark'); } else { document.documentElement.setAttribute('data-theme', 'light'); } })()</script>
+</head>
+
+<body class="h-full overflow-hidden">
+
+  <div id="mob-overlay" class="fixed inset-0 bg-black/40 z-30 hidden opacity-0 lg:hidden"
+    onclick="closeMobileSidebar()"></div>
+
+  <div id="app">
+
+    <!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+    <aside id="sidebar" class="flex flex-col">
+      <!-- Logo -->
+      <div class="sidebar-logo flex items-center gap-3 px-4 h-16 shrink-0">
+        <div class="sidebar-logo-mark w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
+          <i class="fa-solid fa-eye text-white text-[13px]"></i>
+        </div>
+        <div
+          class="sidebar-brand-text flex flex-col leading-tight overflow-hidden whitespace-nowrap transition-all duration-200">
+          <span class="font-bold text-[15px] tracking-tight user-name">Netra UI<span class="nt-brand-dot"></span></span>
+          <span class="text-[10.5px] font-normal user-role">Enterprise Suite</span>
+        </div>
+        <button onclick="closeMobileSidebar()" class="close-btn ml-auto lg:hidden p-1 rounded">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Nav -->
+      <nav class="flex-1 overflow-y-auto overflow-x-hidden py-3 px-2 space-y-0.5">
+        <div
+          class="nav-section-label nav-section-title px-2 pt-1 pb-1.5 text-[10px] font-semibold uppercase tracking-widest whitespace-nowrap transition-all duration-200">
+          Main</div>
+        <div class="nav-item relative">
+          <a href="admin-dashboard.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-solid fa-house text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Dashboard</span>
+          </a><span class="nav-tooltip">Dashboard</span>
+        </div>
+
+        <div
+          class="nav-section-label nav-section-title px-2 pt-4 pb-1.5 text-[10px] font-semibold uppercase tracking-widest whitespace-nowrap transition-all duration-200">
+          UI Components</div>
+
+        <div class="nav-item relative">
+          <a href="form-components.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-solid fa-swatchbook text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Form Components</span>
+          </a><span class="nav-tooltip">Forms</span>
+        </div>
+
+        <div class="nav-item relative">
+          <a href="modal-components.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-regular fa-window-restore text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Modal Components</span>
+          </a><span class="nav-tooltip">Modals</span>
+        </div>
+
+        <div class="nav-item relative">
+          <a href="button-components.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-regular fa-hand-pointer text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Button &amp; Dropdown</span>
+          </a><span class="nav-tooltip">Buttons</span>
+        </div>
+
+        <div class="nav-item active relative">
+          <a href="avatar-components.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-regular fa-circle-user text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Avatar Components</span>
+          </a><span class="nav-tooltip">Avatars</span>
+        </div>
+
+        <div class="nav-item relative">
+          <a href="#" onclick="toggleSubmenu(this,event)"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-solid fa-table text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Table Components</span>
+            <i class="chevron fa-solid fa-chevron-right text-[10px] ml-auto"></i>
+          </a>
+          <div class="submenu pl-8 mt-1 space-y-0.5">
+            <div class="nav-item">
+              <a href="basic-table.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
+                <span class="nav-label">Basic Table</span>
+              </a>
+            </div>
+            <div class="nav-item">
+              <a href="advance-table.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
+                <span class="nav-label">Advance Table</span>
+              </a>
+            </div>
+          </div>
+          <span class="nav-tooltip">Tables</span>
+        </div>
+      </nav>
+
+      <!-- Footer -->
+      <div class="sidebar-footer shrink-0 p-3 space-y-0.5">
+        <button onclick="toggleSidebar()"
+          class="collapse-btn hidden lg:flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors">
+          <i id="collapse-icon"
+            class="fa-solid fa-angles-left text-[14px] shrink-0 w-5 text-center transition-transform duration-250"></i>
+          <span class="nav-label whitespace-nowrap transition-all duration-200">Collapse</span>
+        </button>
+        <div class="user-row flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors">
+          <div class="nt-avatar nt-avatar-sm nt-avatar-gradient-indigo shrink-0">GD</div>
+          <div class="sidebar-user-info overflow-hidden min-w-0">
+            <p class="user-name text-[13px] font-medium whitespace-nowrap leading-tight">Gading Dev</p>
+            <p class="user-role text-[11px] whitespace-nowrap leading-tight">Administrator</p>
+          </div>
+          <i class="user-dots fa-solid fa-ellipsis-vertical text-xs ml-auto nav-label transition-all duration-200"></i>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════════════════ MAIN COLUMN ═══════════════════ -->
+    <div id="main-col">
+
+      <!-- Header / Topbar -->
+      <header class="sticky top-0 z-20 h-16 flex items-center px-4 lg:px-6 gap-2 shrink-0">
+        <button onclick="openMobileSidebar()" class="topbar-icon-btn lg:hidden p-2 rounded-lg transition-colors">
+          <i class="fa-solid fa-bars text-[16px]"></i>
+        </button>
+        <button onclick="toggleSidebar()" class="topbar-icon-btn hidden lg:flex p-2 rounded-lg transition-colors">
+          <i class="fa-solid fa-bars text-[15px]"></i>
+        </button>
+        <nav class="topbar-breadcrumb hidden sm:flex items-center text-[13px] font-medium ml-1 gap-1.5">
+          <a href="admin-dashboard.html" class="hover:text-indigo-600 transition-colors">Home</a>
+          <i class="fa-solid fa-chevron-right text-[8px]"></i>
+          <span>UI Components</span>
+          <i class="fa-solid fa-chevron-right text-[8px]"></i>
+          <span class="topbar-breadcrumb-active">Avatar</span>
+        </nav>
+        <div class="ml-auto flex items-center gap-1">
+          <div
+            class="topbar-search hidden md:flex items-center gap-2 rounded-lg px-3 py-2 transition-all w-44 focus-within:w-60 mr-1">
+            <i class="fa-solid fa-magnifying-glass text-[12px] topbar-search-icon"></i>
+            <input type="text" placeholder="Search…"
+              class="bg-transparent border-none outline-none text-[13px] placeholder:text-[#B0B5D8] w-full topbar-search-input" />
+          </div>
+          <div class="relative" id="notif-wrap">
+            <button onclick="toggleDropdown('notif')" class="topbar-icon-btn relative p-2.5 rounded-lg transition-colors">
+              <i class="fa-regular fa-bell text-[16px]"></i><span class="notif-dot"></span>
+            </button>
+            <div id="notif-dropdown" class="dropdown-panel w-80">
+              <div class="px-4 py-3 border-b border-surface-200 dark:border-slate-700 flex items-center justify-between">
+                <span class="text-[14px] font-semibold text-surface-900 dark:text-white">Notifications</span>
+                <span class="text-[11px] text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline">Mark all read</span>
+              </div>
+              <div class="px-4 py-4 text-center text-[13px] text-surface-400">No new notifications</div>
+            </div>
+          </div>
+          <div class="relative" id="msg-wrap">
+            <button onclick="toggleDropdown('msg')" class="topbar-icon-btn relative p-2.5 rounded-lg transition-colors">
+              <i class="fa-regular fa-comment-dots text-[16px]"></i>
+            </button>
+            <div id="msg-dropdown" class="dropdown-panel w-72">
+              <div class="px-4 py-3 border-b border-surface-200 dark:border-slate-700">
+                <span class="text-[14px] font-semibold text-surface-900 dark:text-white">Messages</span>
+              </div>
+              <div class="px-4 py-4 text-center text-[13px] text-surface-400">No new messages</div>
+            </div>
+          </div>
+          <button onclick="toggleDark()" class="topbar-icon-btn p-2.5 rounded-lg transition-colors">
+            <i class="fa-regular fa-moon text-[15px] dark:hidden"></i>
+            <i class="fa-regular fa-sun text-[15px] hidden dark:block"></i>
+          </button>
+          <div class="topbar-divider w-px h-5 mx-0.5"></div>
+          <div class="relative" id="acct-wrap">
+            <button onclick="toggleDropdown('acct')"
+              class="topbar-icon-btn flex items-center gap-2 pl-1 pr-2 py-1.5 rounded-lg transition-colors">
+              <div class="nt-avatar nt-avatar-sm nt-avatar-gradient-indigo">GD</div>
+              <div class="hidden md:block text-left">
+                <p class="text-[13px] font-medium leading-none topbar-acct-name">Gading</p>
+                <p class="text-[11px] leading-none mt-0.5 topbar-acct-role text-slate-400">Admin</p>
+              </div>
+              <i class="fa-solid fa-chevron-down text-[9px] hidden md:block ml-0.5 topbar-chevron"></i>
+            </button>
+            <div id="acct-dropdown" class="dropdown-panel w-52">
+              <div class="px-4 py-3 border-b border-surface-200 dark:border-slate-700">
+                <div class="flex items-center gap-3">
+                  <div class="nt-avatar nt-avatar-md nt-avatar-gradient-indigo">GD</div>
+                  <div>
+                    <p class="text-[13px] font-semibold text-surface-900 dark:text-white leading-tight">Gading Dev</p>
+                    <p class="text-[11px] text-surface-400 leading-tight">gading@netra-ui.io</p>
+                  </div>
+                </div>
+              </div>
+              <div class="py-1.5">
+                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-surface-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors"><i class="fa-regular fa-user text-indigo-400 w-4 text-center text-[13px]"></i>My Profile</a>
+                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-surface-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors"><i class="fa-solid fa-gear text-indigo-400 w-4 text-center text-[13px]"></i>Settings</a>
+              </div>
+              <div class="py-1.5 border-t border-surface-100 dark:border-slate-700">
+                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"><i class="fa-solid fa-right-from-bracket w-4 text-center text-[13px]"></i>Sign out</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Title -->
+      <div class="page-title-bar px-4 lg:px-8 py-5 shrink-0">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h1 class="text-xl font-semibold text-slate-900 dark:text-white tracking-tight">Avatar Components</h1>
+            <p class="text-[13px] text-indigo-400 mt-0.5">Semua gaya, ukuran, dan interaksi avatar — siap pakai di Laravel Blade.</p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="text-[11.5px] font-medium px-2.5 py-1 rounded-md bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800">
+              <i class="fa-solid fa-circle-user mr-1 text-[10px]"></i>netra-avatar.css + .js
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════ CONTENT ═══════════════════ -->
+      <main class="flex-1 px-4 lg:px-8 py-6 space-y-6">
+
+        <!-- ── 1. SIZE SCALE ── -->
+        <div class="comp-section">
+          <div class="comp-section-header">
+            <p class="comp-section-title">Size Scale</p>
+            <p class="comp-section-desc">xs · sm · md · lg · xl · 2xl · 3xl — gunakan class <code class="nt-code">nt-avatar-{size}</code></p>
+          </div>
+          <div class="comp-section-body">
+            <div class="flex flex-wrap items-end gap-5">
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-xs nt-avatar-gradient-indigo">A</div>
+                <span class="text-[10px] text-slate-400">xs</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-sm nt-avatar-gradient-indigo">AB</div>
+                <span class="text-[10px] text-slate-400">sm</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-md nt-avatar-gradient-indigo">AB</div>
+                <span class="text-[10px] text-slate-400">md</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-lg nt-avatar-gradient-indigo">AB</div>
+                <span class="text-[10px] text-slate-400">lg</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-xl nt-avatar-gradient-indigo">GD</div>
+                <span class="text-[10px] text-slate-400">xl</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-2xl nt-avatar-gradient-indigo">GD</div>
+                <span class="text-[10px] text-slate-400">2xl</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-3xl nt-avatar-gradient-indigo">GD</div>
+                <span class="text-[10px] text-slate-400">3xl</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 2. SHAPE VARIANTS ── -->
+        <div class="comp-section">
+          <div class="comp-section-header">
+            <p class="comp-section-title">Shape Variants</p>
+            <p class="comp-section-desc">Circle (default) · Square <code class="nt-code">nt-avatar-square</code> · Rounded <code class="nt-code">nt-avatar-rounded</code></p>
+          </div>
+          <div class="comp-section-body">
+            <div class="flex flex-wrap items-center gap-5">
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-xl nt-avatar-gradient-violet">VR</div>
+                <span class="text-[10px] text-slate-400">Circle</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-xl nt-avatar-square nt-avatar-gradient-violet">VR</div>
+                <span class="text-[10px] text-slate-400">Square</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-xl nt-avatar-rounded nt-avatar-gradient-violet">VR</div>
+                <span class="text-[10px] text-slate-400">Rounded</span>
+              </div>
+              <!-- With image -->
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-xl">
+                  <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Netra" alt="User avatar" />
+                </div>
+                <span class="text-[10px] text-slate-400">Circle + img</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-xl nt-avatar-square">
+                  <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Budi" alt="User avatar" />
+                </div>
+                <span class="text-[10px] text-slate-400">Square + img</span>
+              </div>
+              <!-- Icon placeholder -->
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-xl nt-avatar-icon">
+                  <i class="fa-regular fa-user text-[20px]"></i>
+                </div>
+                <span class="text-[10px] text-slate-400">Icon fallback</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 3. COLOR PALETTE ── -->
+        <div class="comp-section">
+          <div class="comp-section-header">
+            <p class="comp-section-title">Color Palette</p>
+            <p class="comp-section-desc">Soft tint, solid fill, dan gradient — semua tersedia sebagai class modifier</p>
+          </div>
+          <div class="comp-section-body space-y-5">
+            <!-- Soft tint -->
+            <div>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Soft Tint</p>
+              <div class="flex flex-wrap gap-3">
+                <div class="nt-avatar nt-avatar-md nt-avatar-indigo">IN</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-violet">VI</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-sky">SK</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-emerald">EM</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-rose">RO</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-amber">AM</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-pink">PK</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-teal">TE</div>
+              </div>
+            </div>
+            <!-- Solid fill -->
+            <div>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Solid Fill</p>
+              <div class="flex flex-wrap gap-3">
+                <div class="nt-avatar nt-avatar-md nt-avatar-solid-indigo">IN</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-solid-violet">VI</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-solid-sky">SK</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-solid-emerald">EM</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-solid-rose">RO</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-solid-amber">AM</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-solid-slate">SL</div>
+              </div>
+            </div>
+            <!-- Gradient -->
+            <div>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Gradient</p>
+              <div class="flex flex-wrap gap-3">
+                <div class="nt-avatar nt-avatar-md nt-avatar-gradient-indigo">GD</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-gradient-violet">VL</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-gradient-sky">SK</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-gradient-emerald">EM</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-gradient-rose">RS</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-gradient-sunset">SN</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-gradient-ocean">OC</div>
+                <div class="nt-avatar nt-avatar-md nt-avatar-gradient-forest">FR</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 4. STATUS BADGES ── -->
+        <div class="comp-section">
+          <div class="comp-section-header">
+            <p class="comp-section-title">Status Badge</p>
+            <p class="comp-section-desc">Online · Offline · Busy · Away — bungkus <code class="nt-code">nt-avatar</code> dengan <code class="nt-code">nt-avatar-wrap</code> lalu tambahkan <code class="nt-code">nt-avatar-status</code></p>
+          </div>
+          <div class="comp-section-body">
+            <div class="flex flex-wrap items-end gap-6">
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar-wrap">
+                  <div class="nt-avatar nt-avatar-lg nt-avatar-gradient-indigo">GD</div>
+                  <span class="nt-avatar-status nt-status-online"></span>
+                </div>
+                <span class="text-[10px] text-slate-400">Online</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar-wrap">
+                  <div class="nt-avatar nt-avatar-lg nt-avatar-gradient-violet">AN</div>
+                  <span class="nt-avatar-status nt-status-busy"></span>
+                </div>
+                <span class="text-[10px] text-slate-400">Busy</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar-wrap">
+                  <div class="nt-avatar nt-avatar-lg nt-avatar-gradient-sky">RA</div>
+                  <span class="nt-avatar-status nt-status-away"></span>
+                </div>
+                <span class="text-[10px] text-slate-400">Away</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar-wrap">
+                  <div class="nt-avatar nt-avatar-lg nt-avatar-gradient-emerald">
+                    <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Citra" alt="Citra" />
+                  </div>
+                  <span class="nt-avatar-status nt-status-online"></span>
+                </div>
+                <span class="text-[10px] text-slate-400">Online + img</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar-wrap">
+                  <div class="nt-avatar nt-avatar-lg nt-avatar-solid-slate">DK</div>
+                  <span class="nt-avatar-status nt-status-offline"></span>
+                </div>
+                <span class="text-[10px] text-slate-400">Offline</span>
+              </div>
+              <!-- Pulse indicator -->
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-lg nt-avatar-gradient-emerald nt-avatar-pulse" style="position:relative;">
+                  <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Live" alt="Live" />
+                </div>
+                <span class="text-[10px] text-slate-400">Pulse (live)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 5. RING VARIANTS ── -->
+        <div class="comp-section">
+          <div class="comp-section-header">
+            <p class="comp-section-title">Ring / Border Variants</p>
+            <p class="comp-section-desc">Tambahkan <code class="nt-code">nt-avatar-ring-{color}</code> untuk highlight aktif, seleksi, atau branding</p>
+          </div>
+          <div class="comp-section-body">
+            <div class="flex flex-wrap items-end gap-6">
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-lg nt-avatar-gradient-indigo nt-avatar-ring-indigo">GD</div>
+                <span class="text-[10px] text-slate-400">Ring Indigo</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-lg nt-avatar-gradient-emerald nt-avatar-ring-success">AN</div>
+                <span class="text-[10px] text-slate-400">Ring Success</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-lg nt-avatar-gradient-ocean nt-avatar-ring-white">RA</div>
+                <span class="text-[10px] text-slate-400">Ring White</span>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="nt-avatar nt-avatar-xl nt-avatar-gradient-violet nt-avatar-ring-indigo">
+                  <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Sari" alt="Sari" />
+                </div>
+                <span class="text-[10px] text-slate-400">xl + ring</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 6. AVATAR + INFO ROW ── -->
+        <div class="comp-section">
+          <div class="comp-section-header">
+            <p class="comp-section-title">Avatar + Info Row</p>
+            <p class="comp-section-desc">Kombinasi avatar dengan nama dan sub-label — cocok untuk tabel, list, dan card header</p>
+          </div>
+          <div class="comp-section-body space-y-4">
+            <div class="nt-avatar-info">
+              <div class="nt-avatar-wrap">
+                <div class="nt-avatar nt-avatar-md nt-avatar-gradient-indigo">GD</div>
+                <span class="nt-avatar-status nt-status-online"></span>
+              </div>
+              <div>
+                <div class="nt-avatar-info-name">Gading Devanta</div>
+                <div class="nt-avatar-info-sub">Administrator · Jakarta</div>
+              </div>
+            </div>
+            <div class="nt-avatar-info">
+              <div class="nt-avatar-wrap">
+                <div class="nt-avatar nt-avatar-md nt-avatar-gradient-rose">
+                  <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Rani" alt="Rani" />
+                </div>
+                <span class="nt-avatar-status nt-status-busy"></span>
+              </div>
+              <div>
+                <div class="nt-avatar-info-name">Rani Kusuma</div>
+                <div class="nt-avatar-info-sub">Frontend Engineer · Bandung</div>
+              </div>
+            </div>
+            <div class="nt-avatar-info">
+              <div class="nt-avatar-wrap">
+                <div class="nt-avatar nt-avatar-md nt-avatar-gradient-sky">BN</div>
+                <span class="nt-avatar-status nt-status-away"></span>
+              </div>
+              <div>
+                <div class="nt-avatar-info-name">Budi Nugraha</div>
+                <div class="nt-avatar-info-sub">DevOps Lead · Surabaya</div>
+              </div>
+            </div>
+            <div class="nt-avatar-info">
+              <div class="nt-avatar nt-avatar-md nt-avatar-gradient-emerald">
+                <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Wulan" alt="Wulan" />
+              </div>
+              <div>
+                <div class="nt-avatar-info-name">Wulan Sari</div>
+                <div class="nt-avatar-info-sub">Product Manager</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 7. AVATAR GROUP ── -->
+        <div class="comp-section">
+          <div class="comp-section-header">
+            <p class="comp-section-title">Avatar Group (Stacked)</p>
+            <p class="comp-section-desc">Gunakan <code class="nt-code">nt-avatar-group</code> untuk menampilkan anggota tim. Variasi: default · tight · loose</p>
+          </div>
+          <div class="comp-section-body space-y-6">
+            <!-- Default group -->
+            <div>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Default</p>
+              <div class="flex items-center gap-4">
+                <div class="nt-avatar-group" role="group" aria-label="Team members">
+                  <div class="nt-avatar-wrap nt-avatar-tip" data-tip="Gading Dev">
+                    <div class="nt-avatar nt-avatar-md nt-avatar-gradient-indigo">GD</div>
+                  </div>
+                  <div class="nt-avatar-wrap nt-avatar-tip" data-tip="Rani Kusuma">
+                    <div class="nt-avatar nt-avatar-md nt-avatar-gradient-rose">
+                      <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Rani" alt="Rani" />
+                    </div>
+                  </div>
+                  <div class="nt-avatar-wrap nt-avatar-tip" data-tip="Budi Nugraha">
+                    <div class="nt-avatar nt-avatar-md nt-avatar-gradient-sky">BN</div>
+                  </div>
+                  <div class="nt-avatar-wrap nt-avatar-tip" data-tip="Wulan Sari">
+                    <div class="nt-avatar nt-avatar-md nt-avatar-gradient-emerald">
+                      <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Wulan" alt="Wulan" />
+                    </div>
+                  </div>
+                  <div class="nt-avatar nt-avatar-md nt-avatar-count">+8</div>
+                </div>
+                <span class="text-[12px] text-slate-500">12 anggota tim</span>
+              </div>
+            </div>
+            <!-- Tight group -->
+            <div>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Tight</p>
+              <div class="nt-avatar-group nt-avatar-group-tight" role="group" aria-label="Project team">
+                <div class="nt-avatar-wrap nt-avatar-tip" data-tip="Anita">
+                  <div class="nt-avatar nt-avatar-lg nt-avatar-gradient-violet">AN</div>
+                </div>
+                <div class="nt-avatar-wrap nt-avatar-tip" data-tip="Rudi">
+                  <div class="nt-avatar nt-avatar-lg nt-avatar-gradient-amber">RD</div>
+                </div>
+                <div class="nt-avatar-wrap nt-avatar-tip" data-tip="Citra">
+                  <div class="nt-avatar nt-avatar-lg nt-avatar-gradient-forest">
+                    <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Citra2" alt="Citra" />
+                  </div>
+                </div>
+                <div class="nt-avatar-wrap nt-avatar-tip" data-tip="Dewi">
+                  <div class="nt-avatar nt-avatar-lg nt-avatar-gradient-sunset">DW</div>
+                </div>
+                <div class="nt-avatar-wrap nt-avatar-tip" data-tip="Fajar">
+                  <div class="nt-avatar nt-avatar-lg nt-avatar-gradient-sky">FJ</div>
+                </div>
+                <div class="nt-avatar nt-avatar-lg nt-avatar-count">+3</div>
+              </div>
+            </div>
+            <!-- Loose group sm -->
+            <div>
+              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-3">Loose · Small</p>
+              <div class="nt-avatar-group nt-avatar-group-loose" role="group">
+                <div class="nt-avatar nt-avatar-sm nt-avatar-gradient-indigo">GD</div>
+                <div class="nt-avatar nt-avatar-sm nt-avatar-gradient-rose">RK</div>
+                <div class="nt-avatar nt-avatar-sm nt-avatar-gradient-emerald">WS</div>
+                <div class="nt-avatar nt-avatar-sm nt-avatar-gradient-sky">BN</div>
+                <div class="nt-avatar nt-avatar-sm nt-avatar-count">+5</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 8. PROFILE CARDS ── -->
+        <div class="comp-section">
+          <div class="comp-section-header">
+            <p class="comp-section-title">Profile Cards</p>
+            <p class="comp-section-desc">Avatar card dengan banner, stats, dan badge — siap dipakai di halaman tim/directory</p>
+          </div>
+          <div class="comp-section-body">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+              <!-- Card 1 -->
+              <div class="nt-avatar-card">
+                <div class="nt-avatar-card-banner"></div>
+                <div class="nt-avatar-card-body">
+                  <div class="nt-avatar-card-avatar-wrap">
+                    <div class="nt-avatar-wrap">
+                      <div class="nt-avatar nt-avatar-xl nt-avatar-gradient-indigo nt-avatar-ring-white">GD</div>
+                      <span class="nt-avatar-status nt-status-online"></span>
+                    </div>
+                  </div>
+                  <p class="nt-avatar-card-name">Gading Devanta</p>
+                  <p class="nt-avatar-card-role">Administrator</p>
+                  <div class="nt-avatar-card-stats">
+                    <div class="nt-avatar-card-stat">
+                      <div class="nt-avatar-card-stat-value">128</div>
+                      <div class="nt-avatar-card-stat-label">Posts</div>
+                    </div>
+                    <div class="nt-avatar-card-stat">
+                      <div class="nt-avatar-card-stat-value">4.2k</div>
+                      <div class="nt-avatar-card-stat-label">Followers</div>
+                    </div>
+                    <div class="nt-avatar-card-stat">
+                      <div class="nt-avatar-card-stat-value">312</div>
+                      <div class="nt-avatar-card-stat-label">Following</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="nt-avatar-card">
+                <div class="nt-avatar-card-banner nt-avatar-card-banner-sky"></div>
+                <div class="nt-avatar-card-body">
+                  <div class="nt-avatar-card-avatar-wrap">
+                    <div class="nt-avatar-wrap">
+                      <div class="nt-avatar nt-avatar-xl nt-avatar-ring-white">
+                        <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Rani2" alt="Rani" />
+                      </div>
+                      <span class="nt-avatar-status nt-status-busy"></span>
+                    </div>
+                  </div>
+                  <p class="nt-avatar-card-name">Rani Kusuma</p>
+                  <p class="nt-avatar-card-role">Frontend Engineer</p>
+                  <div class="nt-avatar-card-stats">
+                    <div class="nt-avatar-card-stat">
+                      <div class="nt-avatar-card-stat-value">84</div>
+                      <div class="nt-avatar-card-stat-label">Posts</div>
+                    </div>
+                    <div class="nt-avatar-card-stat">
+                      <div class="nt-avatar-card-stat-value">1.8k</div>
+                      <div class="nt-avatar-card-stat-label">Followers</div>
+                    </div>
+                    <div class="nt-avatar-card-stat">
+                      <div class="nt-avatar-card-stat-value">210</div>
+                      <div class="nt-avatar-card-stat-label">Following</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="nt-avatar-card">
+                <div class="nt-avatar-card-banner nt-avatar-card-banner-emerald"></div>
+                <div class="nt-avatar-card-body">
+                  <div class="nt-avatar-card-avatar-wrap">
+                    <div class="nt-avatar-wrap">
+                      <div class="nt-avatar nt-avatar-xl nt-avatar-gradient-emerald nt-avatar-ring-white">BN</div>
+                      <span class="nt-avatar-status nt-status-online"></span>
+                    </div>
+                  </div>
+                  <p class="nt-avatar-card-name">Budi Nugraha</p>
+                  <p class="nt-avatar-card-role">DevOps Lead</p>
+                  <div class="nt-avatar-card-stats">
+                    <div class="nt-avatar-card-stat">
+                      <div class="nt-avatar-card-stat-value">56</div>
+                      <div class="nt-avatar-card-stat-label">Posts</div>
+                    </div>
+                    <div class="nt-avatar-card-stat">
+                      <div class="nt-avatar-card-stat-value">990</div>
+                      <div class="nt-avatar-card-stat-label">Followers</div>
+                    </div>
+                    <div class="nt-avatar-card-stat">
+                      <div class="nt-avatar-card-stat-value">143</div>
+                      <div class="nt-avatar-card-stat-label">Following</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 4 -->
+              <div class="nt-avatar-card">
+                <div class="nt-avatar-card-banner nt-avatar-card-banner-rose"></div>
+                <div class="nt-avatar-card-body">
+                  <div class="nt-avatar-card-avatar-wrap">
+                    <div class="nt-avatar-wrap">
+                      <div class="nt-avatar nt-avatar-xl nt-avatar-ring-white">
+                        <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Wulan2" alt="Wulan" />
+                      </div>
+                      <span class="nt-avatar-status nt-status-away"></span>
+                    </div>
+                  </div>
+                  <p class="nt-avatar-card-name">Wulan Sari</p>
+                  <p class="nt-avatar-card-role">Product Manager</p>
+                  <div class="nt-avatar-card-stats">
+                    <div class="nt-avatar-card-stat">
+                      <div class="nt-avatar-card-stat-value">72</div>
+                      <div class="nt-avatar-card-stat-label">Posts</div>
+                    </div>
+                    <div class="nt-avatar-card-stat">
+                      <div class="nt-avatar-card-stat-value">3.1k</div>
+                      <div class="nt-avatar-card-stat-label">Followers</div>
+                    </div>
+                    <div class="nt-avatar-card-stat">
+                      <div class="nt-avatar-card-stat-value">278</div>
+                      <div class="nt-avatar-card-stat-label">Following</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 9. AVATAR CAROUSEL ── -->
+        <div class="comp-section">
+          <div class="comp-section-header">
+            <p class="comp-section-title">Avatar Carousel</p>
+            <p class="comp-section-desc">Navigasi tim dengan panah atau keyboard. <code class="nt-code">data-nt-carousel</code> · <code class="nt-code">data-visible="4"</code></p>
+          </div>
+          <div class="comp-section-body">
+            <div class="nt-avatar-carousel px-8" data-nt-carousel="team-main" data-visible="5">
+              <button class="nt-avatar-carousel-nav prev" data-nt-carousel-prev aria-label="Previous">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <div class="nt-avatar-carousel-track" data-nt-carousel-track>
+
+                <div class="nt-avatar-carousel-item active" data-value="gading" role="button" tabindex="0" aria-label="Gading Devanta">
+                  <div class="nt-avatar-wrap">
+                    <div class="nt-avatar nt-avatar-xl nt-avatar-gradient-indigo">GD</div>
+                    <span class="nt-avatar-status nt-status-online"></span>
+                  </div>
+                  <div class="nt-avatar-carousel-name">Gading Devanta</div>
+                  <div class="nt-avatar-carousel-role">Admin</div>
+                </div>
+
+                <div class="nt-avatar-carousel-item" data-value="rani" role="button" tabindex="0" aria-label="Rani Kusuma">
+                  <div class="nt-avatar-wrap">
+                    <div class="nt-avatar nt-avatar-xl">
+                      <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Rani3" alt="Rani" />
+                    </div>
+                    <span class="nt-avatar-status nt-status-busy"></span>
+                  </div>
+                  <div class="nt-avatar-carousel-name">Rani Kusuma</div>
+                  <div class="nt-avatar-carousel-role">Frontend</div>
+                </div>
+
+                <div class="nt-avatar-carousel-item" data-value="budi" role="button" tabindex="0" aria-label="Budi Nugraha">
+                  <div class="nt-avatar-wrap">
+                    <div class="nt-avatar nt-avatar-xl nt-avatar-gradient-emerald">BN</div>
+                    <span class="nt-avatar-status nt-status-online"></span>
+                  </div>
+                  <div class="nt-avatar-carousel-name">Budi Nugraha</div>
+                  <div class="nt-avatar-carousel-role">DevOps</div>
+                </div>
+
+                <div class="nt-avatar-carousel-item" data-value="wulan" role="button" tabindex="0" aria-label="Wulan Sari">
+                  <div class="nt-avatar-wrap">
+                    <div class="nt-avatar nt-avatar-xl">
+                      <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Wulan3" alt="Wulan" />
+                    </div>
+                    <span class="nt-avatar-status nt-status-away"></span>
+                  </div>
+                  <div class="nt-avatar-carousel-name">Wulan Sari</div>
+                  <div class="nt-avatar-carousel-role">Product</div>
+                </div>
+
+                <div class="nt-avatar-carousel-item" data-value="anita" role="button" tabindex="0" aria-label="Anita Rahayu">
+                  <div class="nt-avatar-wrap">
+                    <div class="nt-avatar nt-avatar-xl nt-avatar-gradient-violet">AR</div>
+                    <span class="nt-avatar-status nt-status-online"></span>
+                  </div>
+                  <div class="nt-avatar-carousel-name">Anita Rahayu</div>
+                  <div class="nt-avatar-carousel-role">Designer</div>
+                </div>
+
+                <div class="nt-avatar-carousel-item" data-value="fajar" role="button" tabindex="0" aria-label="Fajar Santoso">
+                  <div class="nt-avatar-wrap">
+                    <div class="nt-avatar nt-avatar-xl nt-avatar-gradient-sunset">FS</div>
+                    <span class="nt-avatar-status nt-status-offline"></span>
+                  </div>
+                  <div class="nt-avatar-carousel-name">Fajar Santoso</div>
+                  <div class="nt-avatar-carousel-role">Backend</div>
+                </div>
+
+                <div class="nt-avatar-carousel-item" data-value="dewi" role="button" tabindex="0" aria-label="Dewi Permata">
+                  <div class="nt-avatar-wrap">
+                    <div class="nt-avatar nt-avatar-xl">
+                      <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Dewi" alt="Dewi" />
+                    </div>
+                    <span class="nt-avatar-status nt-status-online"></span>
+                  </div>
+                  <div class="nt-avatar-carousel-name">Dewi Permata</div>
+                  <div class="nt-avatar-carousel-role">QA Lead</div>
+                </div>
+
+                <div class="nt-avatar-carousel-item" data-value="rudi" role="button" tabindex="0" aria-label="Rudi Hartono">
+                  <div class="nt-avatar-wrap">
+                    <div class="nt-avatar nt-avatar-xl nt-avatar-gradient-ocean">RH</div>
+                    <span class="nt-avatar-status nt-status-away"></span>
+                  </div>
+                  <div class="nt-avatar-carousel-name">Rudi Hartono</div>
+                  <div class="nt-avatar-carousel-role">Mobile</div>
+                </div>
+
+              </div>
+              <button class="nt-avatar-carousel-nav next" data-nt-carousel-next aria-label="Next">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 10. AVATAR PICKER (Assignee selector) ── -->
+        <div class="comp-section">
+          <div class="comp-section-header">
+            <p class="comp-section-title">Avatar Picker</p>
+            <p class="comp-section-desc">Horizontal scroll picker untuk memilih assignee, reviewer, atau anggota. <code class="nt-code">data-nt-avatar-picker</code></p>
+          </div>
+          <div class="comp-section-body space-y-5">
+
+            <!-- Single select -->
+            <div>
+              <p class="text-[12px] font-medium text-slate-500 dark:text-slate-400 mb-2">Single Select — Assignee</p>
+              <div class="nt-avatar-picker" data-nt-avatar-picker data-name="assignee">
+                <div class="nt-avatar-picker-item selected" data-value="gading" role="radio" aria-checked="true">
+                  <div class="nt-avatar nt-avatar-md nt-avatar-gradient-indigo">GD</div>
+                  <span class="nt-avatar-picker-label">Gading</span>
+                </div>
+                <div class="nt-avatar-picker-item" data-value="rani" role="radio" aria-checked="false">
+                  <div class="nt-avatar nt-avatar-md">
+                    <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Rani4" alt="Rani" />
+                  </div>
+                  <span class="nt-avatar-picker-label">Rani</span>
+                </div>
+                <div class="nt-avatar-picker-item" data-value="budi" role="radio" aria-checked="false">
+                  <div class="nt-avatar nt-avatar-md nt-avatar-gradient-emerald">BN</div>
+                  <span class="nt-avatar-picker-label">Budi</span>
+                </div>
+                <div class="nt-avatar-picker-item" data-value="wulan" role="radio" aria-checked="false">
+                  <div class="nt-avatar nt-avatar-md">
+                    <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Wulan4" alt="Wulan" />
+                  </div>
+                  <span class="nt-avatar-picker-label">Wulan</span>
+                </div>
+                <div class="nt-avatar-picker-item" data-value="anita" role="radio" aria-checked="false">
+                  <div class="nt-avatar nt-avatar-md nt-avatar-gradient-violet">AR</div>
+                  <span class="nt-avatar-picker-label">Anita</span>
+                </div>
+                <div class="nt-avatar-picker-item" data-value="fajar" role="radio" aria-checked="false">
+                  <div class="nt-avatar nt-avatar-md nt-avatar-gradient-sunset">FS</div>
+                  <span class="nt-avatar-picker-label">Fajar</span>
+                </div>
+                <div class="nt-avatar-picker-item" data-value="dewi" role="radio" aria-checked="false">
+                  <div class="nt-avatar nt-avatar-md">
+                    <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Dewi2" alt="Dewi" />
+                  </div>
+                  <span class="nt-avatar-picker-label">Dewi</span>
+                </div>
+                <div class="nt-avatar-picker-item" data-value="rudi" role="radio" aria-checked="false">
+                  <div class="nt-avatar nt-avatar-md nt-avatar-gradient-ocean">RH</div>
+                  <span class="nt-avatar-picker-label">Rudi</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Multi select -->
+            <div>
+              <p class="text-[12px] font-medium text-slate-500 dark:text-slate-400 mb-2">Multi Select — Reviewers <code class="nt-code">data-multi</code></p>
+              <div class="nt-avatar-picker" data-nt-avatar-picker data-name="reviewers" data-multi>
+                <div class="nt-avatar-picker-item selected" data-value="rani" role="checkbox" aria-checked="true">
+                  <div class="nt-avatar nt-avatar-md">
+                    <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=RaniR" alt="Rani" />
+                  </div>
+                  <span class="nt-avatar-picker-label">Rani</span>
+                </div>
+                <div class="nt-avatar-picker-item selected" data-value="budi" role="checkbox" aria-checked="true">
+                  <div class="nt-avatar nt-avatar-md nt-avatar-gradient-emerald">BN</div>
+                  <span class="nt-avatar-picker-label">Budi</span>
+                </div>
+                <div class="nt-avatar-picker-item" data-value="anita" role="checkbox" aria-checked="false">
+                  <div class="nt-avatar nt-avatar-md nt-avatar-gradient-violet">AR</div>
+                  <span class="nt-avatar-picker-label">Anita</span>
+                </div>
+                <div class="nt-avatar-picker-item" data-value="gading" role="checkbox" aria-checked="false">
+                  <div class="nt-avatar nt-avatar-md nt-avatar-gradient-indigo">GD</div>
+                  <span class="nt-avatar-picker-label">Gading</span>
+                </div>
+                <div class="nt-avatar-picker-item" data-value="wulan" role="checkbox" aria-checked="false">
+                  <div class="nt-avatar nt-avatar-md">
+                    <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=WulanR" alt="Wulan" />
+                  </div>
+                  <span class="nt-avatar-picker-label">Wulan</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── 11. UPLOAD AVATAR ── -->
+        <div class="comp-section">
+          <div class="comp-section-header">
+            <p class="comp-section-title">Upload Avatar</p>
+            <p class="comp-section-desc">Hover untuk munculkan overlay edit. <code class="nt-code">data-nt-avatar-upload</code> — JS menembak event <code class="nt-code">nt:avatar:upload</code> untuk Livewire/AJAX</p>
+          </div>
+          <div class="comp-section-body">
+            <div class="flex flex-wrap items-end gap-8">
+
+              <!-- Circle upload -->
+              <div class="flex flex-col items-center gap-3">
+                <label class="nt-avatar-upload" data-nt-avatar-upload aria-label="Upload foto profil">
+                  <div class="nt-avatar nt-avatar-2xl nt-avatar-gradient-indigo">GD</div>
+                  <div class="nt-avatar-upload-overlay">
+                    <i class="fa-solid fa-camera"></i>
+                  </div>
+                  <input type="file" accept="image/*" data-nt-upload-input aria-hidden="true" />
+                </label>
+                <span class="text-[11px] text-slate-400">Circle (hover)</span>
+              </div>
+
+              <!-- Square upload -->
+              <div class="flex flex-col items-center gap-3">
+                <label class="nt-avatar-upload nt-avatar-upload-square" data-nt-avatar-upload aria-label="Upload foto perusahaan">
+                  <div class="nt-avatar nt-avatar-2xl nt-avatar-square nt-avatar-gradient-violet">CO</div>
+                  <div class="nt-avatar-upload-overlay" style="border-radius:10px">
+                    <i class="fa-solid fa-pen text-[13px]"></i>
+                  </div>
+                  <input type="file" accept="image/*" data-nt-upload-input aria-hidden="true" />
+                </label>
+                <span class="text-[11px] text-slate-400">Square (hover)</span>
+              </div>
+
+              <!-- With existing image -->
+              <div class="flex flex-col items-center gap-3">
+                <label class="nt-avatar-upload" data-nt-avatar-upload aria-label="Upload foto">
+                  <div class="nt-avatar nt-avatar-2xl">
+                    <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Upload" alt="Current avatar" data-nt-upload-preview />
+                  </div>
+                  <div class="nt-avatar-upload-overlay">
+                    <i class="fa-solid fa-camera"></i>
+                  </div>
+                  <input type="file" accept="image/*" data-nt-upload-input aria-hidden="true" />
+                </label>
+                <span class="text-[11px] text-slate-400">Dengan foto (hover)</span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 12. SKELETON LOADING ── -->
+        <div class="comp-section">
+          <div class="comp-section-header">
+            <p class="comp-section-title">Skeleton Loading</p>
+            <p class="comp-section-desc">Gunakan <code class="nt-code">nt-avatar-skeleton</code> selagi data di-fetch dari server</p>
+          </div>
+          <div class="comp-section-body">
+            <div class="flex flex-wrap items-center gap-5">
+              <div class="nt-avatar nt-avatar-xs nt-avatar-skeleton"></div>
+              <div class="nt-avatar nt-avatar-sm nt-avatar-skeleton"></div>
+              <div class="nt-avatar nt-avatar-md nt-avatar-skeleton"></div>
+              <div class="nt-avatar nt-avatar-lg nt-avatar-skeleton"></div>
+              <div class="nt-avatar nt-avatar-xl nt-avatar-skeleton"></div>
+              <div class="nt-avatar nt-avatar-2xl nt-avatar-skeleton"></div>
+              <!-- Skeleton + info row -->
+              <div class="flex items-center gap-3 ml-4">
+                <div class="nt-avatar nt-avatar-lg nt-avatar-skeleton"></div>
+                <div class="space-y-2">
+                  <div class="h-3 w-28 rounded-full nt-avatar-skeleton"></div>
+                  <div class="h-2.5 w-20 rounded-full nt-avatar-skeleton"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- ═══════════════════ FOOTER ═══════════════════ -->
+      <footer class="nt-page-footer px-4 lg:px-8 py-4 shrink-0">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[12px] text-surface-400 dark:text-slate-500">
+          <p>© 2026 <span class="font-medium text-indigo-600 dark:text-indigo-400">Netra UI</span>. All rights reserved.</p>
+          <div class="flex items-center gap-4">
+            <a href="#" class="hover:text-indigo-600 transition-colors">Privacy</a>
+            <a href="#" class="hover:text-indigo-600 transition-colors">Terms</a>
+            <a href="#" class="hover:text-indigo-600 transition-colors">Support</a>
+            <span class="text-surface-300 dark:text-slate-700">v1.0.0</span>
+          </div>
+        </div>
+      </footer>
+
+    </div><!-- end main-col -->
+  </div><!-- end app -->
+
+  <script src="../assets/js/netra-base.js"></script>
+  <script src="../assets/js/netra-avatar.js"></script>
+</body>
+
+</html>

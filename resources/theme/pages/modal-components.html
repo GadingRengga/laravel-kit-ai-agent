@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Netra UI — Modal Components</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="../assets/css/netra-base.css" />
+  <link rel="stylesheet" href="../assets/css/netra-buttons.css" />
+  <link rel="stylesheet" href="../assets/css/netra-modal.css" />
+  <link rel="stylesheet" href="../assets/css/netra-forms.css" />
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['DM Sans', 'sans-serif'], mono: ['DM Mono', 'monospace'] }, colors: { brand: { 50: '#f0f4ff', 100: '#e0eaff', 200: '#bfd2ff', 300: '#90aeff', 400: '#5a82ff', 500: '#2d5aff', 600: '#1a3ff5', 700: '#142ed1', 800: '#1428a8', 900: '#162885' }, surface: { 50: '#fafafa', 100: '#f5f5f5', 200: '#eeeeee', 300: '#e0e0e0', 400: '#bdbdbd', 500: '#9e9e9e', 600: '#757575', 700: '#616161', 800: '#424242', 900: '#212121' } } } } }
+  </script>
+  <script>(function () { const s = localStorage.getItem('theme'); const isDark = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches); if (isDark) { document.documentElement.classList.add('dark'); document.documentElement.setAttribute('data-theme', 'dark'); } else { document.documentElement.setAttribute('data-theme', 'light'); } })()</script>
+
+
+  <!-- Page component styles defined in netra-ui.css -->
+</head>
+
+<body class="h-full overflow-hidden">
+
+  <div id="mob-overlay" class="fixed inset-0 bg-black/40 z-30 hidden opacity-0 lg:hidden"
+    onclick="closeMobileSidebar()"></div>
+
+  <div id="app">
+
+    <!-- ═══════ SIDEBAR ═══════ -->
+    <aside id="sidebar" class="flex flex-col">
+      <div class="sidebar-logo flex items-center gap-3 px-4 h-16 shrink-0">
+        <div class="sidebar-logo-mark w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
+          <i class="fa-solid fa-eye text-white text-[13px]"></i>
+        </div>
+        <div
+          class="sidebar-brand-text flex flex-col leading-tight overflow-hidden whitespace-nowrap transition-all duration-200">
+          <span class="font-bold text-[15px] tracking-tight user-name">Netra UI<span class="brand-dot"></span></span>
+          <span class="text-[10.5px] font-normal user-role">Enterprise Suite</span>
+        </div>
+        <button onclick="closeMobileSidebar()" class="close-btn ml-auto lg:hidden p-1 rounded">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <nav class="flex-1 overflow-y-auto overflow-x-hidden py-3 px-2 space-y-0.5">
+        <div
+          class="nav-section-label nav-section-title px-2 pt-1 pb-1.5 text-[10px] font-semibold uppercase tracking-widest whitespace-nowrap transition-all duration-200">
+          Main</div>
+        <div class="nav-item relative">
+          <a href="admin-dashboard.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-solid fa-house text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Dashboard</span>
+          </a><span class="nav-tooltip">Dashboard</span>
+        </div>
+        <div
+          class="nav-section-label nav-section-title px-2 pt-4 pb-1.5 text-[10px] font-semibold uppercase tracking-widest whitespace-nowrap transition-all duration-200">
+          UI Components</div>
+        <div class="nav-item relative">
+          <a href="form-components.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-solid fa-swatchbook text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Form Components</span>
+          </a><span class="nav-tooltip">Forms</span>
+        </div>
+        <div class="nav-item active relative">
+          <a href="modal-components.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-regular fa-window-restore text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Modal Components</span>
+          </a><span class="nav-tooltip">Modals</span>
+        </div>
+        <div class="nav-item relative">
+          <a href="button-components.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-regular fa-hand-pointer text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Button &amp; Dropdown</span>
+          </a><span class="nav-tooltip">Buttons</span>
+        </div>
+        <div class="nav-item relative">
+          <a href="#" onclick="toggleSubmenu(this,event)"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+
+            <i class="nav-icon fa-solid fa-table text-[14px] shrink-0 w-5 text-center"></i>
+
+            <span class="nav-label whitespace-nowrap transition-all duration-200">
+              Table Components
+            </span>
+
+            <i class="chevron fa-solid fa-chevron-right text-[10px] ml-auto"></i>
+          </a>
+
+          <div class="submenu pl-8 mt-1 space-y-0.5">
+            <div class="nav-item">
+              <a href="basic-table.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
+                <span class="nav-label">Basic Table</span>
+              </a>
+            </div>
+
+            <div class="nav-item">
+              <a href="advance-table.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
+                <span class="nav-label">Advance Table</span>
+              </a>
+            </div>
+
+            <div class="nav-item">
+              <a href="premium-table.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
+                <span class="nav-label">Premium Table</span>
+              </a>
+            </div>
+
+            <div class="nav-item">
+              <a href="ultimate-table.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
+                <span class="nav-label">Ultimate Table</span>
+              </a>
+            </div>
+          </div>
+
+          <span class="nav-tooltip">Tables</span>
+        </div>
+      </nav>
+      <div class="sidebar-footer shrink-0 p-3 space-y-0.5">
+        <button onclick="toggleSidebar()"
+          class="collapse-btn hidden lg:flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors">
+          <i id="collapse-icon"
+            class="fa-solid fa-angles-left text-[14px] shrink-0 w-5 text-center transition-transform duration-250"></i>
+          <span class="nav-label whitespace-nowrap transition-all duration-200">Collapse</span>
+        </button>
+        <div class="user-row flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors">
+          <div
+            class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[11px] font-bold shrink-0">
+            GD</div>
+          <div class="sidebar-user-info overflow-hidden min-w-0">
+            <p class="user-name text-[13px] font-medium whitespace-nowrap leading-tight">Gading Dev</p>
+            <p class="user-role text-[11px] whitespace-nowrap leading-tight">Administrator</p>
+          </div>
+          <i class="user-dots fa-solid fa-ellipsis-vertical text-xs ml-auto nav-label transition-all duration-200"></i>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════ MAIN COLUMN ═══════ -->
+    <div id="main-col">
+
+      <!-- TOPBAR -->
+      <header class="sticky top-0 z-20 h-16 flex items-center px-4 lg:px-6 gap-2 shrink-0">
+        <button onclick="openMobileSidebar()" class="topbar-icon-btn lg:hidden p-2 rounded-lg transition-colors">
+          <i class="fa-solid fa-bars text-[16px]"></i>
+        </button>
+        <button onclick="toggleSidebar()" class="topbar-icon-btn hidden lg:flex p-2 rounded-lg transition-colors">
+          <i class="fa-solid fa-bars text-[15px]"></i>
+        </button>
+        <nav class="topbar-breadcrumb hidden sm:flex items-center text-[13px] font-medium ml-1 gap-1.5">
+          <a href="admin-dashboard.html" class="hover:text-indigo-600 transition-colors">Home</a>
+          <i class="fa-solid fa-chevron-right text-[8px]"></i>
+          <span class="topbar-breadcrumb-active">Modal Components</span>
+        </nav>
+        <div class="ml-auto flex items-center gap-1">
+          <div
+            class="topbar-search hidden md:flex items-center gap-2 rounded-lg px-3 py-2 transition-all w-44 focus-within:w-60 mr-1">
+            <i class="fa-solid fa-magnifying-glass text-[12px] topbar-search-icon"></i>
+            <input type="text" placeholder="Search…"
+              class="bg-transparent border-none outline-none text-[13px] placeholder:text-[#B0B5D8] w-full"
+              class="topbar-search-input" />
+          </div>
+          <div class="relative" id="notif-wrap">
+            <button onclick="toggleDropdown('notif')"
+              class="topbar-icon-btn relative p-2.5 rounded-lg transition-colors">
+              <i class="fa-regular fa-bell text-[16px]"></i><span class="notif-dot"></span>
+            </button>
+            <div id="notif-dropdown" class="dropdown-panel w-80">
+              <div
+                class="px-4 py-3 border-b border-surface-200 dark:border-slate-700 flex items-center justify-between">
+                <span class="text-[14px] font-semibold text-surface-900 dark:text-white">Notifications</span>
+                <span class="text-[11px] text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline">Mark all
+                  read</span>
+              </div>
+              <div class="px-4 py-4 text-center text-[13px] text-surface-400">No new notifications</div>
+            </div>
+          </div>
+          <div class="relative" id="msg-wrap">
+            <button onclick="toggleDropdown('msg')" class="topbar-icon-btn relative p-2.5 rounded-lg transition-colors">
+              <i class="fa-regular fa-comment-dots text-[16px]"></i>
+            </button>
+            <div id="msg-dropdown" class="dropdown-panel w-72">
+              <div class="px-4 py-3 border-b border-surface-200 dark:border-slate-700">
+                <span class="text-[14px] font-semibold text-surface-900 dark:text-white">Messages</span>
+              </div>
+              <div class="px-4 py-4 text-center text-[13px] text-surface-400">No new messages</div>
+            </div>
+          </div>
+          <button onclick="toggleDark()" class="topbar-icon-btn p-2.5 rounded-lg transition-colors">
+            <i class="fa-regular fa-moon text-[15px] dark:hidden"></i>
+            <i class="fa-regular fa-sun text-[15px] hidden dark:block"></i>
+          </button>
+          <div class="topbar-divider w-px h-5 mx-0.5"></div>
+          <div class="relative" id="acct-wrap">
+            <button onclick="toggleDropdown('acct')"
+              class="topbar-icon-btn flex items-center gap-2 pl-1 pr-2 py-1.5 rounded-lg transition-colors">
+              <div
+                class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[11px] font-bold">
+                GD</div>
+              <div class="hidden md:block text-left">
+                <p class="text-[13px] font-medium leading-none topbar-acct-name">Gading</p>
+                <p class="text-[11px] leading-none mt-0.5 topbar-acct-role">Admin</p>
+              </div>
+              <i class="fa-solid fa-chevron-down text-[9px] hidden md:block ml-0.5 topbar-chevron"></i>
+            </button>
+            <div id="acct-dropdown" class="dropdown-panel w-52">
+              <div class="px-4 py-3 border-b border-surface-200 dark:border-slate-700">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-white text-[12px] font-bold">
+                    GD</div>
+                  <div>
+                    <p class="text-[13px] font-semibold text-surface-900 dark:text-white leading-tight">Gading Dev</p>
+                    <p class="text-[11px] text-surface-400 leading-tight">gading@netra-ui.io</p>
+                  </div>
+                </div>
+              </div>
+              <div class="py-1.5">
+                <a href="#"
+                  class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-surface-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors"><i
+                    class="fa-regular fa-user text-indigo-400 w-4 text-center text-[13px]"></i>My Profile</a>
+                <a href="#"
+                  class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-surface-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors"><i
+                    class="fa-solid fa-gear text-indigo-400 w-4 text-center text-[13px]"></i>Settings</a>
+              </div>
+              <div class="py-1.5 border-t border-surface-100 dark:border-slate-700">
+                <a href="#"
+                  class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"><i
+                    class="fa-solid fa-right-from-bracket w-4 text-center text-[13px]"></i>Sign out</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Title -->
+      <div class="page-title-bar px-4 lg:px-8 py-5 shrink-0">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h1 class="text-xl font-semibold text-slate-900 dark:text-white tracking-tight">Modal Components</h1>
+            <p class="text-[13px] text-indigo-400 dark:text-indigo-400 mt-0.5">Semua varian modal — berbagai ukuran,
+              nested, form, confirm. Siap migrasi ke Blade Laravel.</p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="nt-code">nt-modal</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE CONTENT -->
+      <main class="flex-1 px-4 lg:px-8 py-6 space-y-5">
+
+        <!-- ══════════════════════════════════════
+             SECTION 1 — Ukuran Modal
+        ══════════════════════════════════════ -->
+        <div class="comp-section">
+          <div
+            class="comp-section-header flex items-start justify-between gap-4 px-5 py-4 border-b border-[#E8EBFF] dark:border-slate-700">
+            <div>
+              <p class="comp-section-title">Ukuran Modal</p>
+              <p class="comp-section-desc">5 ukuran: xs, sm, md, lg, xl — ditambah fullscreen. Blade: <code
+                  class="font-mono text-brand-600 dark:text-brand-400 text-[11px] bg-brand-50 dark:bg-brand-900/20 px-1.5 py-0.5 rounded">&lt;x-modal size="lg"&gt;</code>
+              </p>
+            </div>
+            <span
+              class="text-[11px] font-mono bg-indigo-50 dark:bg-slate-800 text-indigo-400 dark:text-slate-400 px-2 py-1 rounded shrink-0">nt-modal-{size}</span>
+          </div>
+          <div class="comp-section-body">
+            <div class="demo-trigger-area">
+              <button class="nt-btn nt-btn-secondary nt-btn-sm" onclick="ntModal.open('modal-xs')">
+                <i class="fa-solid fa-expand-alt text-[11px]"></i> XS — 360px
+              </button>
+              <button class="nt-btn nt-btn-secondary nt-btn-sm" onclick="ntModal.open('modal-sm')">
+                <i class="fa-solid fa-expand-alt text-[11px]"></i> SM — 480px
+              </button>
+              <button class="nt-btn nt-btn-primary nt-btn-sm" onclick="ntModal.open('modal-md')">
+                <i class="fa-solid fa-expand-alt text-[11px]"></i> MD — 600px (Default)
+              </button>
+              <button class="nt-btn nt-btn-secondary nt-btn-sm" onclick="ntModal.open('modal-lg')">
+                <i class="fa-solid fa-expand-alt text-[11px]"></i> LG — 768px
+              </button>
+              <button class="nt-btn nt-btn-secondary nt-btn-sm" onclick="ntModal.open('modal-xl')">
+                <i class="fa-solid fa-expand-alt text-[11px]"></i> XL — 1024px
+              </button>
+              <button class="nt-btn nt-btn-secondary nt-btn-sm" onclick="ntModal.open('modal-full')">
+                <i class="fa-solid fa-maximize text-[11px]"></i> Fullscreen
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════
+             SECTION 2 — Modal dengan Icon / Tipe
+        ══════════════════════════════════════ -->
+        <div class="comp-section">
+          <div
+            class="comp-section-header flex items-start justify-between gap-4 px-5 py-4 border-b border-[#E8EBFF] dark:border-slate-700">
+            <div>
+              <p class="comp-section-title">Modal Tipe & Warna</p>
+              <p class="comp-section-desc">Primary, Success, Danger, Warning, Info — dengan icon header berwarna. Blade:
+                <code
+                  class="font-mono text-brand-600 dark:text-brand-400 text-[11px] bg-brand-50 dark:bg-brand-900/20 px-1.5 py-0.5 rounded">&lt;x-modal type="danger"&gt;</code>
+              </p>
+            </div>
+            <span
+              class="text-[11px] font-mono bg-indigo-50 dark:bg-slate-800 text-indigo-400 dark:text-slate-400 px-2 py-1 rounded shrink-0">nt-modal-icon-{type}</span>
+          </div>
+          <div class="comp-section-body">
+            <div class="demo-trigger-area">
+              <button class="nt-btn nt-btn-primary nt-btn-sm" onclick="ntModal.open('modal-type-primary')">
+                <i class="fa-solid fa-info-circle text-[11px]"></i> Primary
+              </button>
+              <button class="nt-btn nt-btn-success nt-btn-sm" onclick="ntModal.open('modal-type-success')">
+                <i class="fa-solid fa-check-circle text-[11px]"></i> Success
+              </button>
+              <button class="nt-btn nt-btn-danger nt-btn-sm" onclick="ntModal.open('modal-type-danger')">
+                <i class="fa-solid fa-exclamation-circle text-[11px]"></i> Danger
+              </button>
+              <button class="nt-btn nt-btn-warning nt-btn-sm" onclick="ntModal.open('modal-type-warning')">
+                <i class="fa-solid fa-triangle-exclamation text-[11px]"></i> Warning
+              </button>
+              <button class="nt-btn nt-btn-info nt-btn-sm" onclick="ntModal.open('modal-type-info')">
+                <i class="fa-solid fa-circle-info text-[11px]"></i> Info
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════
+             SECTION 3 — Confirm Dialog
+        ══════════════════════════════════════ -->
+        <div class="comp-section">
+          <div
+            class="comp-section-header flex items-start justify-between gap-4 px-5 py-4 border-b border-[#E8EBFF] dark:border-slate-700">
+            <div>
+              <p class="comp-section-title">Confirm Dialog</p>
+              <p class="comp-section-desc">Dialog konfirmasi aksi destruktif — centered icon, dua tombol aksi. Blade:
+                <code
+                  class="font-mono text-brand-600 dark:text-brand-400 text-[11px] bg-brand-50 dark:bg-brand-900/20 px-1.5 py-0.5 rounded">&lt;x-modal-confirm&gt;</code>
+              </p>
+            </div>
+          </div>
+          <div class="comp-section-body">
+            <div class="demo-trigger-area">
+              <button class="nt-btn nt-btn-danger nt-btn-sm" onclick="ntModal.open('modal-confirm-delete')">
+                <i class="fa-solid fa-trash text-[11px]"></i> Hapus Data
+              </button>
+              <button class="nt-btn nt-btn-warning nt-btn-sm" onclick="ntModal.open('modal-confirm-logout')">
+                <i class="fa-solid fa-right-from-bracket text-[11px]"></i> Logout
+              </button>
+              <button class="nt-btn nt-btn-primary nt-btn-sm" onclick="ntModal.open('modal-confirm-publish')">
+                <i class="fa-solid fa-upload text-[11px]"></i> Publish
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════
+             SECTION 4 — Modal dengan Form Input
+        ══════════════════════════════════════ -->
+        <div class="comp-section">
+          <div
+            class="comp-section-header flex items-start justify-between gap-4 px-5 py-4 border-b border-[#E8EBFF] dark:border-slate-700">
+            <div>
+              <p class="comp-section-title">Modal dengan Form</p>
+              <p class="comp-section-desc">Modal berisi form input — bekerja penuh di dalam &lt;form&gt; atau
+                standalone. Kompatibel Livewire & AJAX. Blade: <code
+                  class="font-mono text-brand-600 dark:text-brand-400 text-[11px] bg-brand-50 dark:bg-brand-900/20 px-1.5 py-0.5 rounded">&lt;x-modal-form&gt;</code>
+              </p>
+            </div>
+          </div>
+          <div class="comp-section-body">
+            <div class="demo-trigger-area">
+              <button class="nt-btn nt-btn-primary nt-btn-sm" onclick="ntModal.open('modal-form-add-user')">
+                <i class="fa-solid fa-user-plus text-[11px]"></i> Tambah User
+              </button>
+              <button class="nt-btn nt-btn-secondary nt-btn-sm" onclick="ntModal.open('modal-form-edit')">
+                <i class="fa-solid fa-pen text-[11px]"></i> Edit Profil
+              </button>
+              <button class="nt-btn nt-btn-secondary nt-btn-sm" onclick="ntModal.open('modal-form-scrollable')">
+                <i class="fa-solid fa-scroll text-[11px]"></i> Form Panjang (Scrollable)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════
+             SECTION 5 — Modal di dalam Modal
+        ══════════════════════════════════════ -->
+        <div class="comp-section">
+          <div
+            class="comp-section-header flex items-start justify-between gap-4 px-5 py-4 border-b border-[#E8EBFF] dark:border-slate-700">
+            <div>
+              <p class="comp-section-title">Modal di dalam Modal (Nested)</p>
+              <p class="comp-section-desc">Buka modal baru dari dalam modal — z-index otomatis bertingkat. Maksimal
+                nesting: 3 level. Blade: <code
+                  class="font-mono text-brand-600 dark:text-brand-400 text-[11px] bg-brand-50 dark:bg-brand-900/20 px-1.5 py-0.5 rounded">&lt;x-modal nested&gt;</code>
+              </p>
+            </div>
+            <span
+              class="text-[11px] font-mono bg-indigo-50 dark:bg-slate-800 text-indigo-400 dark:text-slate-400 px-2 py-1 rounded shrink-0">nt-modal-nested</span>
+          </div>
+          <div class="comp-section-body">
+            <div class="demo-trigger-area">
+              <button class="nt-btn nt-btn-primary nt-btn-sm" onclick="ntModal.open('modal-nested-1')">
+                <i class="fa-solid fa-layer-group text-[11px]"></i> Buka Modal Bertingkat
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════
+             SECTION 6 — Modal di dalam <form>
+        ══════════════════════════════════════ -->
+        <div class="comp-section">
+          <div
+            class="comp-section-header flex items-start justify-between gap-4 px-5 py-4 border-b border-[#E8EBFF] dark:border-slate-700">
+            <div>
+              <p class="comp-section-title">Modal di dalam &lt;form&gt; HTML</p>
+              <p class="comp-section-desc">Modal dipanggil dari dalam form — submit tetap ke form induk. Cocok untuk
+                konfirmasi sebelum submit. Blade: cukup taruh <code
+                  class="font-mono text-brand-600 dark:text-brand-400 text-[11px] bg-brand-50 dark:bg-brand-900/20 px-1.5 py-0.5 rounded">@include('modals.confirm')</code>
+                di dalam &lt;form&gt;</p>
+            </div>
+          </div>
+          <div class="comp-section-body">
+            <!-- Ini adalah <form> sungguhan — modal di dalamnya valid HTML -->
+            <form id="main-order-form" action="#" method="POST" onsubmit="handleFormSubmit(event)"
+              class="bg-[#F8F9FF] dark:bg-slate-800/40 border border-[#E4E7FF] dark:border-slate-700 rounded-2xl p-5 ">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label class="input-label">Nama Pelanggan</label>
+                  <input type="text" name="customer_name" class="form-input" placeholder="Masukkan nama…"
+                    value="Budi Santoso" />
+                </div>
+                <div class="form-group">
+                  <label class="input-label">Email</label>
+                  <input type="email" name="customer_email" class="form-input" placeholder="email@domain.com"
+                    value="budi@example.com" />
+                </div>
+                <div class="form-group">
+                  <label class="input-label">Produk</label>
+                  <select name="product" class="form-select">
+                    <option>Netra UI Pro</option>
+                    <option>Netra UI Team</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="input-label">Jumlah</label>
+                  <input type="number" name="qty" class="form-input" value="3" min="1" />
+                </div>
+              </div>
+              <div class="flex items-center gap-3 pt-1 mt-4">
+                <!-- Tombol ini buka modal konfirmasi SEBELUM submit form -->
+                <button type="button" class="nt-btn nt-btn-primary"
+                  onclick="ntModal.open('modal-form-in-form-confirm')">
+                  <i class="fa-solid fa-paper-plane text-[12px]"></i> Kirim Pesanan
+                </button>
+                <button type="reset" class="nt-btn nt-btn-secondary">Reset</button>
+              </div>
+
+              <!-- Modal konfirmasi berada FISIK di dalam <form> — valid HTML, submit tetap ke form induk -->
+              <div id="modal-form-in-form-confirm" class="nt-modal-backdrop"
+                onclick="ntModal.closeOnBackdrop(event, 'modal-form-in-form-confirm')">
+                <div class="nt-modal nt-modal-sm" role="dialog" aria-modal="true" aria-labelledby="mfif-title">
+                  <div class="nt-modal-header">
+                    <div class="nt-modal-icon nt-modal-icon-primary"><i class="fa-solid fa-paper-plane"></i></div>
+                    <div class="nt-modal-title-wrap">
+                      <p class="nt-modal-title" id="mfif-title">Konfirmasi Pengiriman</p>
+                      <p class="nt-modal-subtitle">Periksa kembali data sebelum mengirim.</p>
+                    </div>
+                    <button class="nt-modal-close" onclick="ntModal.close('modal-form-in-form-confirm')"
+                      aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+                  </div>
+                  <div class="nt-modal-body">
+                    <div class="space-y-2.5">
+                      <div
+                        class="flex items-center justify-between text-[13px] py-2 border-b border-dashed border-[#E4E7FF] dark:border-slate-700">
+                        <span class="text-slate-500 dark:text-slate-400">Pelanggan</span>
+                        <span class="font-semibold text-slate-800 dark:text-slate-100" id="preview-name">—</span>
+                      </div>
+                      <div
+                        class="flex items-center justify-between text-[13px] py-2 border-b border-dashed border-[#E4E7FF] dark:border-slate-700">
+                        <span class="text-slate-500 dark:text-slate-400">Email</span>
+                        <span class="font-semibold text-slate-800 dark:text-slate-100" id="preview-email">—</span>
+                      </div>
+                      <div
+                        class="flex items-center justify-between text-[13px] py-2 border-b border-dashed border-[#E4E7FF] dark:border-slate-700">
+                        <span class="text-slate-500 dark:text-slate-400">Produk</span>
+                        <span class="font-semibold text-slate-800 dark:text-slate-100" id="preview-product">—</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[13px] py-2">
+                        <span class="text-slate-500 dark:text-slate-400">Jumlah</span>
+                        <span class="font-semibold text-slate-800 dark:text-slate-100" id="preview-qty">—</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="nt-modal-footer">
+                    <button type="button" class="nt-btn nt-btn-secondary"
+                      onclick="ntModal.close('modal-form-in-form-confirm')">Kembali</button>
+                    <!-- type="submit" → submit ke form induk (#main-order-form) -->
+                    <button type="submit" form="main-order-form" class="nt-btn nt-btn-primary"
+                      onclick="ntModal.close('modal-form-in-form-confirm')">
+                      <i class="fa-solid fa-check text-[12px]"></i> Ya, Kirim
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- end modal confirm di dalam form -->
+
+            </form>
+          </div>
+        </div>
+
+        <div class="h-4"></div>
+      </main>
+
+      <!-- FOOTER -->
+      <footer
+        class="border-t border-indigo-100 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 lg:px-8 py-4 shrink-0">
+        <div
+          class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[12px] text-surface-400 dark:text-slate-500">
+          <p>© 2026 <span class="font-medium text-indigo-600 dark:text-indigo-400">Netra UI</span>. All rights reserved.
+          </p>
+          <div class="flex items-center gap-4">
+            <span class="text-[12px] text-surface-400 dark:text-slate-500">Tahap 3 — Modal Components</span>
+            <span class="text-surface-300 dark:text-slate-700">v1.0.0</span>
+          </div>
+        </div>
+      </footer>
+
+    </div><!-- end main-col -->
+  </div><!-- end app -->
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SEMUA MODAL — letakkan sebelum </body>, LUAR dari #app
+       Blade: @stack('modals') atau @include('partials.modals')
+  ═══════════════════════════════════════════════════════════ -->
+
+  <!-- ── SIZE: XS ── -->
+  <div id="modal-xs" class="nt-modal-backdrop" onclick="ntModal.closeOnBackdrop(event, 'modal-xs')">
+    <div class="nt-modal nt-modal-xs" role="dialog" aria-modal="true" aria-labelledby="mxs-title">
+      <div class="nt-modal-header">
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title" id="mxs-title">Modal XS — 360px</p>
+          <p class="nt-modal-subtitle">Cocok untuk notifikasi singkat.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-xs')" aria-label="Tutup"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="nt-modal-body">
+        <p>Ini adalah modal ukuran <strong>XS</strong> dengan lebar maksimal 360px. Gunakan untuk pesan singkat atau
+          konfirmasi kecil.</p>
+      </div>
+      <div class="nt-modal-footer">
+        <button class="nt-btn nt-btn-primary" onclick="ntModal.close('modal-xs')">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SIZE: SM ── -->
+  <div id="modal-sm" class="nt-modal-backdrop" onclick="ntModal.closeOnBackdrop(event, 'modal-sm')">
+    <div class="nt-modal nt-modal-sm" role="dialog" aria-modal="true" aria-labelledby="msm-title">
+      <div class="nt-modal-header">
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title" id="msm-title">Modal SM — 480px</p>
+          <p class="nt-modal-subtitle">Ukuran standar untuk dialog sederhana.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-sm')" aria-label="Tutup"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="nt-modal-body">
+        <p>Modal ukuran <strong>SM</strong> — lebar 480px. Ideal untuk dialog konfirmasi atau pesan dengan satu paragraf
+          konten.</p>
+      </div>
+      <div class="nt-modal-footer">
+        <button class="nt-btn nt-btn-secondary" onclick="ntModal.close('modal-sm')">Batal</button>
+        <button class="nt-btn nt-btn-primary" onclick="ntModal.close('modal-sm')">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SIZE: MD (Default) ── -->
+  <div id="modal-md" class="nt-modal-backdrop" onclick="ntModal.closeOnBackdrop(event, 'modal-md')">
+    <div class="nt-modal nt-modal-md" role="dialog" aria-modal="true" aria-labelledby="mmd-title">
+      <div class="nt-modal-header">
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title" id="mmd-title">Modal MD — 600px (Default)</p>
+          <p class="nt-modal-subtitle">Ukuran yang direkomendasikan untuk sebagian besar kasus.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-md')" aria-label="Tutup"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="nt-modal-body">
+        <p>Modal ukuran <strong>MD</strong> — lebar maksimal 600px. Ini adalah ukuran default yang paling sering
+          dipakai. Cocok untuk form singkat, detail data, atau pesan dengan beberapa paragraf.</p>
+        <div class="nt-modal-divider"></div>
+        <p class="text-[12.5px]">Gunakan kelas <code
+            class="font-mono bg-indigo-50 dark:bg-slate-800 text-indigo-500 px-1.5 py-0.5 rounded text-[11px]">nt-modal-md</code>
+          pada elemen <code
+            class="font-mono bg-indigo-50 dark:bg-slate-800 text-indigo-500 px-1.5 py-0.5 rounded text-[11px]">.nt-modal</code>.
+        </p>
+      </div>
+      <div class="nt-modal-footer">
+        <button class="nt-btn nt-btn-secondary" onclick="ntModal.close('modal-md')">Tutup</button>
+        <button class="nt-btn nt-btn-primary" onclick="ntModal.close('modal-md')">Konfirmasi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SIZE: LG ── -->
+  <div id="modal-lg" class="nt-modal-backdrop" onclick="ntModal.closeOnBackdrop(event, 'modal-lg')">
+    <div class="nt-modal nt-modal-lg" role="dialog" aria-modal="true" aria-labelledby="mlg-title">
+      <div class="nt-modal-header">
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title" id="mlg-title">Modal LG — 768px</p>
+          <p class="nt-modal-subtitle">Untuk form multi-kolom atau konten yang lebih lebar.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-lg')" aria-label="Tutup"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="nt-modal-body">
+        <p>Modal ukuran <strong>LG</strong> — 768px. Gunakan untuk form dua kolom, tabel kecil, atau konten multimedia.
+        </p>
+        <div class="grid grid-cols-2 gap-3 mt-4">
+          <div class="bg-[#F8F9FF] dark:bg-slate-800 rounded-xl p-3 border border-[#E4E7FF] dark:border-slate-700">
+            <p class="text-[12px] font-semibold text-slate-700 dark:text-slate-200">Total Pengguna</p>
+            <p class="text-[22px] font-bold text-indigo-600 dark:text-indigo-400 mt-1">12,480</p>
+          </div>
+          <div class="bg-[#F8F9FF] dark:bg-slate-800 rounded-xl p-3 border border-[#E4E7FF] dark:border-slate-700">
+            <p class="text-[12px] font-semibold text-slate-700 dark:text-slate-200">Pendapatan</p>
+            <p class="text-[22px] font-bold text-green-600 dark:text-green-400 mt-1">Rp 84,2jt</p>
+          </div>
+        </div>
+      </div>
+      <div class="nt-modal-footer">
+        <button class="nt-btn nt-btn-secondary" onclick="ntModal.close('modal-lg')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SIZE: XL ── -->
+  <div id="modal-xl" class="nt-modal-backdrop" onclick="ntModal.closeOnBackdrop(event, 'modal-xl')">
+    <div class="nt-modal nt-modal-xl" role="dialog" aria-modal="true" aria-labelledby="mxl-title">
+      <div class="nt-modal-header">
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title" id="mxl-title">Modal XL — 1024px</p>
+          <p class="nt-modal-subtitle">Panel lebar untuk detail kompleks atau preview dokumen.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-xl')" aria-label="Tutup"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="nt-modal-body">
+        <p>Modal <strong>XL</strong> — lebar hingga 1024px. Gunakan untuk tabel data, preview file, atau layout
+          multi-panel.</p>
+        <div class="grid grid-cols-3 gap-3 mt-4">
+          <div
+            class="bg-[#F8F9FF] dark:bg-slate-800 rounded-xl p-3 border border-[#E4E7FF] dark:border-slate-700 col-span-2">
+            <p class="text-[12px] font-semibold mb-2 nt-modal-chart-label">Distribusi Pengguna</p>
+            <div class="space-y-2">
+              <div>
+                <div class="flex justify-between text-[11.5px] mb-1"><span>Jakarta</span><span
+                    class="font-medium">42%</span></div>
+                <div class="h-1.5 rounded-full bg-indigo-100 dark:bg-slate-700">
+                  <div class="h-full rounded-full bg-indigo-500" style="width:42%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11.5px] mb-1"><span>Surabaya</span><span
+                    class="font-medium">28%</span></div>
+                <div class="h-1.5 rounded-full bg-indigo-100 dark:bg-slate-700">
+                  <div class="h-full rounded-full bg-cyan-500" style="width:28%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11.5px] mb-1"><span>Bandung</span><span
+                    class="font-medium">18%</span></div>
+                <div class="h-1.5 rounded-full bg-indigo-100 dark:bg-slate-700">
+                  <div class="h-full rounded-full bg-violet-500" style="width:18%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11.5px] mb-1"><span>Lainnya</span><span
+                    class="font-medium">12%</span></div>
+                <div class="h-1.5 rounded-full bg-indigo-100 dark:bg-slate-700">
+                  <div class="h-full rounded-full bg-slate-400" style="width:12%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-[#F8F9FF] dark:bg-slate-800 rounded-xl p-3 border border-[#E4E7FF] dark:border-slate-700">
+            <p class="text-[12px] font-semibold mb-3 nt-modal-chart-label">Status</p>
+            <div class="space-y-2">
+              <div class="flex items-center gap-2"><span
+                  class="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></span><span class="text-[12px]">Aktif:
+                  8,240</span></div>
+              <div class="flex items-center gap-2"><span
+                  class="w-2 h-2 rounded-full bg-yellow-500 flex-shrink-0"></span><span class="text-[12px]">Trial:
+                  2,100</span></div>
+              <div class="flex items-center gap-2"><span
+                  class="w-2 h-2 rounded-full bg-slate-400 flex-shrink-0"></span><span class="text-[12px]">Nonaktif:
+                  2,140</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nt-modal-footer">
+        <button class="nt-btn nt-btn-secondary" onclick="ntModal.close('modal-xl')">Tutup</button>
+        <button class="nt-btn nt-btn-primary" onclick="ntModal.close('modal-xl')">
+          <i class="fa-solid fa-download text-[11px]"></i> Export
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SIZE: FULL ── -->
+  <div id="modal-full" class="nt-modal-backdrop" onclick="ntModal.closeOnBackdrop(event, 'modal-full')">
+    <div class="nt-modal nt-modal-full" role="dialog" aria-modal="true" aria-labelledby="mfl-title">
+      <div class="nt-modal-header">
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title" id="mfl-title">Modal Fullscreen</p>
+          <p class="nt-modal-subtitle">Mengisi hampir seluruh layar — cocok untuk editor atau viewer.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-full')" aria-label="Tutup"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="nt-modal-body">
+        <p>Modal <strong>Fullscreen</strong> — <code
+            class="font-mono bg-indigo-50 dark:bg-slate-800 text-indigo-500 px-1.5 py-0.5 rounded text-[11px]">nt-modal-full</code>.
+          Isi area ini dengan editor teks, preview dokumen PDF, atau dashboard mini.</p>
+        <div
+          class="mt-4 h-48 bg-[#F0F1FF] dark:bg-slate-800 rounded-xl border border-[#E4E7FF] dark:border-slate-700 flex items-center justify-center">
+          <div class="text-center">
+            <i class="fa-regular fa-file-lines text-4xl text-indigo-300 dark:text-slate-600 mb-2"></i>
+            <p class="text-[13px] text-slate-400">Area konten penuh — pasang editor, table, atau viewer di sini</p>
+          </div>
+        </div>
+      </div>
+      <div class="nt-modal-footer">
+        <button class="nt-btn nt-btn-secondary" onclick="ntModal.close('modal-full')">Tutup</button>
+        <button class="nt-btn nt-btn-primary" onclick="ntModal.close('modal-full')">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TYPE: PRIMARY ── -->
+  <div id="modal-type-primary" class="nt-modal-backdrop" onclick="ntModal.closeOnBackdrop(event, 'modal-type-primary')">
+    <div class="nt-modal nt-modal-sm" role="dialog" aria-modal="true">
+      <div class="nt-modal-header">
+        <div class="nt-modal-icon nt-modal-icon-primary"><i class="fa-solid fa-circle-info"></i></div>
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title">Informasi Sistem</p>
+          <p class="nt-modal-subtitle">Update tersedia untuk versi baru.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-type-primary')"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="nt-modal-body">Netra UI versi <strong>1.1.0</strong> tersedia. Fitur baru: komponen tabel, chart, dan
+        notifikasi toast. Pembaruan ini direkomendasikan untuk semua pengguna.</div>
+      <div class="nt-modal-footer">
+        <button class="nt-btn nt-btn-secondary" onclick="ntModal.close('modal-type-primary')">Nanti</button>
+        <button class="nt-btn nt-btn-primary" onclick="ntModal.close('modal-type-primary')">Update Sekarang</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TYPE: SUCCESS ── -->
+  <div id="modal-type-success" class="nt-modal-backdrop" onclick="ntModal.closeOnBackdrop(event, 'modal-type-success')">
+    <div class="nt-modal nt-modal-sm" role="dialog" aria-modal="true">
+      <div class="nt-modal-header">
+        <div class="nt-modal-icon nt-modal-icon-success"><i class="fa-solid fa-check-circle"></i></div>
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title">Berhasil Disimpan</p>
+          <p class="nt-modal-subtitle">Data telah tersimpan ke database.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-type-success')"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="nt-modal-body">Data pengguna berhasil diperbarui pada <strong>10 Juni 2026, 14:32 WIB</strong>.
+        Perubahan akan aktif dalam beberapa saat.</div>
+      <div class="nt-modal-footer">
+        <button class="nt-btn nt-btn-success" onclick="ntModal.close('modal-type-success')">Oke, Mengerti</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TYPE: DANGER ── -->
+  <div id="modal-type-danger" class="nt-modal-backdrop" onclick="ntModal.closeOnBackdrop(event, 'modal-type-danger')">
+    <div class="nt-modal nt-modal-sm" role="dialog" aria-modal="true">
+      <div class="nt-modal-header">
+        <div class="nt-modal-icon nt-modal-icon-danger"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title">Akses Ditolak</p>
+          <p class="nt-modal-subtitle">Anda tidak memiliki izin untuk tindakan ini.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-type-danger')"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="nt-modal-body">Tindakan yang Anda coba lakukan memerlukan hak akses <strong>Administrator</strong>.
+        Hubungi admin sistem untuk mendapatkan izin yang sesuai.</div>
+      <div class="nt-modal-footer">
+        <button class="nt-btn nt-btn-danger" onclick="ntModal.close('modal-type-danger')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TYPE: WARNING ── -->
+  <div id="modal-type-warning" class="nt-modal-backdrop" onclick="ntModal.closeOnBackdrop(event, 'modal-type-warning')">
+    <div class="nt-modal nt-modal-sm" role="dialog" aria-modal="true">
+      <div class="nt-modal-header">
+        <div class="nt-modal-icon nt-modal-icon-warning"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title">Perhatian</p>
+          <p class="nt-modal-subtitle">Ada perubahan yang belum disimpan.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-type-warning')"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="nt-modal-body">Anda memiliki perubahan yang belum disimpan. Menutup halaman ini akan menghapus semua
+        perubahan. Apakah Anda ingin melanjutkan?</div>
+      <div class="nt-modal-footer">
+        <button class="nt-btn nt-btn-secondary" onclick="ntModal.close('modal-type-warning')">Tetap di Sini</button>
+        <button class="nt-btn nt-btn-warning" onclick="ntModal.close('modal-type-warning')">Keluar Tanpa Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TYPE: INFO ── -->
+  <div id="modal-type-info" class="nt-modal-backdrop" onclick="ntModal.closeOnBackdrop(event, 'modal-type-info')">
+    <div class="nt-modal nt-modal-sm" role="dialog" aria-modal="true">
+      <div class="nt-modal-header">
+        <div class="nt-modal-icon nt-modal-icon-info"><i class="fa-solid fa-circle-info"></i></div>
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title">Tips Penggunaan</p>
+          <p class="nt-modal-subtitle">Panduan singkat penggunaan fitur ini.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-type-info')"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="nt-modal-body">Gunakan pintasan keyboard <kbd
+          class="font-mono bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 px-1.5 py-0.5 rounded text-[11px] text-slate-600 dark:text-slate-300">Esc</kbd>
+        untuk menutup modal kapan saja. Tekan <kbd
+          class="font-mono bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 px-1.5 py-0.5 rounded text-[11px] text-slate-600 dark:text-slate-300">Tab</kbd>
+        untuk berpindah antar field di dalam modal.</div>
+      <div class="nt-modal-footer">
+        <button class="nt-btn nt-btn-info" onclick="ntModal.close('modal-type-info')">Mengerti</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONFIRM: HAPUS ── -->
+  <div id="modal-confirm-delete" class="nt-modal-backdrop"
+    onclick="ntModal.closeOnBackdrop(event, 'modal-confirm-delete')">
+    <div class="nt-modal nt-modal-xs" role="dialog" aria-modal="true">
+      <div class="nt-modal-body nt-modal-body-confirm text-center">
+        <div class="nt-modal-confirm-icon danger mx-auto"><i class="fa-solid fa-trash"></i></div>
+        <p class="text-[15px] font-bold text-slate-800 dark:text-slate-100 mb-1.5">Hapus Data Ini?</p>
+        <p class="text-[13px] text-slate-500 dark:text-slate-400">Data <strong
+            class="text-slate-700 dark:text-slate-200">Budi Santoso</strong> akan dihapus permanen dan tidak bisa
+          dipulihkan.</p>
+      </div>
+      <div class="nt-modal-footer justify-center gap-3 pb-5">
+        <button class="nt-btn nt-btn-secondary" onclick="ntModal.close('modal-confirm-delete')">Batal</button>
+        <button class="nt-btn nt-btn-danger" onclick="ntModal.close('modal-confirm-delete'); alert('Data dihapus!')">
+          <i class="fa-solid fa-trash text-[11px]"></i> Ya, Hapus
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONFIRM: LOGOUT ── -->
+  <div id="modal-confirm-logout" class="nt-modal-backdrop"
+    onclick="ntModal.closeOnBackdrop(event, 'modal-confirm-logout')">
+    <div class="nt-modal nt-modal-xs" role="dialog" aria-modal="true">
+      <div class="nt-modal-body nt-modal-body-confirm text-center">
+        <div class="nt-modal-confirm-icon warning mx-auto"><i class="fa-solid fa-right-from-bracket"></i></div>
+        <p class="text-[15px] font-bold text-slate-800 dark:text-slate-100 mb-1.5">Keluar dari Akun?</p>
+        <p class="text-[13px] text-slate-500 dark:text-slate-400">Sesi Anda akan diakhiri. Login kembali untuk
+          melanjutkan.</p>
+      </div>
+      <div class="nt-modal-footer justify-center gap-3 pb-5">
+        <button class="nt-btn nt-btn-secondary" onclick="ntModal.close('modal-confirm-logout')">Batal</button>
+        <button class="nt-btn nt-btn-warning" onclick="ntModal.close('modal-confirm-logout')">
+          <i class="fa-solid fa-right-from-bracket text-[11px]"></i> Ya, Logout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONFIRM: PUBLISH ── -->
+  <div id="modal-confirm-publish" class="nt-modal-backdrop"
+    onclick="ntModal.closeOnBackdrop(event, 'modal-confirm-publish')">
+    <div class="nt-modal nt-modal-xs" role="dialog" aria-modal="true">
+      <div class="nt-modal-body nt-modal-body-confirm text-center">
+        <div class="nt-modal-confirm-icon success mx-auto"><i class="fa-solid fa-upload"></i></div>
+        <p class="text-[15px] font-bold text-slate-800 dark:text-slate-100 mb-1.5">Publish Artikel?</p>
+        <p class="text-[13px] text-slate-500 dark:text-slate-400">Artikel akan langsung tampil ke publik setelah
+          dipublish.</p>
+      </div>
+      <div class="nt-modal-footer justify-center gap-3 pb-5">
+        <button class="nt-btn nt-btn-secondary" onclick="ntModal.close('modal-confirm-publish')">Batal</button>
+        <button class="nt-btn nt-btn-success" onclick="ntModal.close('modal-confirm-publish')">
+          <i class="fa-solid fa-upload text-[11px]"></i> Publish
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FORM: TAMBAH USER ── -->
+  <div id="modal-form-add-user" class="nt-modal-backdrop"
+    onclick="ntModal.closeOnBackdrop(event, 'modal-form-add-user')">
+    <div class="nt-modal nt-modal-md" role="dialog" aria-modal="true" aria-labelledby="mfu-title">
+      <div class="nt-modal-header">
+        <div class="nt-modal-icon nt-modal-icon-primary"><i class="fa-solid fa-user-plus"></i></div>
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title" id="mfu-title">Tambah Pengguna Baru</p>
+          <p class="nt-modal-subtitle">Isi semua field yang wajib diisi.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-form-add-user')"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <!-- Form di dalam modal — action ke endpoint Laravel -->
+      <form id="form-add-user" method="POST" action="/users/store" onsubmit="return false">
+        {{-- @csrf --}}
+        <!-- ↑ Blade: uncomment @csrf saat migrasi ke Laravel -->
+        <div class="nt-modal-body space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="form-group">
+              <label class="input-label" for="fu-fname">Nama Depan <span class="text-red-500">*</span></label>
+              <input type="text" id="fu-fname" name="first_name" class="form-input" placeholder="Budi" required />
+            </div>
+            <div class="form-group">
+              <label class="input-label" for="fu-lname">Nama Belakang</label>
+              <input type="text" id="fu-lname" name="last_name" class="form-input" placeholder="Santoso" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="input-label" for="fu-email">Email <span class="text-red-500">*</span></label>
+            <input type="email" id="fu-email" name="email" class="form-input" placeholder="budi@example.com" required />
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="form-group">
+              <label class="input-label" for="fu-role">Role <span class="text-red-500">*</span></label>
+              <select id="fu-role" name="role" class="form-select" required>
+                <option value="">Pilih role…</option>
+                <option value="admin">Administrator</option>
+                <option value="editor">Editor</option>
+                <option value="viewer">Viewer</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="input-label" for="fu-status">Status</label>
+              <select id="fu-status" name="status" class="form-select">
+                <option value="active">Aktif</option>
+                <option value="inactive">Nonaktif</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="input-label" for="fu-pw">Password <span class="text-red-500">*</span></label>
+            <input type="password" id="fu-pw" name="password" class="form-input" placeholder="Min. 8 karakter"
+              required />
+            <span class="form-hint">Gunakan kombinasi huruf, angka, dan simbol.</span>
+          </div>
+        </div>
+        <div class="nt-modal-footer">
+          <button type="button" class="nt-btn nt-btn-secondary"
+            onclick="ntModal.close('modal-form-add-user')">Batal</button>
+          <button type="submit" class="nt-btn nt-btn-primary" onclick="ntModal.close('modal-form-add-user')">
+            <i class="fa-solid fa-user-plus text-[11px]"></i> Simpan Pengguna
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── FORM: EDIT PROFIL ── -->
+  <div id="modal-form-edit" class="nt-modal-backdrop" onclick="ntModal.closeOnBackdrop(event, 'modal-form-edit')">
+    <div class="nt-modal nt-modal-md" role="dialog" aria-modal="true" aria-labelledby="mfe-title">
+      <div class="nt-modal-header">
+        <div class="nt-modal-icon nt-modal-icon-primary"><i class="fa-solid fa-pen-to-square"></i></div>
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title" id="mfe-title">Edit Profil</p>
+          <p class="nt-modal-subtitle">Perbarui informasi akun Anda.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-form-edit')"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="form-edit-profile" method="POST" action="/profile/update" onsubmit="return false">
+        <div class="nt-modal-body space-y-4">
+          <!-- Avatar -->
+          <div
+            class="flex items-center gap-4 p-3 bg-[#F8F9FF] dark:bg-slate-800 rounded-xl border border-[#E4E7FF] dark:border-slate-700">
+            <div
+              class="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[16px] font-bold flex-shrink-0">
+              GD</div>
+            <div>
+              <p class="text-[13px] font-semibold text-slate-700 dark:text-slate-200">Gading Dev</p>
+              <p class="text-[11.5px] text-slate-400 mt-0.5">Administrator</p>
+            </div>
+            <button type="button" class="nt-btn nt-btn-secondary nt-btn-sm ml-auto">
+              <i class="fa-solid fa-camera text-[11px]"></i> Ganti Foto
+            </button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="form-group">
+              <label class="input-label" for="ep-name">Nama Lengkap</label>
+              <input type="text" id="ep-name" name="name" class="form-input" value="Gading Dev" />
+            </div>
+            <div class="form-group">
+              <label class="input-label" for="ep-phone">No. Telepon</label>
+              <input type="tel" id="ep-phone" name="phone" class="form-input" value="+62 812 3456 7890" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="input-label" for="ep-email">Email</label>
+            <input type="email" id="ep-email" name="email" class="form-input" value="gading@netraui.dev" />
+          </div>
+          <div class="form-group">
+            <label class="input-label" for="ep-bio">Bio</label>
+            <textarea id="ep-bio" name="bio" class="form-textarea" rows="2"
+              placeholder="Tulis bio singkat…">Full-stack developer & UI designer based in Indonesia.</textarea>
+          </div>
+        </div>
+        <div class="nt-modal-footer">
+          <button type="button" class="nt-btn nt-btn-secondary"
+            onclick="ntModal.close('modal-form-edit')">Batal</button>
+          <button type="submit" class="nt-btn nt-btn-primary" onclick="ntModal.close('modal-form-edit')">
+            <i class="fa-solid fa-floppy-disk text-[11px]"></i> Simpan Perubahan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── FORM: SCROLLABLE ── -->
+  <div id="modal-form-scrollable" class="nt-modal-backdrop nt-modal-scrollable"
+    onclick="ntModal.closeOnBackdrop(event, 'modal-form-scrollable')">
+    <div class="nt-modal nt-modal-md" role="dialog" aria-modal="true" aria-labelledby="mfs-title">
+      <div class="nt-modal-header">
+        <div class="nt-modal-icon nt-modal-icon-primary"><i class="fa-solid fa-file-lines"></i></div>
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title" id="mfs-title">Form Panjang (Scrollable)</p>
+          <p class="nt-modal-subtitle">Header & footer tetap — body bisa scroll.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-form-scrollable')"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="return false">
+        <div class="nt-modal-body space-y-4">
+          <div class="form-group"><label class="input-label">Nama Proyek <span
+                class="text-red-500">*</span></label><input type="text" class="form-input" placeholder="Nama proyek…" />
+          </div>
+          <div class="form-group"><label class="input-label">Klien</label><input type="text" class="form-input"
+              placeholder="PT. Contoh Indonesia" /></div>
+          <div class="form-group"><label class="input-label">Tanggal Mulai</label><input type="date"
+              class="form-input" /></div>
+          <div class="form-group"><label class="input-label">Tanggal Selesai</label><input type="date"
+              class="form-input" /></div>
+          <div class="form-group"><label class="input-label">Anggaran (Rp)</label><input type="number"
+              class="form-input" placeholder="0" /></div>
+          <div class="form-group"><label class="input-label">Manajer Proyek</label><select class="form-select">
+              <option>Pilih…</option>
+              <option>Gading Dev</option>
+              <option>Budi Santoso</option>
+            </select></div>
+          <div class="form-group"><label class="input-label">Status</label><select class="form-select">
+              <option>Aktif</option>
+              <option>Selesai</option>
+              <option>Ditunda</option>
+            </select></div>
+          <div class="form-group"><label class="input-label">Deskripsi Proyek</label><textarea class="form-textarea"
+              rows="3" placeholder="Deskripsikan proyek…"></textarea></div>
+          <div class="form-group"><label class="input-label">Catatan Internal</label><textarea class="form-textarea"
+              rows="3" placeholder="Catatan untuk tim…"></textarea></div>
+          <div class="form-group"><label class="input-label">Prioritas</label>
+            <div class="flex gap-2 flex-wrap">
+              <label class="flex items-center gap-1.5 text-[13px] cursor-pointer"><input type="radio" name="priority"
+                  value="low" class="form-radio" /> <span>Rendah</span></label>
+              <label class="flex items-center gap-1.5 text-[13px] cursor-pointer"><input type="radio" name="priority"
+                  value="medium" class="form-radio" checked /> <span>Sedang</span></label>
+              <label class="flex items-center gap-1.5 text-[13px] cursor-pointer"><input type="radio" name="priority"
+                  value="high" class="form-radio" /> <span>Tinggi</span></label>
+            </div>
+          </div>
+        </div>
+        <div class="nt-modal-footer">
+          <button type="button" class="nt-btn nt-btn-secondary"
+            onclick="ntModal.close('modal-form-scrollable')">Batal</button>
+          <button type="submit" class="nt-btn nt-btn-primary" onclick="ntModal.close('modal-form-scrollable')">
+            <i class="fa-solid fa-floppy-disk text-[11px]"></i> Simpan Proyek
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       NESTED MODALS — Level 1, 2, 3
+  ══════════════════════════════════════════════════════════ -->
+
+  <!-- Level 1 -->
+  <div id="modal-nested-1" class="nt-modal-backdrop" onclick="ntModal.closeOnBackdrop(event, 'modal-nested-1')">
+    <div class="nt-modal nt-modal-md" role="dialog" aria-modal="true" aria-labelledby="mn1-title">
+      <div class="nt-modal-header">
+        <div class="nt-modal-icon nt-modal-icon-primary"><i class="fa-solid fa-layer-group"></i></div>
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title" id="mn1-title">Modal Level 1</p>
+          <p class="nt-modal-subtitle">Modal pertama — buka level 2 dari sini.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-nested-1')"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="nt-modal-body space-y-3">
+        <p>Ini adalah <strong>Modal Level 1</strong>. Anda dapat membuka modal lain di atasnya — backdrop akan bertumpuk
+          secara otomatis.</p>
+        <div class="bg-[#F8F9FF] dark:bg-slate-800 rounded-xl border border-[#E4E7FF] dark:border-slate-700 p-4">
+          <p class="text-[12.5px] font-semibold text-slate-600 dark:text-slate-300 mb-2">Detail Order #12847</p>
+          <div class="space-y-1.5 text-[12.5px] text-slate-500 dark:text-slate-400">
+            <div class="flex justify-between"><span>Produk</span><span
+                class="font-medium text-slate-700 dark:text-slate-200">Netra UI Pro</span></div>
+            <div class="flex justify-between"><span>Jumlah</span><span
+                class="font-medium text-slate-700 dark:text-slate-200">3 lisensi</span></div>
+            <div class="flex justify-between"><span>Total</span><span
+                class="font-semibold text-indigo-600 dark:text-indigo-400">Rp 2.400.000</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="nt-modal-footer">
+        <button class="nt-btn nt-btn-secondary" onclick="ntModal.close('modal-nested-1')">Tutup</button>
+        <button class="nt-btn nt-btn-primary" onclick="ntModal.open('modal-nested-2')">
+          <i class="fa-solid fa-layer-group text-[11px]"></i> Buka Modal Level 2
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Level 2 -->
+  <div id="modal-nested-2" class="nt-modal-backdrop nt-modal-nested"
+    onclick="ntModal.closeOnBackdrop(event, 'modal-nested-2')">
+    <div class="nt-modal nt-modal-sm" role="dialog" aria-modal="true" aria-labelledby="mn2-title">
+      <div class="nt-modal-header">
+        <div class="nt-modal-icon nt-modal-icon-warning"><i class="fa-solid fa-layer-group"></i></div>
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title" id="mn2-title">Modal Level 2</p>
+          <p class="nt-modal-subtitle">Di atas Level 1 — z-index 1050.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-nested-2')"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="nt-modal-body">
+        <p>Modal <strong>Level 2</strong> — tampil di atas Level 1 dengan backdrop lebih tipis. Bisa dibuka dari tombol
+          di Level 1 maupun dari manapun.</p>
+      </div>
+      <div class="nt-modal-footer">
+        <button class="nt-btn nt-btn-secondary" onclick="ntModal.close('modal-nested-2')">Kembali</button>
+        <button class="nt-btn nt-btn-warning" onclick="ntModal.open('modal-nested-3')">
+          <i class="fa-solid fa-layer-group text-[11px]"></i> Buka Level 3
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Level 3 -->
+  <div id="modal-nested-3" class="nt-modal-backdrop nt-modal-nested nt-modal-level-3">
+    <div class="nt-modal nt-modal-xs" role="dialog" aria-modal="true" aria-labelledby="mn3-title">
+      <div class="nt-modal-header">
+        <div class="nt-modal-icon nt-modal-icon-danger"><i class="fa-solid fa-layer-group"></i></div>
+        <div class="nt-modal-title-wrap">
+          <p class="nt-modal-title" id="mn3-title">Modal Level 3</p>
+          <p class="nt-modal-subtitle">Paling atas — z-index 1100.</p>
+        </div>
+        <button class="nt-modal-close" onclick="ntModal.close('modal-nested-3')"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="nt-modal-body text-center">
+        <p class="text-[13px]">Ini adalah <strong>Level 3</strong> — maksimal nesting yang direkomendasikan. Tutup satu
+          per satu atau semua sekaligus.</p>
+      </div>
+      <div class="nt-modal-footer justify-center">
+        <button class="nt-btn nt-btn-secondary nt-btn-sm" onclick="ntModal.close('modal-nested-3')">Tutup Level
+          3</button>
+        <button class="nt-btn nt-btn-danger nt-btn-sm" onclick="ntModal.closeAll()">Tutup Semua</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Netra UI — semua script terpusat di sini (sidebar, dropdown, dark mode, modal, dst) -->
+  <script src="../assets/js/netra-base.js"></script>
+  <script src="../assets/js/netra-modal.js"></script>
+
+  <!-- Page-specific init: preview form order & demo submit handler -->
+  <script>
+    // Isi preview saat tombol "Kirim Pesanan" diklik
+    document.addEventListener('DOMContentLoaded', () => {
+      const btnKirim = document.querySelector('[onclick*="modal-form-in-form-confirm"]');
+      if (btnKirim) {
+        btnKirim.addEventListener('click', () => {
+          const form = document.getElementById('main-order-form');
+          if (!form) return;
+          document.getElementById('preview-name').textContent =
+            form.querySelector('[name="customer_name"]')?.value || '—';
+          document.getElementById('preview-email').textContent =
+            form.querySelector('[name="customer_email"]')?.value || '—';
+          document.getElementById('preview-product').textContent =
+            form.querySelector('[name="product"]')?.value || '—';
+          document.getElementById('preview-qty').textContent =
+            form.querySelector('[name="qty"]')?.value || '—';
+        });
+      }
+    });
+
+    // Handle submit form demo (Blade: hapus ini, biarkan form POST ke Laravel action)
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      ntModal.closeAll();
+      alert('Form berhasil di-submit! (Demo — tidak ada request nyata)');
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Netra UI — Premium Table</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="../assets/css/netra-base.css" />
+  <link rel="stylesheet" href="../assets/css/netra-buttons.css" />
+  <link rel="stylesheet" href="../assets/css/netra-tables.css" />
+  <link rel="stylesheet" href="../assets/css/netra-utilities.css" />
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['DM Sans', 'sans-serif'], mono: ['DM Mono', 'monospace'] }, colors: { brand: { 50: '#f0f4ff', 100: '#e0eaff', 200: '#bfd2ff', 300: '#90aeff', 400: '#5a82ff', 500: '#2d5aff', 600: '#1a3ff5', 700: '#142ed1', 800: '#1428a8', 900: '#162885' }, surface: { 50: '#fafafa', 100: '#f5f5f5', 200: '#eeeeee', 300: '#e0e0e0', 400: '#bdbdbd', 500: '#9e9e9e', 600: '#757575', 700: '#616161', 800: '#424242', 900: '#212121' } } } } }
+  </script>
+  <script>(function () { const s = localStorage.getItem('theme'); if (s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches)) document.documentElement.classList.add('dark') })()</script>
+</head>
+
+<body class="dark:bg-slate-950 dark:text-slate-100 h-full overflow-hidden">
+
+  <div id="mob-overlay" class="fixed inset-0 bg-black/40 z-30 hidden opacity-0 lg:hidden"
+    onclick="closeMobileSidebar()"></div>
+  <!-- Toast notification -->
+  <div id="nt-toast">
+    <i class="fa-solid fa-floppy-disk text-indigo-400"></i>
+    <span id="nt-toast-msg">Tersimpan</span>
+  </div>
+
+  <div id="app">
+
+    <!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+    <aside id="sidebar" class="flex flex-col">
+      <div class="sidebar-logo flex items-center gap-3 px-4 h-16 shrink-0">
+        <div class="sidebar-logo-mark w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
+          <i class="fa-solid fa-eye text-white text-[13px]"></i>
+        </div>
+        <div
+          class="sidebar-brand-text flex flex-col leading-tight overflow-hidden whitespace-nowrap transition-all duration-200">
+          <span class="font-bold text-[15px] tracking-tight user-name">Netra UI<span class="nt-brand-dot"></span></span>
+          <span class="text-[10.5px] font-normal user-role">Enterprise Suite</span>
+        </div>
+        <button onclick="closeMobileSidebar()" class="close-btn ml-auto lg:hidden p-1 rounded">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <nav class="flex-1 overflow-y-auto overflow-x-hidden py-3 px-2 space-y-0.5">
+        <div
+          class="nav-section-label nav-section-title px-2 pt-1 pb-1.5 text-[10px] font-semibold uppercase tracking-widest whitespace-nowrap transition-all duration-200">
+          Main</div>
+        <div class="nav-item relative">
+          <a href="admin-dashboard.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-solid fa-house text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Dashboard</span>
+          </a><span class="nav-tooltip">Dashboard</span>
+        </div>
+        <div
+          class="nav-section-label nav-section-title px-2 pt-4 pb-1.5 text-[10px] font-semibold uppercase tracking-widest whitespace-nowrap transition-all duration-200">
+          UI Components</div>
+        <div class="nav-item relative">
+          <a href="form-components.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-solid fa-swatchbook text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Form Components</span>
+          </a><span class="nav-tooltip">Forms</span>
+        </div>
+        <div class="nav-item relative">
+          <a href="modal-components.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-regular fa-window-restore text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Modal Components</span>
+          </a><span class="nav-tooltip">Modals</span>
+        </div>
+        <div class="nav-item relative">
+          <a href="button-components.html"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-regular fa-hand-pointer text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Button &amp; Dropdown</span>
+          </a><span class="nav-tooltip">Buttons</span>
+        </div>
+        <div class="nav-item relative">
+          <a href="#" onclick="toggleSubmenu(this,event)"
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+            <i class="nav-icon fa-solid fa-table text-[14px] shrink-0 w-5 text-center"></i>
+            <span class="nav-label whitespace-nowrap transition-all duration-200">Table Components</span>
+            <i class="chevron fa-solid fa-chevron-right text-[10px] ml-auto"></i>
+          </a>
+          <div class="submenu pl-8 mt-1 space-y-0.5">
+            <div class="nav-item"><a href="basic-table.html"
+                class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]"><span class="nav-label">Basic
+                  Table</span></a></div>
+            <div class="nav-item"><a href="advance-table.html"
+                class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]"><span
+                  class="nav-label">Advance Table</span></a></div>
+            <div class="nav-item active"><a href="premium-table.html"
+                class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]"><span
+                  class="nav-label">Premium Table</span></a></div>
+            <div class="nav-item"><a href="ultimate-table.html"
+                class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]"><span
+                  class="nav-label">Ultimate Table</span></a></div>
+          </div>
+          <span class="nav-tooltip">Tables</span>
+        </div>
+      </nav>
+      <div class="sidebar-footer shrink-0 p-3 space-y-0.5">
+        <button onclick="toggleSidebar()"
+          class="collapse-btn hidden lg:flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors">
+          <i id="collapse-icon"
+            class="fa-solid fa-angles-left text-[14px] shrink-0 w-5 text-center transition-transform duration-250"></i>
+          <span class="nav-label whitespace-nowrap transition-all duration-200">Collapse</span>
+        </button>
+        <div class="user-row flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors">
+          <div
+            class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[11px] font-bold shrink-0">
+            GD</div>
+          <div class="sidebar-user-info overflow-hidden min-w-0">
+            <p class="user-name text-[13px] font-medium whitespace-nowrap leading-tight">Gading Dev</p>
+            <p class="user-role text-[11px] whitespace-nowrap leading-tight">Administrator</p>
+          </div>
+          <i class="user-dots fa-solid fa-ellipsis-vertical text-xs ml-auto nav-label transition-all duration-200"></i>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════════════════ MAIN COLUMN ═══════════════════ -->
+    <div id="main-col">
+
+      <!-- Header -->
+      <header class="sticky top-0 z-20 h-16 flex items-center px-4 lg:px-6 gap-2 shrink-0">
+        <button onclick="openMobileSidebar()" class="topbar-icon-btn lg:hidden p-2 rounded-lg transition-colors">
+          <i class="fa-solid fa-bars text-[16px]"></i>
+        </button>
+        <button onclick="toggleSidebar()" class="topbar-icon-btn hidden lg:flex p-2 rounded-lg transition-colors">
+          <i class="fa-solid fa-bars text-[15px]"></i>
+        </button>
+        <nav class="hidden sm:flex items-center text-[13px] font-medium ml-1 gap-1.5 nt-text-muted2">
+          <a href="premium-table.html" class="hover:text-indigo-600 transition-colors">Home</a>
+          <i class="fa-solid fa-chevron-right text-[8px]"></i>
+          <span class="nt-text-accent">Premium Table</span>
+        </nav>
+        <div class="ml-auto flex items-center gap-1">
+          <div
+            class="topbar-search hidden md:flex items-center gap-2 rounded-lg px-3 py-2 transition-all w-44 focus-within:w-60 mr-1">
+            <i class="fa-solid fa-magnifying-glass text-[12px] nt-text-muted2"></i>
+            <input type="text" placeholder="Search…"
+              class="bg-transparent border-none outline-none text-[13px] placeholder:text-[#B0B5D8] w-full nt-input-text-strong" />
+          </div>
+          <div class="relative" id="notif-wrap">
+            <button onclick="toggleDropdown('notif')"
+              class="topbar-icon-btn relative p-2.5 rounded-lg transition-colors">
+              <i class="fa-regular fa-bell text-[16px]"></i><span class="notif-dot"></span>
+            </button>
+            <div id="notif-dropdown" class="dropdown-panel w-80">
+              <div
+                class="px-4 py-3 border-b border-surface-200 dark:border-slate-700 flex items-center justify-between">
+                <span class="text-[14px] font-semibold text-surface-900 dark:text-white">Notifications</span>
+                <span class="text-[11px] text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline">Mark all
+                  read</span>
+              </div>
+              <div class="px-4 py-4 text-center text-[13px] text-surface-400">No new notifications</div>
+            </div>
+          </div>
+          <div class="relative" id="msg-wrap">
+            <button onclick="toggleDropdown('msg')" class="topbar-icon-btn relative p-2.5 rounded-lg transition-colors">
+              <i class="fa-regular fa-comment-dots text-[16px]"></i>
+            </button>
+            <div id="msg-dropdown" class="dropdown-panel w-72">
+              <div class="px-4 py-3 border-b border-surface-200 dark:border-slate-700">
+                <span class="text-[14px] font-semibold text-surface-900 dark:text-white">Messages</span>
+              </div>
+              <div class="px-4 py-4 text-center text-[13px] text-surface-400">No new messages</div>
+            </div>
+          </div>
+          <button onclick="toggleDark()" class="topbar-icon-btn p-2.5 rounded-lg transition-colors">
+            <i class="fa-regular fa-moon text-[15px] dark:hidden"></i>
+            <i class="fa-regular fa-sun text-[15px] hidden dark:block"></i>
+          </button>
+          <div class="topbar-divider w-px h-5 mx-0.5"></div>
+          <div class="relative" id="acct-wrap">
+            <button onclick="toggleDropdown('acct')"
+              class="topbar-icon-btn flex items-center gap-2 pl-1 pr-2 py-1.5 rounded-lg transition-colors">
+              <div
+                class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[11px] font-bold">
+                GD</div>
+              <div class="hidden md:block text-left">
+                <p class="text-[13px] font-medium leading-none nt-input-text-strong">Gading</p>
+                <p class="text-[11px] leading-none mt-0.5 nt-text-muted2">Admin</p>
+              </div>
+              <i class="fa-solid fa-chevron-down text-[9px] hidden md:block ml-0.5 nt-text-soft"></i>
+            </button>
+            <div id="acct-dropdown" class="dropdown-panel w-52">
+              <div class="px-4 py-3 border-b border-surface-200 dark:border-slate-700">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-white text-[12px] font-bold">
+                    GD</div>
+                  <div>
+                    <p class="text-[13px] font-semibold text-surface-900 dark:text-white leading-tight">Gading Dev</p>
+                    <p class="text-[11px] text-surface-400 leading-tight">gading@netra-ui.io</p>
+                  </div>
+                </div>
+              </div>
+              <div class="py-1.5">
+                <a href="#"
+                  class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-surface-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors"><i
+                    class="fa-regular fa-user text-indigo-400 w-4 text-center text-[13px]"></i>My Profile</a>
+                <a href="#"
+                  class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-surface-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors"><i
+                    class="fa-solid fa-gear text-indigo-400 w-4 text-center text-[13px]"></i>Settings</a>
+              </div>
+              <div class="py-1.5 border-t border-surface-100 dark:border-slate-700">
+                <a href="#"
+                  class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"><i
+                    class="fa-solid fa-right-from-bracket w-4 text-center text-[13px]"></i>Sign out</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Title -->
+      <div class="page-title-bar px-4 lg:px-8 py-5 shrink-0">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h1 class="text-xl font-semibold text-slate-900 dark:text-white tracking-tight">Premium Table</h1>
+            <p class="text-[13px] text-indigo-400 dark:text-indigo-400 mt-0.5">Welcome back, Gading. Here's what's
+              happening today.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <main class="flex-1 px-4 lg:px-8 py-6">
+
+        <!-- ══════════════════════════════════════════════════
+            5A — TABLE STICKY COLUMN
+            data-nt-table → initTable (search/sort/pagination)
+        ══════════════════════════════════════════════════ -->
+        <div id="section-5a">
+          <div class="mb-4">
+            <h2 class="text-[15px] font-bold nt-input-text-strong">Table Sticky Column</h2>
+            <p class="text-[12.5px] mt-1 nt-text-muted2">Kolom pertama &amp; kolom aksi tetap saat scroll horizontal.
+              Class: <span class="nt-code">.col-sticky-l</span> · <span class="nt-code">.col-sticky-r</span></p>
+          </div>
+
+          <div class="comp-section mb-6">
+            <div class="comp-section-header">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="comp-section-title">Sticky Column Table</p>
+                  <p class="comp-section-desc">Scroll horizontal → kolom <strong>No</strong> dan <strong>Nama</strong>
+                    tetap di kiri, kolom <strong>Aksi</strong> tetap di kanan. Wrapper: <span
+                      class="nt-code">.nt-table-sticky-x</span></p>
+                </div>
+                <span
+                  class="text-[11px] font-mono bg-indigo-50 dark:bg-slate-800 text-indigo-400 dark:text-slate-400 px-2 py-1 rounded shrink-0">sticky-x</span>
+              </div>
+            </div>
+            <div class="comp-section-body p-0">
+              <div class="nt-table-toolbar">
+                <span class="nt-table-title">Laporan Kinerja Karyawan</span>
+                <span class="text-[11.5px] px-2 py-1 rounded-lg nt-pill-primary-soft">
+                  <i class="fa-solid fa-left-right mr-1"></i> Scroll kanan untuk lihat semua kolom
+                </span>
+              </div>
+              <div class="nt-table-wrap nt-table-wrap-bare">
+                <div class="nt-table-sticky-x">
+                  <!--
+                    STATIC HTML TABLE
+                    data-<key> pada <tr> digunakan untuk sort/search oleh initTable
+                    data-nama, data-departemen, data-jabatan, data-avg
+                  -->
+                  <table class="nt-table nt-min-w-1100" id="tbl-sticky-x">
+                    <thead>
+                      <tr>
+                        <th class="col-sticky-l col-sticky-l-1 nt-w-44">#</th>
+                        <th class="col-sticky-l col-sticky-l-2 col-sticky-l-last nt-min-w-180">Nama Karyawan</th>
+                        <th>Departemen</th>
+                        <th>Jabatan</th>
+                        <th>Q1</th>
+                        <th>Q2</th>
+                        <th>Q3</th>
+                        <th>Q4</th>
+                        <th>Rata-rata</th>
+                        <th>Target</th>
+                        <th>Bonus</th>
+                        <th>Sertifikasi</th>
+                        <th>Lembur (Jam)</th>
+                        <th class="col-sticky-r nt-text-right">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- Row 01 — Agus W. -->
+                      <tr data-nama="Agus W." data-departemen="Engineering" data-jabatan="Staff" data-avg="76">
+                        <td class="col-sticky-l col-sticky-l-1 font-mono text-[11px] text-indigo-400">01</td>
+                        <td class="col-sticky-l col-sticky-l-2 col-sticky-l-last">
+                          <div class="flex items-center gap-2">
+                            <div class="nt-avatar nt-bg-indigo">AW</div>
+                            <span class="font-medium text-[13px] nt-text-strong">Agus W.</span>
+                          </div>
+                        </td>
+                        <td><span class="nt-badge nt-badge-primary nt-text-2xs">Engineering</span></td>
+                        <td>Staff</td>
+                        <td><span class="nt-score-primary">72</span></td>
+                        <td><span class="nt-score-primary">75</span></td>
+                        <td><span class="nt-score-warning">68</span></td>
+                        <td><span class="nt-score-primary">80</span></td>
+                        <td><span class="nt-score-primary-bold">76</span></td>
+                        <td>
+                          <div class="nt-cell-progress">
+                            <div class="nt-cell-progress-track">
+                              <div class="nt-cell-progress-fill nt-bg-indigo" style="width:76%"></div>
+                            </div>
+                            <span class="nt-cell-progress-label">76%</span>
+                          </div>
+                        </td>
+                        <td class="font-mono text-[12.5px]">Rp 2.500.000</td>
+                        <td><span class="nt-badge nt-badge-info nt-text-2xs">AWS SAA</span></td>
+                        <td class="font-mono text-[13px]">10</td>
+                        <td class="col-sticky-r">
+                          <div class="nt-cell-actions justify-end">
+                            <button class="nt-action-btn" title="Detail"><i class="fa-regular fa-eye"></i></button>
+                            <button class="nt-action-btn" title="Edit"><i
+                                class="fa-regular fa-pen-to-square"></i></button>
+                          </div>
+                        </td>
+                      </tr>
+                      <!-- Row 02 — Budi H. -->
+                      <tr data-nama="Budi H." data-departemen="Design" data-jabatan="Senior" data-avg="79">
+                        <td class="col-sticky-l col-sticky-l-1 font-mono text-[11px] text-indigo-400">02</td>
+                        <td class="col-sticky-l col-sticky-l-2 col-sticky-l-last">
+                          <div class="flex items-center gap-2">
+                            <div class="nt-avatar nt-bg-cyan">BH</div>
+                            <span class="font-medium text-[13px] nt-text-strong">Budi H.</span>
+                          </div>
+                        </td>
+                        <td><span class="nt-badge nt-badge-primary nt-text-2xs">Design</span></td>
+                        <td>Senior</td>
+                        <td><span class="nt-score-primary">74</span></td>
+                        <td><span class="nt-score-primary">76</span></td>
+                        <td><span class="nt-score-primary">71</span></td>
+                        <td><span class="nt-score-primary">80</span></td>
+                        <td><span class="nt-score-primary-bold">79</span></td>
+                        <td>
+                          <div class="nt-cell-progress">
+                            <div class="nt-cell-progress-track">
+                              <div class="nt-cell-progress-fill nt-bg-indigo" style="width:79%"></div>
+                            </div>
+                            <span class="nt-cell-progress-label">79%</span>
+                          </div>
+                        </td>
+                        <td class="font-mono text-[12.5px]">Rp 2.500.000</td>
+                        <td><span class="nt-badge nt-badge-info nt-text-2xs">GCP ACE</span></td>
+                        <td class="font-mono text-[13px]">17</td>
+                        <td class="col-sticky-r">
+                          <div class="nt-cell-actions justify-end">
+                            <button class="nt-action-btn" title="Detail"><i class="fa-regular fa-eye"></i></button>
+                            <button class="nt-action-btn" title="Edit"><i
+                                class="fa-regular fa-pen-to-square"></i></button>
+                          </div>
+                        </td>
+                      </tr>
+                      <!-- Row 03 — Citra L. -->
+                      <tr data-nama="Citra L." data-departemen="Marketing" data-jabatan="Lead" data-avg="82">
+                        <td class="col-sticky-l col-sticky-l-1 font-mono text-[11px] text-indigo-400">03</td>
+                        <td class="col-sticky-l col-sticky-l-2 col-sticky-l-last">
+                          <div class="flex items-center gap-2">
+                            <div class="nt-avatar nt-bg-amber">CL</div>
+                            <span class="font-medium text-[13px] nt-text-strong">Citra L.</span>
+                          </div>
+                        </td>
+                        <td><span class="nt-badge nt-badge-primary nt-text-2xs">Marketing</span></td>
+                        <td>Lead</td>
+                        <td><span class="nt-score-primary">76</span></td>
+                        <td><span class="nt-score-primary">77</span></td>
+                        <td><span class="nt-score-primary">74</span></td>
+                        <td><span class="nt-score-primary">80</span></td>
+                        <td><span class="nt-score-primary-bold">82</span></td>
+                        <td>
+                          <div class="nt-cell-progress">
+                            <div class="nt-cell-progress-track">
+                              <div class="nt-cell-progress-fill nt-bg-indigo" style="width:82%"></div>
+                            </div>
+                            <span class="nt-cell-progress-label">82%</span>
+                          </div>
+                        </td>
+                        <td class="font-mono text-[12.5px]">Rp 2.500.000</td>
+                        <td><span class="nt-badge nt-badge-info nt-text-2xs">CKAD</span></td>
+                        <td class="font-mono text-[13px]">24</td>
+                        <td class="col-sticky-r">
+                          <div class="nt-cell-actions justify-end">
+                            <button class="nt-action-btn" title="Detail"><i class="fa-regular fa-eye"></i></button>
+                            <button class="nt-action-btn" title="Edit"><i
+                                class="fa-regular fa-pen-to-square"></i></button>
+                          </div>
+                        </td>
+                      </tr>
+                      <!-- Row 04 — Dian P. -->
+                      <tr data-nama="Dian P." data-departemen="Finance" data-jabatan="Manager" data-avg="85">
+                        <td class="col-sticky-l col-sticky-l-1 font-mono text-[11px] text-indigo-400">04</td>
+                        <td class="col-sticky-l col-sticky-l-2 col-sticky-l-last">
+                          <div class="flex items-center gap-2">
+                            <div class="nt-avatar nt-bg-red">DP</div>
+                            <span class="font-medium text-[13px] nt-text-strong">Dian P.</span>
+                          </div>
+                        </td>
+                        <td><span class="nt-badge nt-badge-primary nt-text-2xs">Finance</span></td>
+                        <td>Manager</td>
+                        <td><span class="nt-score-primary">78</span></td>
+                        <td><span class="nt-score-primary">78</span></td>
+                        <td><span class="nt-score-primary">77</span></td>
+                        <td><span class="nt-score-primary">80</span></td>
+                        <td><span class="nt-score-primary-bold">85</span></td>
+                        <td>
+                          <div class="nt-cell-progress">
+                            <div class="nt-cell-progress-track">
+                              <div class="nt-cell-progress-fill nt-bg-indigo" style="width:85%"></div>
+                            </div>
+                            <span class="nt-cell-progress-label">85%</span>
+                          </div>
+                        </td>
+                        <td class="font-mono text-[12.5px]">Rp 5.000.000</td>
+                        <td><span class="nt-badge nt-badge-info nt-text-2xs">PMP</span></td>
+                        <td class="font-mono text-[13px]">31</td>
+                        <td class="col-sticky-r">
+                          <div class="nt-cell-actions justify-end">
+                            <button class="nt-action-btn" title="Detail"><i class="fa-regular fa-eye"></i></button>
+                            <button class="nt-action-btn" title="Edit"><i
+                                class="fa-regular fa-pen-to-square"></i></button>
+                          </div>
+                        </td>
+                      </tr>
+                      <!-- Row 05 — Eko S. -->
+                      <tr data-nama="Eko S." data-departemen="Operations" data-jabatan="Director" data-avg="90">
+                        <td class="col-sticky-l col-sticky-l-1 font-mono text-[11px] text-indigo-400">05</td>
+                        <td class="col-sticky-l col-sticky-l-2 col-sticky-l-last">
+                          <div class="flex items-center gap-2">
+                            <div class="nt-avatar nt-bg-green">ES</div>
+                            <span class="font-medium text-[13px] nt-text-strong">Eko S.</span>
+                          </div>
+                        </td>
+                        <td><span class="nt-badge nt-badge-primary nt-text-2xs">Operations</span></td>
+                        <td>Director</td>
+                        <td><span class="nt-score-success">90</span></td>
+                        <td><span class="nt-score-primary">79</span></td>
+                        <td><span class="nt-score-primary">83</span></td>
+                        <td><span class="nt-score-primary">80</span></td>
+                        <td><span class="nt-score-success-bold">90</span></td>
+                        <td>
+                          <div class="nt-cell-progress">
+                            <div class="nt-cell-progress-track">
+                              <div class="nt-cell-progress-fill nt-bg-green" style="width:90%"></div>
+                            </div>
+                            <span class="nt-cell-progress-label">90%</span>
+                          </div>
+                        </td>
+                        <td class="font-mono text-[12.5px]">Rp 5.000.000</td>
+                        <td><span class="nt-badge nt-badge-info nt-text-2xs">Scrum Master</span></td>
+                        <td class="font-mono text-[13px]">38</td>
+                        <td class="col-sticky-r">
+                          <div class="nt-cell-actions justify-end">
+                            <button class="nt-action-btn" title="Detail"><i class="fa-regular fa-eye"></i></button>
+                            <button class="nt-action-btn" title="Edit"><i
+                                class="fa-regular fa-pen-to-square"></i></button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════
+            5B — TABLE HIERARKI (Tree Table)
+            data-nt-tree-table → initTreeTable
+            Toggle expand/collapse via data-nt-tree-toggle
+        ══════════════════════════════════════════════════ -->
+        <div class="mt-4">
+          <div class="mb-4">
+            <h2 class="text-[15px] font-bold nt-input-text-strong">Table Hierarki (Tree Table)</h2>
+            <p class="text-[12.5px] mt-1 nt-text-muted2">Baris parent-child bisa di-expand/collapse. Class row: <span
+                class="nt-code">.nt-tree-l1</span> · <span class="nt-code">.nt-tree-l2</span> · <span
+                class="nt-code">.nt-tree-l3</span></p>
+          </div>
+
+          <div class="comp-section">
+            <div class="comp-section-header">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="comp-section-title">Struktur Organisasi &amp; Anggaran</p>
+                  <p class="comp-section-desc">Klik ikon <i class="fa-solid fa-plus nt-icon-primary-2xs"></i> / <i
+                      class="fa-solid fa-minus nt-icon-primary-2xs"></i> untuk expand/collapse. Mendukung 3 level
+                    kedalaman.</p>
+                </div>
+                <div class="flex gap-2">
+                  <!--
+                    data-nt-tree-expand-all / data-nt-tree-collapse-all:
+                    data-target = CSS selector untuk [data-nt-tree-table]
+                  -->
+                  <button data-nt-tree-expand-all data-target="#tree-table" class="nt-btn nt-btn-secondary nt-btn-sm"><i
+                      class="fa-solid fa-maximize"></i> Expand All</button>
+                  <button data-nt-tree-collapse-all data-target="#tree-table"
+                    class="nt-btn nt-btn-secondary nt-btn-sm"><i class="fa-solid fa-minimize"></i> Collapse</button>
+                </div>
+              </div>
+            </div>
+            <div class="comp-section-body p-0">
+              <div class="nt-table-wrap nt-table-wrap-flush">
+                <!--
+                  data-nt-tree-table: penanda untuk initTreeTable
+                  Setiap <tr> wajib punya:
+                    - data-node-id  : ID unik node
+                    - data-parent   : ID parent (hanya child rows)
+                    - class nt-tree-child + hidden  : child tersembunyi saat load
+
+                  .nt-tree-toggle button wajib punya:
+                    - data-node-id  : sama dengan row-nya
+                -->
+                <table class="nt-table" id="tree-table" data-nt-tree-table>
+                  <thead>
+                    <tr>
+                      <th class="nt-min-w-260">Divisi / Tim / Anggota</th>
+                      <th>Kepala</th>
+                      <th>Anggota</th>
+                      <th>Anggaran</th>
+                      <th>Terpakai</th>
+                      <th>Sisa</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- ── Level 1: Divisi Teknologi ── -->
+                    <tr class="nt-tree-l1 nt-tree-node" data-node-id="div-tech">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-1">
+                          <button class="nt-tree-toggle" data-node-id="div-tech"><i
+                              class="fa-solid fa-minus"></i></button>
+                          <i class="fa-solid fa-folder-open text-[12px] mr-1 nt-text-primary"></i>
+                          <span class="nt-text-sm">Divisi Teknologi</span>
+                        </div>
+                      </td>
+                      <td>Andi R.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">24 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 2400Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-indigo" style="width:70%"></div>
+                          </div>
+                          <span class="nt-cell-progress-label">Rp 1680Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 720Jt</td>
+                      <td><span class="nt-badge nt-badge-success nt-text-2xs">On Budget</span></td>
+                    </tr>
+
+                    <!-- ── Level 2: Tim Engineering (child div-tech) ── -->
+                    <tr class="nt-tree-l2 nt-tree-node nt-tree-child" data-node-id="tm-eng" data-parent="div-tech">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-2">
+                          <span class="nt-tree-line"></span>
+                          <button class="nt-tree-toggle" data-node-id="tm-eng"><i
+                              class="fa-solid fa-minus"></i></button>
+                          <i class="fa-solid fa-folder-open text-[12px] mr-1 nt-text-cyan"></i>
+                          <span class="nt-text-sm">Tim Engineering</span>
+                        </div>
+                      </td>
+                      <td>Budi S.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">10 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 900Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-indigo" style="width:80%"></div>
+                          </div>
+                          <span class="nt-cell-progress-label">Rp 720Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 180Jt</td>
+                      <td><span class="nt-badge nt-badge-success nt-text-2xs">On Budget</span></td>
+                    </tr>
+                    <!-- Level 3: Frontend Dev -->
+                    <tr class="nt-tree-l3 nt-tree-node nt-tree-child" data-node-id="mb-fe" data-parent="tm-eng">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-3">
+                          <span class="nt-tree-line"></span>
+                          <span class="nt-tree-spacer"></span>
+                          <i class="fa-regular fa-user text-[11px] mr-1 nt-text-faint"></i>
+                          <span class="nt-text-sm">Frontend Dev</span>
+                        </div>
+                      </td>
+                      <td>Citra L.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">4 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 350Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-indigo" style="width:83%"></div>
+                          </div>
+                          <span class="nt-cell-progress-label">Rp 290Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 60Jt</td>
+                      <td><span class="nt-badge nt-badge-info nt-text-2xs">Normal</span></td>
+                    </tr>
+                    <!-- Level 3: Backend Dev -->
+                    <tr class="nt-tree-l3 nt-tree-node nt-tree-child" data-node-id="mb-be" data-parent="tm-eng">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-3">
+                          <span class="nt-tree-line"></span>
+                          <span class="nt-tree-spacer"></span>
+                          <i class="fa-regular fa-user text-[11px] mr-1 nt-text-faint"></i>
+                          <span class="nt-text-sm">Backend Dev</span>
+                        </div>
+                      </td>
+                      <td>Dimas P.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">4 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 380Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-indigo" style="width:82%"></div>
+                          </div>
+                          <span class="nt-cell-progress-label">Rp 310Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 70Jt</td>
+                      <td><span class="nt-badge nt-badge-info nt-text-2xs">Normal</span></td>
+                    </tr>
+                    <!-- Level 3: DevOps -->
+                    <tr class="nt-tree-l3 nt-tree-node nt-tree-child" data-node-id="mb-dv" data-parent="tm-eng">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-3">
+                          <span class="nt-tree-line"></span>
+                          <span class="nt-tree-spacer"></span>
+                          <i class="fa-regular fa-user text-[11px] mr-1 nt-text-faint"></i>
+                          <span class="nt-text-sm">DevOps</span>
+                        </div>
+                      </td>
+                      <td>Eko S.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">2 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 170Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-green" style="width:71%"></div>
+                          </div>
+                          <span class="nt-cell-progress-label">Rp 120Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 50Jt</td>
+                      <td><span class="nt-badge nt-badge-success nt-text-2xs">Efisien</span></td>
+                    </tr>
+
+                    <!-- ── Level 2: Tim Design ── -->
+                    <tr class="nt-tree-l2 nt-tree-node nt-tree-child" data-node-id="tm-ds" data-parent="div-tech">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-2">
+                          <span class="nt-tree-line"></span>
+                          <button class="nt-tree-toggle" data-node-id="tm-ds"><i class="fa-solid fa-minus"></i></button>
+                          <i class="fa-solid fa-folder-open text-[12px] mr-1 nt-text-cyan"></i>
+                          <span class="nt-text-sm">Tim Design</span>
+                        </div>
+                      </td>
+                      <td>Fitri H.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">6 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 480Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-indigo" style="width:75%"></div>
+                          </div>
+                          <span class="nt-cell-progress-label">Rp 360Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 120Jt</td>
+                      <td><span class="nt-badge nt-badge-info nt-text-2xs">Normal</span></td>
+                    </tr>
+                    <tr class="nt-tree-l3 nt-tree-node nt-tree-child" data-node-id="mb-ui" data-parent="tm-ds">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-3"><span
+                            class="nt-tree-line"></span><span class="nt-tree-spacer"></span><i
+                            class="fa-regular fa-user text-[11px] mr-1 nt-text-faint"></i><span class="nt-text-sm">UI/UX
+                            Designer</span></div>
+                      </td>
+                      <td>Galih P.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">4 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 320Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-indigo" style="width:75%"></div>
+                          </div><span class="nt-cell-progress-label">Rp 240Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 80Jt</td>
+                      <td><span class="nt-badge nt-badge-info nt-text-2xs">Normal</span></td>
+                    </tr>
+                    <tr class="nt-tree-l3 nt-tree-node nt-tree-child" data-node-id="mb-br" data-parent="tm-ds">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-3"><span
+                            class="nt-tree-line"></span><span class="nt-tree-spacer"></span><i
+                            class="fa-regular fa-user text-[11px] mr-1 nt-text-faint"></i><span class="nt-text-sm">Brand
+                            &amp; Motion</span></div>
+                      </td>
+                      <td>Hana S.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">2 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 160Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-indigo" style="width:75%"></div>
+                          </div><span class="nt-cell-progress-label">Rp 120Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 40Jt</td>
+                      <td><span class="nt-badge nt-badge-info nt-text-2xs">Normal</span></td>
+                    </tr>
+
+                    <!-- ── Level 2: Tim Product ── -->
+                    <tr class="nt-tree-l2 nt-tree-node nt-tree-child" data-node-id="tm-pm" data-parent="div-tech">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-2">
+                          <span class="nt-tree-line"></span>
+                          <button class="nt-tree-toggle" data-node-id="tm-pm"><i class="fa-solid fa-minus"></i></button>
+                          <i class="fa-solid fa-folder-open text-[12px] mr-1 nt-text-cyan"></i>
+                          <span class="nt-text-sm">Tim Product</span>
+                        </div>
+                      </td>
+                      <td>Irfan M.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">4 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 360Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-amber" style="width:81%"></div>
+                          </div><span class="nt-cell-progress-label">Rp 290Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 70Jt</td>
+                      <td><span class="nt-badge nt-badge-warning nt-text-2xs">Overrun</span></td>
+                    </tr>
+                    <tr class="nt-tree-l3 nt-tree-node nt-tree-child" data-node-id="mb-po" data-parent="tm-pm">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-3"><span
+                            class="nt-tree-line"></span><span class="nt-tree-spacer"></span><i
+                            class="fa-regular fa-user text-[11px] mr-1 nt-text-faint"></i><span
+                            class="nt-text-sm">Product Owner</span></div>
+                      </td>
+                      <td>Joko N.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">2 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 200Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-amber" style="width:88%"></div>
+                          </div><span class="nt-cell-progress-label">Rp 175Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 25Jt</td>
+                      <td><span class="nt-badge nt-badge-info nt-text-2xs">Normal</span></td>
+                    </tr>
+                    <tr class="nt-tree-l3 nt-tree-node nt-tree-child" data-node-id="mb-qa" data-parent="tm-pm">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-3"><span
+                            class="nt-tree-line"></span><span class="nt-tree-spacer"></span><i
+                            class="fa-regular fa-user text-[11px] mr-1 nt-text-faint"></i><span class="nt-text-sm">QA
+                            Engineer</span></div>
+                      </td>
+                      <td>Kurnia D.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">2 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 160Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-green" style="width:72%"></div>
+                          </div><span class="nt-cell-progress-label">Rp 115Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 45Jt</td>
+                      <td><span class="nt-badge nt-badge-success nt-text-2xs">Efisien</span></td>
+                    </tr>
+
+                    <!-- ── Level 1: Divisi Bisnis ── -->
+                    <tr class="nt-tree-l1 nt-tree-node" data-node-id="div-biz">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-1">
+                          <button class="nt-tree-toggle" data-node-id="div-biz"><i
+                              class="fa-solid fa-minus"></i></button>
+                          <i class="fa-solid fa-folder-open text-[12px] mr-1 nt-text-primary"></i>
+                          <span class="nt-text-sm">Divisi Bisnis</span>
+                        </div>
+                      </td>
+                      <td>Lutfi H.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">18 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 1800Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-indigo" style="width:80%"></div>
+                          </div><span class="nt-cell-progress-label">Rp 1440Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 360Jt</td>
+                      <td><span class="nt-badge nt-badge-success nt-text-2xs">On Budget</span></td>
+                    </tr>
+
+                    <!-- Level 2: Tim Marketing -->
+                    <tr class="nt-tree-l2 nt-tree-node nt-tree-child" data-node-id="tm-mkt" data-parent="div-biz">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-2">
+                          <span class="nt-tree-line"></span>
+                          <button class="nt-tree-toggle" data-node-id="tm-mkt"><i
+                              class="fa-solid fa-minus"></i></button>
+                          <i class="fa-solid fa-folder-open text-[12px] mr-1 nt-text-cyan"></i>
+                          <span class="nt-text-sm">Tim Marketing</span>
+                        </div>
+                      </td>
+                      <td>Mira C.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">8 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 800Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-amber" style="width:90%"></div>
+                          </div><span class="nt-cell-progress-label">Rp 720Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 80Jt</td>
+                      <td><span class="nt-badge nt-badge-info nt-text-2xs">Normal</span></td>
+                    </tr>
+                    <tr class="nt-tree-l3 nt-tree-node nt-tree-child" data-node-id="mb-dg" data-parent="tm-mkt">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-3"><span
+                            class="nt-tree-line"></span><span class="nt-tree-spacer"></span><i
+                            class="fa-regular fa-user text-[11px] mr-1 nt-text-faint"></i><span
+                            class="nt-text-sm">Digital Ads</span></div>
+                      </td>
+                      <td>Nanda S.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">4 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 450Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-red" style="width:93%"></div>
+                          </div><span class="nt-cell-progress-label">Rp 420Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 30Jt</td>
+                      <td><span class="nt-badge nt-badge-warning nt-text-2xs">Hampir Limit</span></td>
+                    </tr>
+                    <tr class="nt-tree-l3 nt-tree-node nt-tree-child" data-node-id="mb-cn" data-parent="tm-mkt">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-3"><span
+                            class="nt-tree-line"></span><span class="nt-tree-spacer"></span><i
+                            class="fa-regular fa-user text-[11px] mr-1 nt-text-faint"></i><span
+                            class="nt-text-sm">Content &amp; SEO</span></div>
+                      </td>
+                      <td>Oki F.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">4 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 350Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-indigo" style="width:86%"></div>
+                          </div><span class="nt-cell-progress-label">Rp 300Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 50Jt</td>
+                      <td><span class="nt-badge nt-badge-info nt-text-2xs">Normal</span></td>
+                    </tr>
+
+                    <!-- Level 2: Tim Finance -->
+                    <tr class="nt-tree-l2 nt-tree-node nt-tree-child" data-node-id="tm-fin" data-parent="div-biz">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-2">
+                          <span class="nt-tree-line"></span>
+                          <button class="nt-tree-toggle" data-node-id="tm-fin"><i
+                              class="fa-solid fa-minus"></i></button>
+                          <i class="fa-solid fa-folder-open text-[12px] mr-1 nt-text-cyan"></i>
+                          <span class="nt-text-sm">Tim Finance</span>
+                        </div>
+                      </td>
+                      <td>Putri R.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">6 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 600Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-green" style="width:73%"></div>
+                          </div><span class="nt-cell-progress-label">Rp 440Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 160Jt</td>
+                      <td><span class="nt-badge nt-badge-success nt-text-2xs">Efisien</span></td>
+                    </tr>
+                    <tr class="nt-tree-l3 nt-tree-node nt-tree-child" data-node-id="mb-ac" data-parent="tm-fin">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-3"><span
+                            class="nt-tree-line"></span><span class="nt-tree-spacer"></span><i
+                            class="fa-regular fa-user text-[11px] mr-1 nt-text-faint"></i><span
+                            class="nt-text-sm">Accounting</span></div>
+                      </td>
+                      <td>Qori A.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">3 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 300Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-green" style="width:73%"></div>
+                          </div><span class="nt-cell-progress-label">Rp 220Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 80Jt</td>
+                      <td><span class="nt-badge nt-badge-info nt-text-2xs">Normal</span></td>
+                    </tr>
+                    <tr class="nt-tree-l3 nt-tree-node nt-tree-child" data-node-id="mb-tx" data-parent="tm-fin">
+                      <td>
+                        <div class="flex items-center nt-tree-indent nt-tree-indent-3"><span
+                            class="nt-tree-line"></span><span class="nt-tree-spacer"></span><i
+                            class="fa-regular fa-user text-[11px] mr-1 nt-text-faint"></i><span class="nt-text-sm">Tax
+                            &amp; Legal</span></div>
+                      </td>
+                      <td>Rudi S.</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">3 orang</span></td>
+                      <td class="font-mono text-[12.5px]">Rp 300Jt</td>
+                      <td>
+                        <div class="nt-cell-progress">
+                          <div class="nt-cell-progress-track">
+                            <div class="nt-cell-progress-fill nt-bg-green" style="width:73%"></div>
+                          </div><span class="nt-cell-progress-label">Rp 220Jt</span>
+                        </div>
+                      </td>
+                      <td class="font-mono text-[12.5px]">Rp 80Jt</td>
+                      <td><span class="nt-badge nt-badge-info nt-text-2xs">Normal</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════
+            5C — TABLE COLLAPSE (Accordion Row Detail)
+            data-nt-collapse-table → initCollapseTable
+            data-nt-collapse-row + data-target → trigger row
+            data-nt-expand-btn + data-target   → expand button
+        ══════════════════════════════════════════════════ -->
+        <div id="section-5c" class="mt-4">
+          <div class="mb-4">
+            <h2 class="text-[15px] font-bold nt-input-text-strong">Table Collapse (Accordion Row Detail)</h2>
+            <p class="text-[12.5px] mt-1 nt-text-muted2">Setiap baris bisa di-expand untuk menampilkan detail inline.
+              Class: <span class="nt-code">.nt-expand-btn</span> · <span class="nt-code">.nt-detail-row</span></p>
+          </div>
+
+          <div class="comp-section">
+            <div class="comp-section-header">
+              <p class="comp-section-title">Order List dengan Detail</p>
+              <p class="comp-section-desc">Klik tombol panah <i
+                  class="fa-solid fa-chevron-right nt-icon-primary-2xs"></i> atau baris untuk melihat detail order,
+                shipping, dan item.</p>
+            </div>
+            <div class="comp-section-body p-0">
+              <div class="nt-table-wrap nt-table-wrap-flush">
+                <!--
+                  data-nt-collapse-table: penanda untuk initCollapseTable
+                  Main row  : data-nt-collapse-row + data-target="detail-row-N"
+                  Expand btn: data-nt-expand-btn  + data-target="detail-row-N"
+                  Detail row: id="detail-row-N"   → berisi .nt-detail-inner
+                -->
+                <table class="nt-table" id="collapse-table" data-nt-collapse-table>
+                  <thead>
+                    <tr>
+                      <th class="nt-w-30"></th>
+                      <th>Order ID</th>
+                      <th>Pelanggan</th>
+                      <th>Tanggal</th>
+                      <th>Item</th>
+                      <th>Total</th>
+                      <th>Metode</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    <!-- ── Order #ORD-8821 ── -->
+                    <tr class="cursor-pointer" data-nt-collapse-row data-target="detail-row-0">
+                      <td class="nt-tree-indent nt-tree-indent-2">
+                        <button class="nt-expand-btn" data-nt-expand-btn data-target="detail-row-0">
+                          <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                      </td>
+                      <td class="font-mono text-[12px] nt-text-primary">#ORD-8821</td>
+                      <td class="font-medium nt-text-strong">Andi Ramadhan</td>
+                      <td class="font-mono text-[12px]">11 Jun 2026</td>
+                      <td>3 item</td>
+                      <td class="font-mono">Rp 1.250.000</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">Transfer</span></td>
+                      <td><span class="nt-badge nt-badge-info">Dikirim</span></td>
+                    </tr>
+                    <tr class="nt-detail-row" id="detail-row-0">
+                      <td colspan="8">
+                        <div class="nt-detail-inner">
+                          <div class="nt-detail-grid mb-4">
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">No. HP</div>
+                              <div class="nt-detail-value">0812-3456-7890</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Alamat</div>
+                              <div class="nt-detail-value">Jl. Merdeka No. 12, Jakarta Pusat</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Kurir</div>
+                              <div class="nt-detail-value">JNE REG</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">No. Resi</div>
+                              <div class="nt-detail-value font-mono">JNE123456789</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Catatan</div>
+                              <div class="nt-detail-value">Titip di pos satpam</div>
+                            </div>
+                          </div>
+                          <div class="nt-detail-subtable">
+                            <table>
+                              <thead>
+                                <tr>
+                                  <th>Nama Produk</th>
+                                  <th class="nt-text-center">Qty</th>
+                                  <th class="nt-text-right">Harga</th>
+                                  <th class="nt-text-right">Subtotal</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>Hoodie Netra</td>
+                                  <td class="nt-text-center nt-text-faint">1</td>
+                                  <td class="nt-num">Rp 450.000</td>
+                                  <td class="nt-num-strong">Rp 450.000</td>
+                                </tr>
+                                <tr>
+                                  <td>Tshirt Dev</td>
+                                  <td class="nt-text-center nt-text-faint">2</td>
+                                  <td class="nt-num">Rp 250.000</td>
+                                  <td class="nt-num-strong">Rp 500.000</td>
+                                </tr>
+                                <tr class="subtable-total">
+                                  <td colspan="3">Total</td>
+                                  <td class="nt-num">Rp 1.250.000</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- ── Order #ORD-8820 ── -->
+                    <tr class="cursor-pointer" data-nt-collapse-row data-target="detail-row-1">
+                      <td class="nt-tree-indent nt-tree-indent-2">
+                        <button class="nt-expand-btn" data-nt-expand-btn data-target="detail-row-1">
+                          <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                      </td>
+                      <td class="font-mono text-[12px] nt-text-primary">#ORD-8820</td>
+                      <td class="font-medium nt-text-strong">Budi Santoso</td>
+                      <td class="font-mono text-[12px]">11 Jun 2026</td>
+                      <td>1 item</td>
+                      <td class="font-mono">Rp 280.000</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">COD</span></td>
+                      <td><span class="nt-badge nt-badge-warning">Pending</span></td>
+                    </tr>
+                    <tr class="nt-detail-row" id="detail-row-1">
+                      <td colspan="8">
+                        <div class="nt-detail-inner">
+                          <div class="nt-detail-grid mb-4">
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">No. HP</div>
+                              <div class="nt-detail-value">0813-9988-7766</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Alamat</div>
+                              <div class="nt-detail-value">Jl. Sudirman No. 5, Bandung</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Kurir</div>
+                              <div class="nt-detail-value">SiCepat</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">No. Resi</div>
+                              <div class="nt-detail-value font-mono">-</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Catatan</div>
+                              <div class="nt-detail-value">Bayar COD</div>
+                            </div>
+                          </div>
+                          <div class="nt-detail-subtable">
+                            <table>
+                              <thead>
+                                <tr>
+                                  <th>Nama Produk</th>
+                                  <th class="nt-text-center">Qty</th>
+                                  <th class="nt-text-right">Harga</th>
+                                  <th class="nt-text-right">Subtotal</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>Mug Custom</td>
+                                  <td class="nt-text-center nt-text-faint">1</td>
+                                  <td class="nt-num">Rp 280.000</td>
+                                  <td class="nt-num-strong">Rp 280.000</td>
+                                </tr>
+                                <tr class="subtable-total">
+                                  <td colspan="3">Total</td>
+                                  <td class="nt-num">Rp 280.000</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- ── Order #ORD-8819 ── -->
+                    <tr class="cursor-pointer" data-nt-collapse-row data-target="detail-row-2">
+                      <td class="nt-tree-indent nt-tree-indent-2">
+                        <button class="nt-expand-btn" data-nt-expand-btn data-target="detail-row-2">
+                          <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                      </td>
+                      <td class="font-mono text-[12px] nt-text-primary">#ORD-8819</td>
+                      <td class="font-medium nt-text-strong">Citra Wulandari</td>
+                      <td class="font-mono text-[12px]">10 Jun 2026</td>
+                      <td>4 item</td>
+                      <td class="font-mono">Rp 3.200.000</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">Kartu Kredit</span></td>
+                      <td><span class="nt-badge nt-badge-success">Selesai</span></td>
+                    </tr>
+                    <tr class="nt-detail-row" id="detail-row-2">
+                      <td colspan="8">
+                        <div class="nt-detail-inner">
+                          <div class="nt-detail-grid mb-4">
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">No. HP</div>
+                              <div class="nt-detail-value">0821-5544-3322</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Alamat</div>
+                              <div class="nt-detail-value">Jl. Ahmad Yani No. 88, Surabaya</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Kurir</div>
+                              <div class="nt-detail-value">Gosend</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">No. Resi</div>
+                              <div class="nt-detail-value font-mono">GS0099887</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Catatan</div>
+                              <div class="nt-detail-value">-</div>
+                            </div>
+                          </div>
+                          <div class="nt-detail-subtable">
+                            <table>
+                              <thead>
+                                <tr>
+                                  <th>Nama Produk</th>
+                                  <th class="nt-text-center">Qty</th>
+                                  <th class="nt-text-right">Harga</th>
+                                  <th class="nt-text-right">Subtotal</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>Mechanical Keyboard</td>
+                                  <td class="nt-text-center nt-text-faint">1</td>
+                                  <td class="nt-num">Rp 1.800.000</td>
+                                  <td class="nt-num-strong">Rp 1.800.000</td>
+                                </tr>
+                                <tr>
+                                  <td>Mouse Pad XL</td>
+                                  <td class="nt-text-center nt-text-faint">1</td>
+                                  <td class="nt-num">Rp 250.000</td>
+                                  <td class="nt-num-strong">Rp 250.000</td>
+                                </tr>
+                                <tr>
+                                  <td>USB Hub</td>
+                                  <td class="nt-text-center nt-text-faint">2</td>
+                                  <td class="nt-num">Rp 575.000</td>
+                                  <td class="nt-num-strong">Rp 1.150.000</td>
+                                </tr>
+                                <tr class="subtable-total">
+                                  <td colspan="3">Total</td>
+                                  <td class="nt-num">Rp 3.200.000</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- ── Order #ORD-8818 ── -->
+                    <tr class="cursor-pointer" data-nt-collapse-row data-target="detail-row-3">
+                      <td class="nt-tree-indent nt-tree-indent-2">
+                        <button class="nt-expand-btn" data-nt-expand-btn data-target="detail-row-3">
+                          <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                      </td>
+                      <td class="font-mono text-[12px] nt-text-primary">#ORD-8818</td>
+                      <td class="font-medium nt-text-strong">Dimas Pratama</td>
+                      <td class="font-mono text-[12px]">09 Jun 2026</td>
+                      <td>2 item</td>
+                      <td class="font-mono">Rp 680.000</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">GoPay</span></td>
+                      <td><span class="nt-badge nt-badge-danger">Dibatalkan</span></td>
+                    </tr>
+                    <tr class="nt-detail-row" id="detail-row-3">
+                      <td colspan="8">
+                        <div class="nt-detail-inner">
+                          <div class="nt-detail-grid mb-4">
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">No. HP</div>
+                              <div class="nt-detail-value">0811-2233-4455</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Alamat</div>
+                              <div class="nt-detail-value">Jl. Kaliurang KM 5, Yogyakarta</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Kurir</div>
+                              <div class="nt-detail-value">-</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">No. Resi</div>
+                              <div class="nt-detail-value font-mono">-</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Catatan</div>
+                              <div class="nt-detail-value">Dibatalkan oleh pembeli</div>
+                            </div>
+                          </div>
+                          <div class="nt-detail-subtable">
+                            <table>
+                              <thead>
+                                <tr>
+                                  <th>Nama Produk</th>
+                                  <th class="nt-text-center">Qty</th>
+                                  <th class="nt-text-right">Harga</th>
+                                  <th class="nt-text-right">Subtotal</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>Sticker Pack</td>
+                                  <td class="nt-text-center nt-text-faint">2</td>
+                                  <td class="nt-num">Rp 180.000</td>
+                                  <td class="nt-num-strong">Rp 360.000</td>
+                                </tr>
+                                <tr>
+                                  <td>Lanyard</td>
+                                  <td class="nt-text-center nt-text-faint">2</td>
+                                  <td class="nt-num">Rp 160.000</td>
+                                  <td class="nt-num-strong">Rp 320.000</td>
+                                </tr>
+                                <tr class="subtable-total">
+                                  <td colspan="3">Total</td>
+                                  <td class="nt-num">Rp 680.000</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- ── Order #ORD-8817 ── -->
+                    <tr class="cursor-pointer" data-nt-collapse-row data-target="detail-row-4">
+                      <td class="nt-tree-indent nt-tree-indent-2">
+                        <button class="nt-expand-btn" data-nt-expand-btn data-target="detail-row-4">
+                          <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                      </td>
+                      <td class="font-mono text-[12px] nt-text-primary">#ORD-8817</td>
+                      <td class="font-medium nt-text-strong">Eka Noviyanti</td>
+                      <td class="font-mono text-[12px]">08 Jun 2026</td>
+                      <td>2 item</td>
+                      <td class="font-mono">Rp 1.560.000</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">DANA</span></td>
+                      <td><span class="nt-badge nt-badge-info">Dikirim</span></td>
+                    </tr>
+                    <tr class="nt-detail-row" id="detail-row-4">
+                      <td colspan="8">
+                        <div class="nt-detail-inner">
+                          <div class="nt-detail-grid mb-4">
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">No. HP</div>
+                              <div class="nt-detail-value">0817-6655-4433</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Alamat</div>
+                              <div class="nt-detail-value">Jl. Slamet Riyadi No. 33, Solo</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Kurir</div>
+                              <div class="nt-detail-value">AnterAja</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">No. Resi</div>
+                              <div class="nt-detail-value font-mono">AA77665544</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Catatan</div>
+                              <div class="nt-detail-value">Hub dulu sebelum kirim</div>
+                            </div>
+                          </div>
+                          <div class="nt-detail-subtable">
+                            <table>
+                              <thead>
+                                <tr>
+                                  <th>Nama Produk</th>
+                                  <th class="nt-text-center">Qty</th>
+                                  <th class="nt-text-right">Harga</th>
+                                  <th class="nt-text-right">Subtotal</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>Tote Bag Canvas</td>
+                                  <td class="nt-text-center nt-text-faint">2</td>
+                                  <td class="nt-num">Rp 380.000</td>
+                                  <td class="nt-num-strong">Rp 760.000</td>
+                                </tr>
+                                <tr>
+                                  <td>Notebook Hardcover</td>
+                                  <td class="nt-text-center nt-text-faint">2</td>
+                                  <td class="nt-num">Rp 400.000</td>
+                                  <td class="nt-num-strong">Rp 800.000</td>
+                                </tr>
+                                <tr class="subtable-total">
+                                  <td colspan="3">Total</td>
+                                  <td class="nt-num">Rp 1.560.000</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- ── Order #ORD-8816 ── -->
+                    <tr class="cursor-pointer" data-nt-collapse-row data-target="detail-row-5">
+                      <td class="nt-tree-indent nt-tree-indent-2">
+                        <button class="nt-expand-btn" data-nt-expand-btn data-target="detail-row-5">
+                          <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                      </td>
+                      <td class="font-mono text-[12px] nt-text-primary">#ORD-8816</td>
+                      <td class="font-medium nt-text-strong">Fajar Nugroho</td>
+                      <td class="font-mono text-[12px]">07 Jun 2026</td>
+                      <td>1 item</td>
+                      <td class="font-mono">Rp 4.800.000</td>
+                      <td><span class="nt-badge nt-badge-neutral nt-text-2xs">Transfer</span></td>
+                      <td><span class="nt-badge nt-badge-success">Selesai</span></td>
+                    </tr>
+                    <tr class="nt-detail-row" id="detail-row-5">
+                      <td colspan="8">
+                        <div class="nt-detail-inner">
+                          <div class="nt-detail-grid mb-4">
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">No. HP</div>
+                              <div class="nt-detail-value">0895-1122-3344</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Alamat</div>
+                              <div class="nt-detail-value">Jl. Gatot Subroto No. 9, Jakarta Selatan</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Kurir</div>
+                              <div class="nt-detail-value">JNE YES</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">No. Resi</div>
+                              <div class="nt-detail-value font-mono">JNE987654321</div>
+                            </div>
+                            <div class="nt-detail-item">
+                              <div class="nt-detail-label">Catatan</div>
+                              <div class="nt-detail-value">-</div>
+                            </div>
+                          </div>
+                          <div class="nt-detail-subtable">
+                            <table>
+                              <thead>
+                                <tr>
+                                  <th>Nama Produk</th>
+                                  <th class="nt-text-center">Qty</th>
+                                  <th class="nt-text-right">Harga</th>
+                                  <th class="nt-text-right">Subtotal</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>Monitor 27" QHD</td>
+                                  <td class="nt-text-center nt-text-faint">1</td>
+                                  <td class="nt-num">Rp 4.800.000</td>
+                                  <td class="nt-num-strong">Rp 4.800.000</td>
+                                </tr>
+                                <tr class="subtable-total">
+                                  <td colspan="3">Total</td>
+                                  <td class="nt-num">Rp 4.800.000</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+      <footer
+        class="border-t border-indigo-100 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 lg:px-8 py-4 shrink-0">
+        <div
+          class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[12px] text-surface-400 dark:text-slate-500">
+          <p>© 2026 <span class="font-medium text-indigo-600 dark:text-indigo-400">Netra UI</span>. All rights reserved.
+          </p>
+          <div class="flex items-center gap-4">
+            <a href="#" class="hover:text-indigo-600 transition-colors">Privacy</a>
+            <a href="#" class="hover:text-indigo-600 transition-colors">Terms</a>
+            <a href="#" class="hover:text-indigo-600 transition-colors">Support</a>
+            <span class="text-surface-300 dark:text-slate-700">v1.0.0</span>
+          </div>
+        </div>
+      </footer>
+
+    </div><!-- end main-col -->
+  </div><!-- end app -->
+
+  <script src="../assets/js/netra-base.js"></script>
+  <script src="../assets/js/netra-tables.js"></script>
+
+</body>
+
+</html>

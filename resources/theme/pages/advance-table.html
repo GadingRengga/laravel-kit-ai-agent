@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Netra UI — Advance Table</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="../assets/css/netra-base.css" />
+    <link rel="stylesheet" href="../assets/css/netra-buttons.css" />
+    <link rel="stylesheet" href="../assets/css/netra-tables.css" />
+    <link rel="stylesheet" href="../assets/css/netra-utilities.css" />
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['DM Sans', 'sans-serif'], mono: ['DM Mono', 'monospace'] }, colors: { brand: { 50: '#f0f4ff', 100: '#e0eaff', 200: '#bfd2ff', 300: '#90aeff', 400: '#5a82ff', 500: '#2d5aff', 600: '#1a3ff5', 700: '#142ed1', 800: '#1428a8', 900: '#162885' }, surface: { 50: '#fafafa', 100: '#f5f5f5', 200: '#eeeeee', 300: '#e0e0e0', 400: '#bdbdbd', 500: '#9e9e9e', 600: '#757575', 700: '#616161', 800: '#424242', 900: '#212121' } } } } }
+    </script>
+    <script>(function () { const s = localStorage.getItem('theme'); if (s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches)) document.documentElement.classList.add('dark') })()</script>
+</head>
+
+<body class="dark:bg-slate-950 dark:text-slate-100 h-full overflow-hidden">
+
+    <div id="mob-overlay" class="fixed inset-0 bg-black/40 z-30 hidden opacity-0 lg:hidden"
+        onclick="closeMobileSidebar()"></div>
+
+    <div id="app">
+
+        <!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+        <aside id="sidebar" class="flex flex-col">
+            <!-- Logo -->
+            <div class="sidebar-logo flex items-center gap-3 px-4 h-16 shrink-0">
+                <div class="sidebar-logo-mark w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-eye text-white text-[13px]"></i>
+                </div>
+                <div
+                    class="sidebar-brand-text flex flex-col leading-tight overflow-hidden whitespace-nowrap transition-all duration-200">
+                    <span class="font-bold text-[15px] tracking-tight user-name">Netra UI<span
+                            class="nt-brand-dot"></span></span>
+                    <span class="text-[10.5px] font-normal user-role">Enterprise Suite</span>
+                </div>
+                <button onclick="closeMobileSidebar()" class="close-btn ml-auto lg:hidden p-1 rounded">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Nav -->
+            <nav class="flex-1 overflow-y-auto overflow-x-hidden py-3 px-2 space-y-0.5">
+                <div
+                    class="nav-section-label nav-section-title px-2 pt-1 pb-1.5 text-[10px] font-semibold uppercase tracking-widest whitespace-nowrap transition-all duration-200">
+                    Main</div>
+                <div class="nav-item active relative">
+                    <a href="admin-dashboard.html"
+                        class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+                        <i class="nav-icon fa-solid fa-house text-[14px] shrink-0 w-5 text-center"></i>
+                        <span class="nav-label whitespace-nowrap transition-all duration-200">Dashboard</span>
+                    </a><span class="nav-tooltip">Dashboard</span>
+                </div>
+                <div
+                    class="nav-section-label nav-section-title px-2 pt-4 pb-1.5 text-[10px] font-semibold uppercase tracking-widest whitespace-nowrap transition-all duration-200">
+                    UI Components</div>
+                <div class="nav-item relative">
+                    <a href="form-components.html"
+                        class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+                        <i class="nav-icon fa-solid fa-swatchbook text-[14px] shrink-0 w-5 text-center"></i>
+                        <span class="nav-label whitespace-nowrap transition-all duration-200">Form Components</span>
+                    </a><span class="nav-tooltip">Forms</span>
+                </div>
+                <div class="nav-item relative">
+                    <a href="modal-components.html"
+                        class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+                        <i class="nav-icon fa-regular fa-window-restore text-[14px] shrink-0 w-5 text-center"></i>
+                        <span class="nav-label whitespace-nowrap transition-all duration-200">Modal Components</span>
+                    </a><span class="nav-tooltip">Modals</span>
+                </div>
+                <div class="nav-item relative">
+                    <a href="button-components.html"
+                        class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+                        <i class="nav-icon fa-regular fa-hand-pointer text-[14px] shrink-0 w-5 text-center"></i>
+                        <span class="nav-label whitespace-nowrap transition-all duration-200">Button &amp;
+                            Dropdown</span>
+                    </a><span class="nav-tooltip">Buttons</span>
+                </div>
+                <div class="nav-item relative">
+                    <a href="#" onclick="toggleSubmenu(this,event)"
+                        class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
+                        <i class="nav-icon fa-solid fa-table text-[14px] shrink-0 w-5 text-center"></i>
+                        <span class="nav-label whitespace-nowrap transition-all duration-200">Table Components</span>
+                        <i class="chevron fa-solid fa-chevron-right text-[10px] ml-auto"></i>
+                    </a>
+                    <div class="submenu pl-8 mt-1 space-y-0.5">
+                        <div class="nav-item">
+                            <a href="basic-table.html"
+                                class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
+                                <span class="nav-label">Basic Table</span>
+                            </a>
+                        </div>
+                        <div class="nav-item active">
+                            <a href="advance-table.html"
+                                class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
+                                <span class="nav-label">Advance Table</span>
+                            </a>
+                        </div>
+                        <div class="nav-item">
+                            <a href="premium-table.html"
+                                class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
+                                <span class="nav-label">Premium Table</span>
+                            </a>
+                        </div>
+                        <div class="nav-item">
+                            <a href="ultimate-table.html"
+                                class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
+                                <span class="nav-label">Ultimate Table</span>
+                            </a>
+                        </div>
+                    </div>
+                    <span class="nav-tooltip">Tables</span>
+                </div>
+            </nav>
+
+            <!-- Footer -->
+            <div class="sidebar-footer shrink-0 p-3 space-y-0.5">
+                <button onclick="toggleSidebar()"
+                    class="collapse-btn hidden lg:flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors">
+                    <i id="collapse-icon"
+                        class="fa-solid fa-angles-left text-[14px] shrink-0 w-5 text-center transition-transform duration-250"></i>
+                    <span class="nav-label whitespace-nowrap transition-all duration-200">Collapse</span>
+                </button>
+                <div class="user-row flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors">
+                    <div
+                        class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[11px] font-bold shrink-0">
+                        GD</div>
+                    <div class="sidebar-user-info overflow-hidden min-w-0">
+                        <p class="user-name text-[13px] font-medium whitespace-nowrap leading-tight">Gading Dev</p>
+                        <p class="user-role text-[11px] whitespace-nowrap leading-tight">Administrator</p>
+                    </div>
+                    <i
+                        class="user-dots fa-solid fa-ellipsis-vertical text-xs ml-auto nav-label transition-all duration-200"></i>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ═══════════════════ MAIN COLUMN ═══════════════════ -->
+        <div id="main-col">
+
+            <!-- Header -->
+            <header class="sticky top-0 z-20 h-16 flex items-center px-4 lg:px-6 gap-2 shrink-0">
+                <button onclick="openMobileSidebar()"
+                    class="topbar-icon-btn lg:hidden p-2 rounded-lg transition-colors">
+                    <i class="fa-solid fa-bars text-[16px]"></i>
+                </button>
+                <button onclick="toggleSidebar()"
+                    class="topbar-icon-btn hidden lg:flex p-2 rounded-lg transition-colors">
+                    <i class="fa-solid fa-bars text-[15px]"></i>
+                </button>
+                <nav class="hidden sm:flex items-center text-[13px] font-medium ml-1 gap-1.5 nt-text-muted2">
+                    <a href="advance-table.html" class="hover:text-indigo-600 transition-colors">Home</a>
+                    <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                    <span class="nt-text-accent">Advance Table</span>
+                </nav>
+                <div class="ml-auto flex items-center gap-1">
+                    <div
+                        class="topbar-search hidden md:flex items-center gap-2 rounded-lg px-3 py-2 transition-all w-44 focus-within:w-60 mr-1">
+                        <i class="fa-solid fa-magnifying-glass text-[12px] nt-text-muted2"></i>
+                        <input type="text" placeholder="Search…"
+                            class="bg-transparent border-none outline-none text-[13px] placeholder:text-[#B0B5D8] w-full nt-input-text-strong" />
+                    </div>
+                    <div class="relative" id="notif-wrap">
+                        <button onclick="toggleDropdown('notif')"
+                            class="topbar-icon-btn relative p-2.5 rounded-lg transition-colors">
+                            <i class="fa-regular fa-bell text-[16px]"></i><span class="notif-dot"></span>
+                        </button>
+                        <div id="notif-dropdown" class="dropdown-panel w-80">
+                            <div
+                                class="px-4 py-3 border-b border-surface-200 dark:border-slate-700 flex items-center justify-between">
+                                <span
+                                    class="text-[14px] font-semibold text-surface-900 dark:text-white">Notifications</span>
+                                <span
+                                    class="text-[11px] text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline">Mark
+                                    all read</span>
+                            </div>
+                            <div class="px-4 py-4 text-center text-[13px] text-surface-400">No new notifications</div>
+                        </div>
+                    </div>
+                    <div class="relative" id="msg-wrap">
+                        <button onclick="toggleDropdown('msg')"
+                            class="topbar-icon-btn relative p-2.5 rounded-lg transition-colors">
+                            <i class="fa-regular fa-comment-dots text-[16px]"></i>
+                        </button>
+                        <div id="msg-dropdown" class="dropdown-panel w-72">
+                            <div class="px-4 py-3 border-b border-surface-200 dark:border-slate-700">
+                                <span class="text-[14px] font-semibold text-surface-900 dark:text-white">Messages</span>
+                            </div>
+                            <div class="px-4 py-4 text-center text-[13px] text-surface-400">No new messages</div>
+                        </div>
+                    </div>
+                    <button onclick="toggleDark()" class="topbar-icon-btn p-2.5 rounded-lg transition-colors">
+                        <i class="fa-regular fa-moon text-[15px] dark:hidden"></i>
+                        <i class="fa-regular fa-sun text-[15px] hidden dark:block"></i>
+                    </button>
+                    <div class="topbar-divider w-px h-5 mx-0.5"></div>
+                    <div class="relative" id="acct-wrap">
+                        <button onclick="toggleDropdown('acct')"
+                            class="topbar-icon-btn flex items-center gap-2 pl-1 pr-2 py-1.5 rounded-lg transition-colors">
+                            <div
+                                class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[11px] font-bold">
+                                GD</div>
+                            <div class="hidden md:block text-left">
+                                <p class="text-[13px] font-medium leading-none nt-input-text-strong">Gading</p>
+                                <p class="text-[11px] leading-none mt-0.5 nt-text-muted2">Admin</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-[9px] hidden md:block ml-0.5 nt-text-soft"></i>
+                        </button>
+                        <div id="acct-dropdown" class="dropdown-panel w-52">
+                            <div class="px-4 py-3 border-b border-surface-200 dark:border-slate-700">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-white text-[12px] font-bold">
+                                        GD</div>
+                                    <div>
+                                        <p
+                                            class="text-[13px] font-semibold text-surface-900 dark:text-white leading-tight">
+                                            Gading Dev</p>
+                                        <p class="text-[11px] text-surface-400 leading-tight">gading@netra-ui.io</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="py-1.5">
+                                <a href="#"
+                                    class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-surface-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors">
+                                    <i class="fa-regular fa-user text-indigo-400 w-4 text-center text-[13px]"></i>My
+                                    Profile</a>
+                                <a href="#"
+                                    class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-surface-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-colors">
+                                    <i
+                                        class="fa-solid fa-gear text-indigo-400 w-4 text-center text-[13px]"></i>Settings</a>
+                            </div>
+                            <div class="py-1.5 border-t border-surface-100 dark:border-slate-700">
+                                <a href="#"
+                                    class="flex items-center gap-3 px-4 py-2.5 text-[13px] text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                                    <i class="fa-solid fa-right-from-bracket w-4 text-center text-[13px]"></i>Sign
+                                    out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Title -->
+            <div class="page-title-bar px-4 lg:px-8 py-5 shrink-0">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                        <h1 class="text-xl font-semibold text-slate-900 dark:text-white tracking-tight">Advance Table
+                        </h1>
+                        <p class="text-[13px] text-indigo-400 dark:text-indigo-400 mt-0.5">Welcome back, Gading. Here's
+                            what's happening today.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <main class="flex-1 px-4 lg:px-8 py-6">
+
+                <!-- ══════════════════════════════════════
+                    SECTION 1 — TABLE RESPONSIVE (Card on mobile)
+                ══════════════════════════════════════ -->
+                <div>
+                    <div class="mb-4">
+                        <h2 class="text-[15px] font-bold nt-input-text-strong">Table Responsive</h2>
+                        <p class="text-[12.5px] mt-1 nt-text-muted2">Horizontal scroll di layar lebar, card mode
+                            di mobile (&lt;640px). Class: <span class="nt-code">.nt-table-responsive-card</span></p>
+                    </div>
+
+                    <div class="comp-section">
+                        <div class="comp-section-header">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="comp-section-title">Responsive Table</p>
+                                    <p class="comp-section-desc">Di mobile, header tersembunyi dan setiap baris
+                                        ditampilkan sebagai card. Resize browser untuk melihat efeknya.</p>
+                                </div>
+                                <span
+                                    class="text-[11px] font-mono bg-indigo-50 dark:bg-slate-800 text-indigo-400 dark:text-slate-400 px-2 py-1 rounded shrink-0">card
+                                    on mobile</span>
+                            </div>
+                        </div>
+                        <div class="comp-section-body p-0 sm:p-0">
+                            <div class="nt-table-wrap nt-table-wrap-flush">
+                                <table class="nt-table nt-table-responsive-card">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-check"><input type="checkbox" class="form-checkbox" /></th>
+                                            <th>Karyawan</th>
+                                            <th>Departemen</th>
+                                            <th>Jabatan</th>
+                                            <th>Gaji</th>
+                                            <th>Kota</th>
+                                            <th>Bergabung</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="col-check"><input type="checkbox" class="form-checkbox" /></td>
+                                            <td data-label="Karyawan">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="nt-avatar nt-bg-indigo">AR</div>
+                                                    <div>
+                                                        <p class="font-medium text-[13px] nt-text-strong">Andi Ramadhan
+                                                        </p>
+                                                        <p class="text-[11px] text-[#94A3B8]">andi@corp.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Departemen">Engineering</td>
+                                            <td data-label="Jabatan">Senior Dev</td>
+                                            <td data-label="Gaji" class="font-mono">Rp 18.000.000</td>
+                                            <td data-label="Kota">Jakarta</td>
+                                            <td data-label="Bergabung">Mar 2021</td>
+                                            <td data-label="Status"><span class="nt-badge nt-badge-success"><span
+                                                        class="nt-badge-dot nt-bg-green"></span>Aktif</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-check"><input type="checkbox" class="form-checkbox" /></td>
+                                            <td data-label="Karyawan">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="nt-avatar nt-bg-cyan">BS</div>
+                                                    <div>
+                                                        <p class="font-medium text-[13px] nt-text-strong">Budi Santoso
+                                                        </p>
+                                                        <p class="text-[11px] text-[#94A3B8]">budi@corp.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Departemen">Marketing</td>
+                                            <td data-label="Jabatan">Marketing Lead</td>
+                                            <td data-label="Gaji" class="font-mono">Rp 14.500.000</td>
+                                            <td data-label="Kota">Surabaya</td>
+                                            <td data-label="Bergabung">Jan 2022</td>
+                                            <td data-label="Status"><span class="nt-badge nt-badge-success"><span
+                                                        class="nt-badge-dot nt-bg-green"></span>Aktif</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-check"><input type="checkbox" class="form-checkbox" /></td>
+                                            <td data-label="Karyawan">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="nt-avatar nt-bg-amber">CW</div>
+                                                    <div>
+                                                        <p class="font-medium text-[13px] nt-text-strong">Citra
+                                                            Wulandari</p>
+                                                        <p class="text-[11px] text-[#94A3B8]">citra@corp.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Departemen">Finance</td>
+                                            <td data-label="Jabatan">CFO</td>
+                                            <td data-label="Gaji" class="font-mono">Rp 32.000.000</td>
+                                            <td data-label="Kota">Bandung</td>
+                                            <td data-label="Bergabung">Jun 2019</td>
+                                            <td data-label="Status"><span class="nt-badge nt-badge-success"><span
+                                                        class="nt-badge-dot nt-bg-green"></span>Aktif</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-check"><input type="checkbox" class="form-checkbox" /></td>
+                                            <td data-label="Karyawan">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="nt-avatar nt-bg-red">DP</div>
+                                                    <div>
+                                                        <p class="font-medium text-[13px] nt-text-strong">Dimas Pratama
+                                                        </p>
+                                                        <p class="text-[11px] text-[#94A3B8]">dimas@corp.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Departemen">Engineering</td>
+                                            <td data-label="Jabatan">DevOps</td>
+                                            <td data-label="Gaji" class="font-mono">Rp 16.000.000</td>
+                                            <td data-label="Kota">Yogyakarta</td>
+                                            <td data-label="Bergabung">Aug 2023</td>
+                                            <td data-label="Status"><span class="nt-badge nt-badge-warning"><span
+                                                        class="nt-badge-dot nt-bg-amber"></span>Probasi</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-check"><input type="checkbox" class="form-checkbox" /></td>
+                                            <td data-label="Karyawan">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="nt-avatar nt-bg-green">EN</div>
+                                                    <div>
+                                                        <p class="font-medium text-[13px] nt-text-strong">Eka Noviyanti
+                                                        </p>
+                                                        <p class="text-[11px] text-[#94A3B8]">eka@corp.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Departemen">Design</td>
+                                            <td data-label="Jabatan">UI/UX Lead</td>
+                                            <td data-label="Gaji" class="font-mono">Rp 17.500.000</td>
+                                            <td data-label="Kota">Solo</td>
+                                            <td data-label="Bergabung">Dec 2020</td>
+                                            <td data-label="Status"><span class="nt-badge nt-badge-neutral"><span
+                                                        class="nt-badge-dot nt-bg-slate"></span>Cuti</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══════════════════════════════════════
+                    SECTION 2 — SORTABLE + SELECTABLE TABLE
+                ══════════════════════════════════════ -->
+                <div class="mt-8">
+                    <div class="mb-4">
+                        <h2 class="text-[15px] font-bold nt-input-text-strong">Table Sortable + Selectable</h2>
+                        <p class="text-[12.5px] mt-1 nt-text-muted2">Klik header untuk sort. Checkbox untuk
+                            pilih baris. Data attributes: <span
+                                class="nt-code">data-nt-table="sortable-selectable"</span></p>
+                    </div>
+
+                    <div class="comp-section">
+                        <div class="comp-section-header">
+                            <div class="flex items-center justify-between flex-wrap gap-3">
+                                <div>
+                                    <p class="comp-section-title">Sortable &amp; Selectable Table</p>
+                                    <p class="comp-section-desc">Klik header kolom untuk sort ascending/descending.
+                                        Pilih baris dengan checkbox, atau pilih semua sekaligus.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- nt-table-container: wrapper utk toolbar + table + footer -->
+                        <div class="comp-section-body p-0" data-nt-table="sortable-selectable" data-search="true"
+                            data-page-size="5">
+
+                            <!-- Toolbar — dibaca oleh JS via data-nt-table-toolbar -->
+                            <div class="nt-table-toolbar" data-nt-table-toolbar>
+                                <span class="nt-table-title">Data Karyawan</span>
+                                <div class="ml-auto flex items-center gap-2">
+                                    <!-- Search box — JS akan wire event ke tabel -->
+                                    <div class="nt-table-search" data-nt-table-search>
+                                        <i class="fa-solid fa-magnifying-glass text-[11px]"></i>
+                                        <input type="text" placeholder="Cari karyawan…" />
+                                    </div>
+                                    <button class="nt-action-btn" title="Export">
+                                        <i class="fa-solid fa-arrow-up-from-bracket text-[13px]"></i>
+                                    </button>
+                                    <button class="nt-action-btn" title="Filter">
+                                        <i class="fa-solid fa-sliders text-[13px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Table -->
+                            <div class="nt-table-wrap nt-table-wrap-flush">
+                                <table class="nt-table nt-table-striped nt-table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <!-- data-nt-col-check  → JS pasang select-all listener -->
+                                            <th class="col-check" data-nt-col-check>
+                                                <input type="checkbox" class="form-checkbox" />
+                                            </th>
+                                            <!-- data-sort="<key>"  → JS pasang sort click listener -->
+                                            <th class="nt-th-sort" data-sort="nama">
+                                                Karyawan
+                                                <span class="nt-sort-icon">
+                                                    <i class="fa-solid fa-sort-up"></i>
+                                                    <i class="fa-solid fa-sort-down"></i>
+                                                </span>
+                                            </th>
+                                            <th class="nt-th-sort" data-sort="departemen">
+                                                Departemen
+                                                <span class="nt-sort-icon">
+                                                    <i class="fa-solid fa-sort-up"></i>
+                                                    <i class="fa-solid fa-sort-down"></i>
+                                                </span>
+                                            </th>
+                                            <th class="nt-th-sort" data-sort="jabatan">
+                                                Jabatan
+                                                <span class="nt-sort-icon">
+                                                    <i class="fa-solid fa-sort-up"></i>
+                                                    <i class="fa-solid fa-sort-down"></i>
+                                                </span>
+                                            </th>
+                                            <th class="nt-th-sort" data-sort="gaji">
+                                                Gaji
+                                                <span class="nt-sort-icon">
+                                                    <i class="fa-solid fa-sort-up"></i>
+                                                    <i class="fa-solid fa-sort-down"></i>
+                                                </span>
+                                            </th>
+                                            <th class="nt-th-sort" data-sort="kota">
+                                                Kota
+                                                <span class="nt-sort-icon">
+                                                    <i class="fa-solid fa-sort-up"></i>
+                                                    <i class="fa-solid fa-sort-down"></i>
+                                                </span>
+                                            </th>
+                                            <th class="nt-th-sort" data-sort="bergabung">
+                                                Bergabung
+                                                <span class="nt-sort-icon">
+                                                    <i class="fa-solid fa-sort-up"></i>
+                                                    <i class="fa-solid fa-sort-down"></i>
+                                                </span>
+                                            </th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!--
+                                            data-nama, data-departemen, dst. dipakai JS untuk sort & search
+                                            tanpa perlu me-render ulang baris.
+                                        -->
+                                        <tr data-nama="Andi Ramadhan" data-departemen="Engineering"
+                                            data-jabatan="Senior Dev" data-gaji="18000000" data-kota="Jakarta"
+                                            data-bergabung="2021-03-01" data-status="Aktif">
+                                            <td class="col-check"><input type="checkbox" class="form-checkbox" /></td>
+                                            <td data-label="Karyawan">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="nt-avatar nt-bg-indigo">AR</div>
+                                                    <div>
+                                                        <p class="font-medium text-[13px] nt-text-strong">Andi Ramadhan
+                                                        </p>
+                                                        <p class="text-[11px] text-[#94A3B8]">andi@corp.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Departemen">Engineering</td>
+                                            <td data-label="Jabatan">Senior Dev</td>
+                                            <td data-label="Gaji" class="font-mono">Rp 18.000.000</td>
+                                            <td data-label="Kota">Jakarta</td>
+                                            <td data-label="Bergabung">Mar 2021</td>
+                                            <td data-label="Status"><span class="nt-badge nt-badge-success"><span
+                                                        class="nt-badge-dot nt-bg-green"></span>Aktif</span></td>
+                                            <td>
+                                                <div class="nt-cell-actions">
+                                                    <button class="nt-action-btn" title="Edit"><i
+                                                            class="fa-regular fa-pen-to-square"></i></button>
+                                                    <button class="nt-action-btn success" title="Approve"><i
+                                                            class="fa-regular fa-circle-check"></i></button>
+                                                    <button class="nt-action-btn danger" title="Hapus"><i
+                                                            class="fa-regular fa-trash-can"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr data-nama="Budi Santoso" data-departemen="Marketing"
+                                            data-jabatan="Marketing Lead" data-gaji="14500000" data-kota="Surabaya"
+                                            data-bergabung="2022-01-15" data-status="Aktif">
+                                            <td class="col-check"><input type="checkbox" class="form-checkbox" /></td>
+                                            <td data-label="Karyawan">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="nt-avatar nt-bg-cyan">BS</div>
+                                                    <div>
+                                                        <p class="font-medium text-[13px] nt-text-strong">Budi Santoso
+                                                        </p>
+                                                        <p class="text-[11px] text-[#94A3B8]">budi@corp.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Departemen">Marketing</td>
+                                            <td data-label="Jabatan">Marketing Lead</td>
+                                            <td data-label="Gaji" class="font-mono">Rp 14.500.000</td>
+                                            <td data-label="Kota">Surabaya</td>
+                                            <td data-label="Bergabung">Jan 2022</td>
+                                            <td data-label="Status"><span class="nt-badge nt-badge-success"><span
+                                                        class="nt-badge-dot nt-bg-green"></span>Aktif</span></td>
+                                            <td>
+                                                <div class="nt-cell-actions">
+                                                    <button class="nt-action-btn" title="Edit"><i
+                                                            class="fa-regular fa-pen-to-square"></i></button>
+                                                    <button class="nt-action-btn success" title="Approve"><i
+                                                            class="fa-regular fa-circle-check"></i></button>
+                                                    <button class="nt-action-btn danger" title="Hapus"><i
+                                                            class="fa-regular fa-trash-can"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr data-nama="Citra Wulandari" data-departemen="Finance" data-jabatan="CFO"
+                                            data-gaji="32000000" data-kota="Bandung" data-bergabung="2019-06-01"
+                                            data-status="Aktif">
+                                            <td class="col-check"><input type="checkbox" class="form-checkbox" /></td>
+                                            <td data-label="Karyawan">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="nt-avatar nt-bg-amber">CW</div>
+                                                    <div>
+                                                        <p class="font-medium text-[13px] nt-text-strong">Citra
+                                                            Wulandari</p>
+                                                        <p class="text-[11px] text-[#94A3B8]">citra@corp.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Departemen">Finance</td>
+                                            <td data-label="Jabatan">CFO</td>
+                                            <td data-label="Gaji" class="font-mono">Rp 32.000.000</td>
+                                            <td data-label="Kota">Bandung</td>
+                                            <td data-label="Bergabung">Jun 2019</td>
+                                            <td data-label="Status"><span class="nt-badge nt-badge-success"><span
+                                                        class="nt-badge-dot nt-bg-green"></span>Aktif</span></td>
+                                            <td>
+                                                <div class="nt-cell-actions">
+                                                    <button class="nt-action-btn" title="Edit"><i
+                                                            class="fa-regular fa-pen-to-square"></i></button>
+                                                    <button class="nt-action-btn success" title="Approve"><i
+                                                            class="fa-regular fa-circle-check"></i></button>
+                                                    <button class="nt-action-btn danger" title="Hapus"><i
+                                                            class="fa-regular fa-trash-can"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr data-nama="Dimas Pratama" data-departemen="Engineering"
+                                            data-jabatan="DevOps" data-gaji="16000000" data-kota="Yogyakarta"
+                                            data-bergabung="2023-08-01" data-status="Probasi">
+                                            <td class="col-check"><input type="checkbox" class="form-checkbox" /></td>
+                                            <td data-label="Karyawan">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="nt-avatar nt-bg-red">DP</div>
+                                                    <div>
+                                                        <p class="font-medium text-[13px] nt-text-strong">Dimas Pratama
+                                                        </p>
+                                                        <p class="text-[11px] text-[#94A3B8]">dimas@corp.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Departemen">Engineering</td>
+                                            <td data-label="Jabatan">DevOps</td>
+                                            <td data-label="Gaji" class="font-mono">Rp 16.000.000</td>
+                                            <td data-label="Kota">Yogyakarta</td>
+                                            <td data-label="Bergabung">Aug 2023</td>
+                                            <td data-label="Status"><span class="nt-badge nt-badge-warning"><span
+                                                        class="nt-badge-dot nt-bg-amber"></span>Probasi</span></td>
+                                            <td>
+                                                <div class="nt-cell-actions">
+                                                    <button class="nt-action-btn" title="Edit"><i
+                                                            class="fa-regular fa-pen-to-square"></i></button>
+                                                    <button class="nt-action-btn success" title="Approve"><i
+                                                            class="fa-regular fa-circle-check"></i></button>
+                                                    <button class="nt-action-btn danger" title="Hapus"><i
+                                                            class="fa-regular fa-trash-can"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr data-nama="Eka Noviyanti" data-departemen="Design" data-jabatan="UI/UX Lead"
+                                            data-gaji="17500000" data-kota="Solo" data-bergabung="2020-12-01"
+                                            data-status="Cuti">
+                                            <td class="col-check"><input type="checkbox" class="form-checkbox" /></td>
+                                            <td data-label="Karyawan">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="nt-avatar nt-bg-green">EN</div>
+                                                    <div>
+                                                        <p class="font-medium text-[13px] nt-text-strong">Eka Noviyanti
+                                                        </p>
+                                                        <p class="text-[11px] text-[#94A3B8]">eka@corp.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Departemen">Design</td>
+                                            <td data-label="Jabatan">UI/UX Lead</td>
+                                            <td data-label="Gaji" class="font-mono">Rp 17.500.000</td>
+                                            <td data-label="Kota">Solo</td>
+                                            <td data-label="Bergabung">Dec 2020</td>
+                                            <td data-label="Status"><span class="nt-badge nt-badge-neutral"><span
+                                                        class="nt-badge-dot nt-bg-slate"></span>Cuti</span></td>
+                                            <td>
+                                                <div class="nt-cell-actions">
+                                                    <button class="nt-action-btn" title="Edit"><i
+                                                            class="fa-regular fa-pen-to-square"></i></button>
+                                                    <button class="nt-action-btn success" title="Approve"><i
+                                                            class="fa-regular fa-circle-check"></i></button>
+                                                    <button class="nt-action-btn danger" title="Hapus"><i
+                                                            class="fa-regular fa-trash-can"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr data-nama="Fajar Hidayat" data-departemen="Engineering"
+                                            data-jabatan="Backend Dev" data-gaji="15000000" data-kota="Semarang"
+                                            data-bergabung="2022-05-01" data-status="Aktif">
+                                            <td class="col-check"><input type="checkbox" class="form-checkbox" /></td>
+                                            <td data-label="Karyawan">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="nt-avatar nt-bg-violet">FH</div>
+                                                    <div>
+                                                        <p class="font-medium text-[13px] nt-text-strong">Fajar Hidayat
+                                                        </p>
+                                                        <p class="text-[11px] text-[#94A3B8]">fajar@corp.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Departemen">Engineering</td>
+                                            <td data-label="Jabatan">Backend Dev</td>
+                                            <td data-label="Gaji" class="font-mono">Rp 15.000.000</td>
+                                            <td data-label="Kota">Semarang</td>
+                                            <td data-label="Bergabung">May 2022</td>
+                                            <td data-label="Status"><span class="nt-badge nt-badge-success"><span
+                                                        class="nt-badge-dot nt-bg-green"></span>Aktif</span></td>
+                                            <td>
+                                                <div class="nt-cell-actions">
+                                                    <button class="nt-action-btn" title="Edit"><i
+                                                            class="fa-regular fa-pen-to-square"></i></button>
+                                                    <button class="nt-action-btn success" title="Approve"><i
+                                                            class="fa-regular fa-circle-check"></i></button>
+                                                    <button class="nt-action-btn danger" title="Hapus"><i
+                                                            class="fa-regular fa-trash-can"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr data-nama="Gita Purnama" data-departemen="HR" data-jabatan="HR Manager"
+                                            data-gaji="19000000" data-kota="Jakarta" data-bergabung="2018-09-01"
+                                            data-status="Aktif">
+                                            <td class="col-check"><input type="checkbox" class="form-checkbox" /></td>
+                                            <td data-label="Karyawan">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="nt-avatar nt-bg-pink">GP</div>
+                                                    <div>
+                                                        <p class="font-medium text-[13px] nt-text-strong">Gita Purnama
+                                                        </p>
+                                                        <p class="text-[11px] text-[#94A3B8]">gita@corp.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Departemen">HR</td>
+                                            <td data-label="Jabatan">HR Manager</td>
+                                            <td data-label="Gaji" class="font-mono">Rp 19.000.000</td>
+                                            <td data-label="Kota">Jakarta</td>
+                                            <td data-label="Bergabung">Sep 2018</td>
+                                            <td data-label="Status"><span class="nt-badge nt-badge-success"><span
+                                                        class="nt-badge-dot nt-bg-green"></span>Aktif</span></td>
+                                            <td>
+                                                <div class="nt-cell-actions">
+                                                    <button class="nt-action-btn" title="Edit"><i
+                                                            class="fa-regular fa-pen-to-square"></i></button>
+                                                    <button class="nt-action-btn success" title="Approve"><i
+                                                            class="fa-regular fa-circle-check"></i></button>
+                                                    <button class="nt-action-btn danger" title="Hapus"><i
+                                                            class="fa-regular fa-trash-can"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr data-nama="Hendra Wijaya" data-departemen="Finance" data-jabatan="Akuntan"
+                                            data-gaji="13500000" data-kota="Medan" data-bergabung="2023-02-01"
+                                            data-status="Probasi">
+                                            <td class="col-check"><input type="checkbox" class="form-checkbox" /></td>
+                                            <td data-label="Karyawan">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="nt-avatar nt-bg-sky">HW</div>
+                                                    <div>
+                                                        <p class="font-medium text-[13px] nt-text-strong">Hendra Wijaya
+                                                        </p>
+                                                        <p class="text-[11px] text-[#94A3B8]">hendra@corp.id</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Departemen">Finance</td>
+                                            <td data-label="Jabatan">Akuntan</td>
+                                            <td data-label="Gaji" class="font-mono">Rp 13.500.000</td>
+                                            <td data-label="Kota">Medan</td>
+                                            <td data-label="Bergabung">Feb 2023</td>
+                                            <td data-label="Status"><span class="nt-badge nt-badge-warning"><span
+                                                        class="nt-badge-dot nt-bg-amber"></span>Probasi</span></td>
+                                            <td>
+                                                <div class="nt-cell-actions">
+                                                    <button class="nt-action-btn" title="Edit"><i
+                                                            class="fa-regular fa-pen-to-square"></i></button>
+                                                    <button class="nt-action-btn success" title="Approve"><i
+                                                            class="fa-regular fa-circle-check"></i></button>
+                                                    <button class="nt-action-btn danger" title="Hapus"><i
+                                                            class="fa-regular fa-trash-can"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Footer / Pagination — JS akan update counter & page buttons -->
+                            <div class="nt-table-footer" data-nt-table-footer>
+                                <span data-nt-table-info class="text-[12.5px]">Menampilkan 1–5 dari 8 entri</span>
+                                <div class="nt-pagination" data-nt-table-pagination>
+                                    <button class="nt-page-btn" data-page="prev" disabled>
+                                        <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                                    </button>
+                                    <button class="nt-page-btn active" data-page="1">1</button>
+                                    <button class="nt-page-btn" data-page="2">2</button>
+                                    <button class="nt-page-btn" data-page="next">
+                                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══════════════════════════════════════
+                    SECTION 3 — STICKY HEADER (Sticky-Y)
+                ══════════════════════════════════════ -->
+                <div class="mt-8">
+                    <div class="mb-4">
+                        <h2 class="text-[15px] font-bold nt-input-text-strong">Table Sticky Header (Sticky-Y)</h2>
+                        <p class="text-[12.5px] mt-1 nt-text-muted2">Header tetap saat scroll vertikal. Class
+                            wrapper: <span class="nt-code">.nt-table-sticky-head</span></p>
+                    </div>
+
+                    <div class="comp-section">
+                        <div class="comp-section-header">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="comp-section-title">Sticky Header Table</p>
+                                    <p class="comp-section-desc">Scroll ke bawah — header kolom tetap terlihat di
+                                        posisinya. Max-height 340px.</p>
+                                </div>
+                                <span
+                                    class="text-[11px] font-mono bg-indigo-50 dark:bg-slate-800 text-indigo-400 dark:text-slate-400 px-2 py-1 rounded shrink-0">max-h
+                                    340px</span>
+                            </div>
+                        </div>
+                        <div class="comp-section-body p-0">
+                            <div class="nt-table-wrap nt-table-wrap-flush">
+                                <div class="nt-table-sticky-head">
+                                    <table class="nt-table nt-table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Nama Proyek</th>
+                                                <th>Client</th>
+                                                <th>PIC</th>
+                                                <th>Deadline</th>
+                                                <th>Progress</th>
+                                                <th>Prioritas</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Baris statis — data langsung di markup -->
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">01</td>
+                                                <td class="font-medium nt-text-strong">Redesign Website</td>
+                                                <td>PT. Maju Jaya</td>
+                                                <td>Andi R.</td>
+                                                <td class="font-mono text-[12px]">01/01/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:20%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">20%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-danger nt-text-2xs">Tinggi</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-success nt-text-2xs">On Track</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">02</td>
+                                                <td class="font-medium nt-text-strong">Mobile App v2</td>
+                                                <td>CV. Kreasi</td>
+                                                <td>Budi S.</td>
+                                                <td class="font-mono text-[12px]">02/02/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:24%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">24%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-warning nt-text-2xs">Sedang</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-danger nt-text-2xs">Delayed</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">03</td>
+                                                <td class="font-medium nt-text-strong">API Gateway</td>
+                                                <td>PT. Digital Nusa</td>
+                                                <td>Citra W.</td>
+                                                <td class="font-mono text-[12px]">03/03/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:28%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">28%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-neutral nt-text-2xs">Rendah</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-info nt-text-2xs">Review</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">04</td>
+                                                <td class="font-medium nt-text-strong">CRM System</td>
+                                                <td>UD. Makmur</td>
+                                                <td>Dimas P.</td>
+                                                <td class="font-mono text-[12px]">04/04/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:32%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">32%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-danger nt-text-2xs">Tinggi</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-neutral nt-text-2xs">Selesai</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">05</td>
+                                                <td class="font-medium nt-text-strong">Analytics Dashboard</td>
+                                                <td>PT. Solusi Tech</td>
+                                                <td>Eka N.</td>
+                                                <td class="font-mono text-[12px]">05/05/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:36%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">36%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-warning nt-text-2xs">Sedang</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-warning nt-text-2xs">Hold</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">06</td>
+                                                <td class="font-medium nt-text-strong">E-commerce Platform</td>
+                                                <td>PT. Maju Jaya</td>
+                                                <td>Andi R.</td>
+                                                <td class="font-mono text-[12px]">06/06/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:40%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">40%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-neutral nt-text-2xs">Rendah</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-success nt-text-2xs">On Track</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">07</td>
+                                                <td class="font-medium nt-text-strong">HR Portal</td>
+                                                <td>CV. Kreasi</td>
+                                                <td>Budi S.</td>
+                                                <td class="font-mono text-[12px]">07/07/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:44%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">44%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-danger nt-text-2xs">Tinggi</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-danger nt-text-2xs">Delayed</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">08</td>
+                                                <td class="font-medium nt-text-strong">Inventory System</td>
+                                                <td>PT. Digital Nusa</td>
+                                                <td>Citra W.</td>
+                                                <td class="font-mono text-[12px]">08/08/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:48%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">48%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-warning nt-text-2xs">Sedang</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-info nt-text-2xs">Review</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">09</td>
+                                                <td class="font-medium nt-text-strong">Payment Gateway</td>
+                                                <td>UD. Makmur</td>
+                                                <td>Dimas P.</td>
+                                                <td class="font-mono text-[12px]">09/09/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:52%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">52%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-neutral nt-text-2xs">Rendah</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-neutral nt-text-2xs">Selesai</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">10</td>
+                                                <td class="font-medium nt-text-strong">BI Dashboard</td>
+                                                <td>PT. Solusi Tech</td>
+                                                <td>Eka N.</td>
+                                                <td class="font-mono text-[12px]">10/10/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:56%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">56%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-danger nt-text-2xs">Tinggi</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-warning nt-text-2xs">Hold</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">11</td>
+                                                <td class="font-medium nt-text-strong">CMS Migration</td>
+                                                <td>PT. Maju Jaya</td>
+                                                <td>Andi R.</td>
+                                                <td class="font-mono text-[12px]">11/11/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:60%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">60%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-warning nt-text-2xs">Sedang</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-success nt-text-2xs">On Track</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">12</td>
+                                                <td class="font-medium nt-text-strong">DevOps Pipeline</td>
+                                                <td>CV. Kreasi</td>
+                                                <td>Budi S.</td>
+                                                <td class="font-mono text-[12px]">12/12/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:64%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">64%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-neutral nt-text-2xs">Rendah</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-danger nt-text-2xs">Delayed</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">13</td>
+                                                <td class="font-medium nt-text-strong">Security Audit</td>
+                                                <td>PT. Digital Nusa</td>
+                                                <td>Citra W.</td>
+                                                <td class="font-mono text-[12px]">13/01/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:68%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">68%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-danger nt-text-2xs">Tinggi</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-info nt-text-2xs">Review</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">14</td>
+                                                <td class="font-medium nt-text-strong">UX Research</td>
+                                                <td>UD. Makmur</td>
+                                                <td>Dimas P.</td>
+                                                <td class="font-mono text-[12px]">14/02/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:72%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">72%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-warning nt-text-2xs">Sedang</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-neutral nt-text-2xs">Selesai</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">15</td>
+                                                <td class="font-medium nt-text-strong">Data Warehouse</td>
+                                                <td>PT. Solusi Tech</td>
+                                                <td>Eka N.</td>
+                                                <td class="font-mono text-[12px]">15/03/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:76%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">76%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-neutral nt-text-2xs">Rendah</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-warning nt-text-2xs">Hold</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">16</td>
+                                                <td class="font-medium nt-text-strong">Chatbot Integration</td>
+                                                <td>PT. Maju Jaya</td>
+                                                <td>Andi R.</td>
+                                                <td class="font-mono text-[12px]">16/04/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:80%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">80%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-danger nt-text-2xs">Tinggi</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-success nt-text-2xs">On Track</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">17</td>
+                                                <td class="font-medium nt-text-strong">ERP Upgrade</td>
+                                                <td>CV. Kreasi</td>
+                                                <td>Budi S.</td>
+                                                <td class="font-mono text-[12px]">17/05/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:84%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">84%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-warning nt-text-2xs">Sedang</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-danger nt-text-2xs">Delayed</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">18</td>
+                                                <td class="font-medium nt-text-strong">Cloud Migration</td>
+                                                <td>PT. Digital Nusa</td>
+                                                <td>Citra W.</td>
+                                                <td class="font-mono text-[12px]">18/06/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:88%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">88%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-neutral nt-text-2xs">Rendah</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-info nt-text-2xs">Review</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">19</td>
+                                                <td class="font-medium nt-text-strong">PWA Frontend</td>
+                                                <td>UD. Makmur</td>
+                                                <td>Dimas P.</td>
+                                                <td class="font-mono text-[12px]">19/07/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:92%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">92%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-danger nt-text-2xs">Tinggi</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-neutral nt-text-2xs">Selesai</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="font-mono text-[11px] text-indigo-400">20</td>
+                                                <td class="font-medium nt-text-strong">AI Recommender</td>
+                                                <td>PT. Solusi Tech</td>
+                                                <td>Eka N.</td>
+                                                <td class="font-mono text-[12px]">20/08/2026</td>
+                                                <td class="nt-min-w-120">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="nt-progress-track-sm">
+                                                            <div class="nt-progress-fill-sm nt-bg-indigo"
+                                                                style="width:96%"></div>
+                                                        </div>
+                                                        <span
+                                                            class="text-[11px] font-mono nt-progress-label-sm">96%</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-warning nt-text-2xs">Sedang</span>
+                                                </td>
+                                                <td><span class="nt-badge nt-badge-warning nt-text-2xs">Hold</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+
+            <footer
+                class="border-t border-indigo-100 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 lg:px-8 py-4 shrink-0">
+                <div
+                    class="flex flex-col sm:flex-row items-center justify-between gap-2 text-[12px] text-surface-400 dark:text-slate-500">
+                    <p>© 2026 <span class="font-medium text-indigo-600 dark:text-indigo-400">Netra UI</span>. All rights
+                        reserved.</p>
+                    <div class="flex items-center gap-4">
+                        <a href="#" class="hover:text-indigo-600 transition-colors">Privacy</a>
+                        <a href="#" class="hover:text-indigo-600 transition-colors">Terms</a>
+                        <a href="#" class="hover:text-indigo-600 transition-colors">Support</a>
+                        <span class="text-surface-300 dark:text-slate-700">v1.0.0</span>
+                    </div>
+                </div>
+            </footer>
+
+        </div><!-- end main-col -->
+    </div><!-- end app -->
+
+    <script src="../assets/js/netra-base.js"></script>
+    <script src="../assets/js/netra-tables.js"></script>
+</body>
+
+</html>

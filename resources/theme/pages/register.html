@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daftar Akun — Netra UI</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'sans-serif'],
+            mono: ['DM Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Netra Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/netra-base.css" />
+  <link rel="stylesheet" href="../assets/css/netra-forms.css" />
+  <link rel="stylesheet" href="../assets/css/netra-auth.css" />
+
+  <!-- Dark mode no-flash init -->
+  <script>
+      (function () {
+        const s = localStorage.getItem('theme');
+        const isDark = s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+  </script>
+</head>
+
+<body>
+
+  <!-- Dark mode toggle -->
+  <button class="auth-dark-toggle" onclick="toggleDark()" aria-label="Toggle dark mode">
+    <i id="dark-toggle-icon" class="fa-solid fa-moon"></i>
+  </button>
+
+  <!-- ══════════════════════════════════════
+       AUTH PAGE SHELL
+  ══════════════════════════════════════ -->
+  <div class="auth-page">
+
+    <!-- ════════ LEFT: Brand Panel ════════ -->
+    <div class="auth-panel-brand">
+
+      <div class="auth-grid-pattern"></div>
+      <div class="auth-orb auth-orb-1"></div>
+      <div class="auth-orb auth-orb-2"></div>
+      <div class="auth-orb auth-orb-3"></div>
+
+      <!-- Logo -->
+      <div class="auth-brand-logo">
+        <div class="auth-brand-mark">
+          <i class="fa-solid fa-eye"></i>
+        </div>
+        <span class="auth-brand-name">Netra UI<span></span></span>
+      </div>
+
+      <!-- Step-by-step guide -->
+      <div class="auth-hero" style="margin-bottom: 8px;">
+        <h1 class="auth-hero-title">
+          Mulai dalam<br>
+          <em>3 langkah</em><br>
+          mudah.
+        </h1>
+        <p class="auth-hero-desc">
+          Buat akun gratis dan nikmati semua fitur Netra UI Enterprise
+          tanpa perlu kartu kredit.
+        </p>
+      </div>
+
+      <div class="auth-step-list">
+        <div class="auth-step-item">
+          <div class="auth-step-left">
+            <div class="auth-step-num active">1</div>
+          </div>
+          <div class="auth-step-body">
+            <p class="auth-step-title">Buat akun Anda</p>
+            <p class="auth-step-desc">Isi informasi dasar dan buat password yang kuat.</p>
+          </div>
+        </div>
+        <div class="auth-step-item">
+          <div class="auth-step-left">
+            <div class="auth-step-num">2</div>
+          </div>
+          <div class="auth-step-body">
+            <p class="auth-step-title">Verifikasi email</p>
+            <p class="auth-step-desc">Cek inbox Anda dan klik tautan aktivasi.</p>
+          </div>
+        </div>
+        <div class="auth-step-item">
+          <div class="auth-step-left">
+            <div class="auth-step-num">3</div>
+          </div>
+          <div class="auth-step-body">
+            <p class="auth-step-title">Mulai eksplorasi</p>
+            <p class="auth-step-desc">Akses dashboard dan semua komponen Netra UI.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Version -->
+      <div class="auth-version">Netra UI v1.0.0 · Enterprise Suite</div>
+
+    </div>
+    <!-- /left panel -->
+
+    <!-- ════════ RIGHT: Form Panel ════════ -->
+    <div class="auth-panel-form register-panel">
+      <div class="auth-card register-card">
+
+        <!-- Mobile brand -->
+        <div class="auth-mobile-brand">
+          <div class="auth-mobile-brand-mark">
+            <i class="fa-solid fa-eye"></i>
+          </div>
+          <span class="auth-mobile-brand-name">Netra UI</span>
+        </div>
+
+        <!-- Heading -->
+        <h2 class="auth-heading">Buat akun baru ✨</h2>
+        <p class="auth-subheading">Gratis selamanya untuk tim kecil. Tanpa kartu kredit.</p>
+
+        <!-- Alert container -->
+        <div id="register-alert" class="auth-alert" style="display:none; margin-bottom:18px;"></div>
+
+        <!-- Register Form -->
+        <form id="register-form" class="auth-form" novalidate>
+
+          <!-- Nama depan + belakang -->
+          <div class="auth-form-grid">
+            <div class="form-group">
+              <label class="auth-label" for="reg-firstname">Nama Depan <span
+                  style="color:var(--nt-error)">*</span></label>
+              <div class="input-group">
+                <span class="input-addon">
+                  <i class="fa-regular fa-user"></i>
+                </span>
+                <input id="reg-firstname" type="text" class="form-input" placeholder="Budi" autocomplete="given-name" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="auth-label" for="reg-lastname">Nama Belakang</label>
+              <input id="reg-lastname" type="text" class="form-input" placeholder="Santoso"
+                autocomplete="family-name" />
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label class="auth-label" for="reg-email">Alamat Email <span style="color:var(--nt-error)">*</span></label>
+            <div class="input-group">
+              <span class="input-addon">
+                <i class="fa-regular fa-envelope"></i>
+              </span>
+              <input id="reg-email" type="email" class="form-input" placeholder="nama@perusahaan.com"
+                autocomplete="email" spellcheck="false" />
+            </div>
+          </div>
+
+          <!-- Nama perusahaan -->
+          <div class="form-group">
+            <label class="auth-label" for="reg-company">Nama Perusahaan / Organisasi</label>
+            <div class="input-group">
+              <span class="input-addon">
+                <i class="fa-regular fa-building"></i>
+              </span>
+              <input id="reg-company" type="text" class="form-input" placeholder="PT. Contoh Maju"
+                autocomplete="organization" />
+            </div>
+            <span class="form-hint">Opsional. Bisa diisi nanti di pengaturan profil.</span>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label class="auth-label" for="reg-password">Password <span style="color:var(--nt-error)">*</span></label>
+            <div class="input-group">
+              <span class="input-addon">
+                <i class="fa-solid fa-lock"></i>
+              </span>
+              <input id="reg-password" type="password" class="form-input" placeholder="Buat password kuat"
+                autocomplete="new-password" oninput="updatePasswordStrength(this.value)" />
+              <button type="button" class="input-addon-btn" onclick="toggleAuthPassword('reg-password', 'reg-pw-eye')"
+                aria-label="Tampilkan password">
+                <i id="reg-pw-eye" class="fa-regular fa-eye text-sm"></i>
+              </button>
+            </div>
+
+            <!-- Strength meter -->
+            <div class="auth-strength-wrap" id="strength-wrap" style="display:none;">
+              <div class="auth-strength-bars">
+                <div class="auth-strength-bar" id="sbar-1"></div>
+                <div class="auth-strength-bar" id="sbar-2"></div>
+                <div class="auth-strength-bar" id="sbar-3"></div>
+                <div class="auth-strength-bar" id="sbar-4"></div>
+              </div>
+              <span class="auth-strength-label" id="strength-label"></span>
+            </div>
+
+            <!-- Rules -->
+            <div class="auth-pw-rules" id="pw-rules" style="display:none;">
+              <div class="auth-pw-rule" id="rule-length">
+                <i class="fa-solid fa-circle-xmark"></i>
+                Minimal 8 karakter
+              </div>
+              <div class="auth-pw-rule" id="rule-upper">
+                <i class="fa-solid fa-circle-xmark"></i>
+                Huruf kapital (A–Z)
+              </div>
+              <div class="auth-pw-rule" id="rule-number">
+                <i class="fa-solid fa-circle-xmark"></i>
+                Mengandung angka (0–9)
+              </div>
+              <div class="auth-pw-rule" id="rule-special">
+                <i class="fa-solid fa-circle-xmark"></i>
+                Karakter khusus (!@#$…)
+              </div>
+            </div>
+          </div>
+
+          <!-- Konfirmasi password -->
+          <div class="form-group">
+            <label class="auth-label" for="reg-confirm">Konfirmasi Password <span
+                style="color:var(--nt-error)">*</span></label>
+            <div class="input-group" id="confirm-group">
+              <span class="input-addon">
+                <i class="fa-solid fa-lock-open"></i>
+              </span>
+              <input id="reg-confirm" type="password" class="form-input" placeholder="Ulangi password"
+                autocomplete="new-password" oninput="checkConfirmMatch()" />
+              <button type="button" class="input-addon-btn" onclick="toggleAuthPassword('reg-confirm', 'confirm-eye')"
+                aria-label="Tampilkan konfirmasi">
+                <i id="confirm-eye" class="fa-regular fa-eye text-sm"></i>
+              </button>
+            </div>
+            <span class="form-hint" id="confirm-hint" style="display:none;"></span>
+          </div>
+
+          <!-- Terms & conditions -->
+          <div class="form-group" style="gap:8px;">
+            <label class="auth-checkbox-row">
+              <input type="checkbox" id="reg-terms" class="auth-checkbox" />
+              <span class="auth-terms-text">
+                Saya menyetujui
+                <a href="#">Syarat &amp; Ketentuan</a>
+                dan
+                <a href="#">Kebijakan Privasi</a>
+                Netra UI.
+              </span>
+            </label>
+            <label class="auth-checkbox-row">
+              <input type="checkbox" id="reg-newsletter" class="auth-checkbox" checked />
+              <span class="auth-checkbox-label">Terima update produk &amp; tips via email</span>
+            </label>
+          </div>
+
+          <!-- Submit -->
+          <button id="register-btn" type="submit" class="auth-btn">
+            <span class="auth-btn-spinner"></span>
+            <span class="auth-btn-text">
+              <i class="fa-solid fa-user-plus"></i>
+              Buat Akun Gratis
+            </span>
+          </button>
+
+        </form>
+        <!-- /form -->
+
+        <!-- Divider -->
+        <div class="auth-divider" style="margin-top:20px;">
+          <div class="auth-divider-line"></div>
+          <span class="auth-divider-text">atau daftar dengan</span>
+          <div class="auth-divider-line"></div>
+        </div>
+
+        <!-- Social register -->
+        <div class="auth-social-row" style="margin-top:14px;">
+          <button class="auth-social-btn" type="button">
+            <span class="auth-social-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  fill="#4285F4" />
+                <path
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  fill="#34A853" />
+                <path
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
+                  fill="#FBBC05" />
+                <path
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  fill="#EA4335" />
+              </svg>
+            </span>
+            Google
+          </button>
+          <button class="auth-social-btn" type="button">
+            <span class="auth-social-icon">
+              <i class="fa-brands fa-microsoft" style="color:#00a4ef;"></i>
+            </span>
+            Microsoft
+          </button>
+        </div>
+
+        <!-- Footer link -->
+        <p class="auth-footer-text">
+          Sudah punya akun?
+          <a href="login.html" class="auth-footer-link">Masuk di sini</a>
+        </p>
+
+        <!-- Trust badges -->
+        <div class="auth-trust-row">
+          <span class="auth-trust-item">
+            <i class="fa-solid fa-lock"></i>
+            SSL Terenkripsi
+          </span>
+          <span class="auth-trust-item">
+            <i class="fa-solid fa-shield-halved"></i>
+            GDPR Compliant
+          </span>
+          <span class="auth-trust-item">
+            <i class="fa-solid fa-ban"></i>
+            Tanpa Kartu Kredit
+          </span>
+        </div>
+
+      </div>
+    </div>
+    <!-- /form panel -->
+
+  </div>
+  <!-- /auth-page -->
+
+  <script src="../assets/js/netra-auth.js"></script>
+
+  <script>
+    /* ══════════════════════════════════════
+       Register page — inline scripts
+    ══════════════════════════════════════ */
+
+    /* Password strength evaluator */
+    function evalStrength(pw) {
+      let score = 0;
+      const rules = {
+        length: pw.length >= 8,
+        upper: /[A-Z]/.test(pw),
+        number: /[0-9]/.test(pw),
+        special: /[^A-Za-z0-9]/.test(pw),
+      };
+      Object.values(rules).forEach(v => { if (v) score++; });
+      return { score, rules };
+    }
+
+    const STRENGTH_CONFIG = [
+      null,
+      { label: 'Sangat lemah', cls: 'weak', bars: 1 },
+      { label: 'Lemah', cls: 'fair', bars: 2 },
+      { label: 'Cukup kuat', cls: 'good', bars: 3 },
+      { label: 'Kuat', cls: 'strong', bars: 4 },
+    ];
+
+    function updatePasswordStrength(pw) {
+      const wrap = document.getElementById('strength-wrap');
+      const rules = document.getElementById('pw-rules');
+
+      if (!pw) {
+        wrap.style.display = 'none';
+        rules.style.display = 'none';
+        return;
+      }
+
+      wrap.style.display = 'flex';
+      rules.style.display = 'flex';
+
+      const { score, rules: r } = evalStrength(pw);
+      const cfg = STRENGTH_CONFIG[score] || STRENGTH_CONFIG[1];
+
+      // Update bars
+      for (let i = 1; i <= 4; i++) {
+        const bar = document.getElementById('sbar-' + i);
+        bar.className = 'auth-strength-bar';
+        if (i <= cfg.bars) bar.classList.add(cfg.cls);
+      }
+
+      // Update label
+      const lbl = document.getElementById('strength-label');
+      lbl.className = 'auth-strength-label ' + cfg.cls;
+      lbl.textContent = cfg.label;
+
+      // Update rule indicators
+      toggleRule('rule-length', r.length);
+      toggleRule('rule-upper', r.upper);
+      toggleRule('rule-number', r.number);
+      toggleRule('rule-special', r.special);
+
+      // Re-check confirm if already filled
+      if (document.getElementById('reg-confirm').value) checkConfirmMatch();
+    }
+
+    function toggleRule(id, passed) {
+      const el = document.getElementById(id);
+      const icon = el.querySelector('i');
+      if (passed) {
+        el.classList.add('passed');
+        icon.className = 'fa-solid fa-circle-check';
+      } else {
+        el.classList.remove('passed');
+        icon.className = 'fa-solid fa-circle-xmark';
+      }
+    }
+
+    /* Confirm password match */
+    function checkConfirmMatch() {
+      const pw = document.getElementById('reg-password').value;
+      const confirm = document.getElementById('reg-confirm').value;
+      const hint = document.getElementById('confirm-hint');
+      const group = document.getElementById('confirm-group');
+      const input = document.getElementById('reg-confirm');
+
+      if (!confirm) {
+        hint.style.display = 'none';
+        input.classList.remove('is-success', 'is-error');
+        return;
+      }
+
+      if (pw === confirm) {
+        input.classList.remove('is-error');
+        input.classList.add('is-success');
+        hint.style.display = 'flex';
+        hint.className = 'form-msg-success';
+        hint.innerHTML = '<i class="fa-solid fa-circle-check"></i> Password cocok';
+      } else {
+        input.classList.remove('is-success');
+        input.classList.add('is-error');
+        hint.style.display = 'flex';
+        hint.className = 'form-msg-error';
+        hint.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Password tidak cocok';
+      }
+    }
+
+    /* Register submit */
+    document.getElementById('register-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const btn = document.getElementById('register-btn');
+      const firstname = document.getElementById('reg-firstname').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const confirm = document.getElementById('reg-confirm').value;
+      const terms = document.getElementById('reg-terms').checked;
+
+      hideAuthAlert('register-alert');
+
+      /* Validasi */
+      if (!firstname) {
+        showAuthAlert('register-alert', 'error', 'Nama depan tidak boleh kosong.');
+        document.getElementById('reg-firstname').focus();
+        return;
+      }
+      if (!email) {
+        showAuthAlert('register-alert', 'error', 'Alamat email tidak boleh kosong.');
+        document.getElementById('reg-email').focus();
+        return;
+      }
+      if (!password || password.length < 8) {
+        showAuthAlert('register-alert', 'error', 'Password minimal 8 karakter.');
+        document.getElementById('reg-password').focus();
+        return;
+      }
+      if (password !== confirm) {
+        showAuthAlert('register-alert', 'error', 'Konfirmasi password tidak cocok.');
+        document.getElementById('reg-confirm').focus();
+        return;
+      }
+      if (!terms) {
+        showAuthAlert('register-alert', 'error', 'Anda harus menyetujui Syarat & Ketentuan untuk melanjutkan.');
+        return;
+      }
+
+      /* Loading */
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      /* Simulasi API — ganti dengan fetch() asli */
+      setTimeout(() => {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+
+        /* Demo sukses */
+        showAuthAlert('register-alert', 'success',
+          'Akun berhasil dibuat! Silakan cek email Anda untuk verifikasi.');
+
+        /* Uncomment untuk redirect: */
+        /* setTimeout(() => { window.location.href = 'login.html'; }, 2000); */
+      }, 1800);
+    });
+  </script>
+
+</body>
+
+</html>
