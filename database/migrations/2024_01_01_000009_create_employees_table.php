@@ -12,9 +12,9 @@ return new class extends Migration
             $table->id();
             $table->string('employee_code')->unique(); // NIP / kode pegawai internal
 
-            $table->unsignedBigInteger('user_id')->nullable()->index();
-            $table->unsignedBigInteger('department_id')->nullable()->index();
-            $table->unsignedBigInteger('position_id')->nullable()->index();
+            $table->bigInteger('user_id')->nullable();
+            $table->bigInteger('department_id')->nullable();
+            $table->bigInteger('position_id')->nullable();
 
             $table->string('name');
             $table->string('nik', 20)->nullable();     // NIK KTP
@@ -29,9 +29,9 @@ return new class extends Migration
             $table->date('resign_date')->nullable();
 
             $table->enum('employment_status', ['active', 'probation', 'resigned', 'terminated'])
-                  ->default('active');
+                ->default('active');
             $table->enum('employment_type', ['permanent', 'contract', 'intern', 'freelance'])
-                  ->default('permanent');
+                ->default('permanent');
 
             $table->string('photo')->nullable();
             $table->text('notes')->nullable();

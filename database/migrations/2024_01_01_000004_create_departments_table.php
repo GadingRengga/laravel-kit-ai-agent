@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();          // HRD, FIN, IT, dst
             $table->string('name');
-            $table->unsignedBigInteger('parent_id')->nullable()->index(); // untuk sub-departemen (self relation, no FK)
+            $table->bigInteger('parent_id')->nullable(); // untuk sub-departemen (self relation, no FK)
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

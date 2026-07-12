@@ -12,9 +12,10 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();           // MGR-IT, STAFF-FIN, dst
             $table->string('name');                       // Manager IT, Staff Finance
-            $table->unsignedBigInteger('department_id')->nullable()->index();
+            $table->bigInteger('department_id')->nullable();
             $table->integer('level')->default(0);         // jenjang jabatan, 1 = tertinggi
             $table->boolean('is_active')->default(true);
+            $table->boolean('pivot')->default(true);
             $table->timestamps();
         });
     }

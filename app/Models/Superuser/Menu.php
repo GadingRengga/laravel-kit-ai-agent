@@ -27,4 +27,15 @@ class Menu extends Model
         return $this->belongsToMany(Role::class, 'role_has_menus', 'menu_id', 'role_id')
             ->withPivot(['can_view', 'can_create', 'can_edit', 'can_delete']);
     }
+
+    /**
+     * Posisi jabatan yang diberi akses ke menu ini, lewat pivot
+     * position_has_menus — pasangan dari Position::menus().
+     */
+    public function positions()
+    {
+        return $this->belongsToMany(\App\Models\Position::class, 'position_has_menus', 'menu_id', 'position_id')
+            ->withPivot(['can_view', 'can_create', 'can_edit', 'can_delete'])
+            ->withTimestamps();
+    }
 }

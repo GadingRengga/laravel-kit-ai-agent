@@ -5,8 +5,8 @@ namespace App\Services\AI\Tools;
 use App\Models\Superuser\User;
 use App\Services\AI\Contracts\AiToolInterface;
 use App\Services\AI\DTO\AiToolResult;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -92,15 +92,46 @@ class GenericModelTool implements AiToolInterface
         return $modelClass::create($data);
     }
 
-    /** Skip Gate check kalau 'ability' tidak diisi di config — biar gampang dipakai tanpa Policy dulu. */
+    /**
+     * Cek apakah tool ini boleh dipakai user — berdasarkan hak akses POSISI
+     * JABATAN user atas menu yang di-declare di config (`menu` + `ability`),
+     * lihat User::hasMenuAbility(). Dulu ini pakai Gate::authorize(), tapi
+     * Policy-nya sendiri tidak pernah benar-benar dibuat/didaftarkan di
+     * project ini — jadi diganti pengecekan yang sudah benar-benar hidup:
+     * matrix akses menu per posisi (lihat fitur "Akses Menu per Posisi").
+     *
+     * Dipakai DUA tempat:
+     *   1. AiToolRegistry::allowedFor() — filter daftar tool SEBELUM
+     *      ditawarkan ke AI (AI tidak akan mencoba tool yang toh ditolak).
+     *   2. authorize() di bawah — penjaga terakhir saat toDraft()/confirm()
+     *      benar-benar dipanggil (defense-in-depth, jaga-jaga context tool
+     *      yang dikirim controller sudah usang/tidak sinkron).
+     *
+     * Tool yang config-nya belum diisi `menu`+`ability` dianggap TERBUKA
+     * untuk siapapun yang sudah login — sama seperti perilaku lama saat
+     * `ability` kosong (biar gampang dipakai tanpa setup akses dulu).
+     */
+    public function isAllowedFor(User $user): bool
+    {
+        $menuSlug = $this->config['menu'] ?? null;
+        $ability = $this->config['ability'] ?? null;
+
+        if (! $menuSlug || ! $ability) {
+            return true;
+        }
+
+        return $user->hasMenuAbility($menuSlug, $ability);
+    }
+
     private function authorize(User $user): void
     {
-        $ability = $this->config['ability'] ?? null;
-        if (! $ability) {
+        if ($this->isAllowedFor($user)) {
             return;
         }
 
-        Gate::forUser($user)->authorize($ability, $this->config['model']);
+        throw new AuthorizationException(
+            "Posisi kamu tidak memiliki hak akses [{$this->config['ability']}] pada menu [{$this->config['menu']}]."
+        );
     }
 
     private function validationRules(): array

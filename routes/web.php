@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Superuser\MenuController;
+use App\Http\Controllers\Superuser\PositionMenuController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,6 +37,9 @@ Route::middleware(['auth', 'active'])->group(function () {
     // SUPERUSER
     Route::get('/superuser/menu', [MenuController::class, 'index'])
         ->name('superuser.menu.index');
+
+    Route::get('/superuser/position-menu', [PositionMenuController::class, 'index'])
+        ->name('superuser.position-menu.index');
     // END SUPERUSER
 });
 

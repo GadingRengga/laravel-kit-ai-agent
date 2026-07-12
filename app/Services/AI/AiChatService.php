@@ -86,8 +86,16 @@ class AiChatService
         User $user,
         ?array $allowedTools = null,
     ): array {
+        // Urutan filter: (1) context halaman ($allowedTools, kalau diisi
+        // controller — hemat token, cuma kirim skema yang relevan dgn
+        // halaman aktif), lalu (2) hak akses menu POSISI JABATAN user
+        // (AiToolRegistry::allowedFor) — AI tidak akan ditawari/mencoba
+        // fungsi yang toh akan ditolak GenericModelTool::authorize().
         $toolSchemas = $this->tools->toSchemaArray(
-            $allowedTools ? $this->tools->only($allowedTools) : null
+            $this->tools->allowedFor(
+                $user,
+                $allowedTools ? $this->tools->only($allowedTools) : null
+            )
         );
 
         $provider = $this->providers->resolve($conversation->connection);

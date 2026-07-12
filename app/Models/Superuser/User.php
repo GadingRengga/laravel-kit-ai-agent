@@ -55,6 +55,42 @@ class User extends Authenticatable
         return $this->role?->slug === 'super_user';
     }
 
+    /**
+     * Cek apakah user ini — lewat POSISI JABATAN-nya (Employee->Position),
+     * BUKAN lewat Role sidebar — punya hak akses tertentu atas sebuah menu.
+     * Dipakai untuk membatasi tool AI (lihat GenericModelTool::isAllowedFor())
+     * supaya AI cuma boleh melakukan aksi yang memang diizinkan untuk posisi
+     * jabatan user, mis. Departemen Marketing - Posisi Staff.
+     *
+     * Default AMAN: kalau super user → selalu true. Kalau user tidak punya
+     * employee/posisi, atau posisinya belum di-setting akses untuk menu
+     * tersebut → FALSE (deny by default, bukan allow by default).
+     *
+     * @param  string  $menuSlug  slug menu (kolom `menus.slug`) yang jadi acuan
+     * @param  string  $ability   salah satu: can_view, can_create, can_edit, can_delete
+     */
+    public function hasMenuAbility(string $menuSlug, string $ability = 'can_view'): bool
+    {
+        if ($this->isSuperUser()) {
+            return true;
+        }
+
+        if (! in_array($ability, ['can_view', 'can_create', 'can_edit', 'can_delete'], true)) {
+            throw new \InvalidArgumentException("Ability [{$ability}] tidak dikenal.");
+        }
+
+        $position = $this->employee?->position;
+
+        if (! $position) {
+            return false;
+        }
+
+        return $position->menus()
+            ->where('menus.slug', $menuSlug)
+            ->wherePivot($ability, true)
+            ->exists();
+    }
+
     // public function 
 
     /**

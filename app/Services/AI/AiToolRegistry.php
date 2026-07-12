@@ -2,7 +2,9 @@
 
 namespace App\Services\AI;
 
+use App\Models\Superuser\User;
 use App\Services\AI\Contracts\AiToolInterface;
+use App\Services\AI\Tools\GenericModelTool;
 use InvalidArgumentException;
 
 class AiToolRegistry
@@ -48,6 +50,32 @@ class AiToolRegistry
     public function all(): array
     {
         return array_values($this->tools);
+    }
+
+    /**
+     * Subset tool yang boleh "dilihat" AI untuk USER INI — menyaring
+     * berdasarkan hak akses menu posisi jabatannya (lihat
+     * User::hasMenuAbility() & GenericModelTool::isAllowedFor()).
+     *
+     * Ini lapisan filter di sisi "apa yang ditawarkan ke AI", bukan
+     * pengganti authorize() di dalam tool itu sendiri — dua-duanya sengaja
+     * dipertahankan (defense-in-depth): kalaupun somehow tool yang tidak
+     * diizinkan lolos sampai sini, toDraft()/confirm() tetap menolaknya.
+     *
+     * Tool custom (bukan GenericModelTool, tidak declare menu+ability)
+     * TIDAK ikut difilter di sini — biarkan authorize() masing-masing tool
+     * yang menjaga, supaya perilaku lama tetap jalan seperti biasa.
+     *
+     * @param  AiToolInterface[]|null  $subset  null = mulai dari semua tool terdaftar
+     */
+    public function allowedFor(User $user, ?array $subset = null): array
+    {
+        $tools = $subset ?? $this->all();
+
+        return array_values(array_filter(
+            $tools,
+            fn (AiToolInterface $tool) => ! $tool instanceof GenericModelTool || $tool->isAllowedFor($user)
+        ));
     }
 
     /**

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_id')->nullable()->index(); // menu induk (self relation, no FK)
+            $table->bigInteger('parent_id')->nullable(); // menu induk (self relation, no FK)
             $table->string('name');            // "Manajemen Karyawan"
             $table->string('slug')->unique();   // employee-management
             $table->string('icon')->nullable(); // class font-awesome, mis. "fa-solid fa-users"

@@ -100,8 +100,9 @@
 
         document.addEventListener('live-dom:afterSpa', function(e) {
             initNetra(e.target);
-            setActiveMenu(e.detail?.url);
-            restoreSidebarCollapsedState();
+            // setActiveMenu(e.detail?.url);
+            // initNavActive();
+            // restoreSidebarCollapsedState();
         });
 
         window.liveDomConfig = {

@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('role_has_menus', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('role_id')->index();
-            $table->unsignedBigInteger('menu_id')->index();
+            $table->bigInteger('role_id')->nullable();
+            $table->bigInteger('menu_id')->nullable();
 
             $table->boolean('can_view')->default(true);
             $table->boolean('can_create')->default(false);

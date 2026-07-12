@@ -25,7 +25,7 @@ return new class extends Migration
             $table->json('payload');                // argumen yang sudah lolos validasi tool
             $table->string('status')->default('proposed');
             $table->string('created_model_type')->nullable(); // App\Models\Customer
-            $table->unsignedBigInteger('created_model_id')->nullable();
+            $table->bigInteger('created_model_id')->nullable();
             $table->text('failure_reason')->nullable();
             $table->timestamps();
 
