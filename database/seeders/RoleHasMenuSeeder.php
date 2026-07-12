@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Menu;
-use App\Models\Role;
+use App\Models\Superuser\Menu;
+use App\Models\Superuser\Role;
 use Illuminate\Database\Seeder;
 
 class RoleHasMenuSeeder extends Seeder

@@ -2,7 +2,7 @@
 
 namespace App\Services\AI\Contracts;
 
-use App\Models\User;
+use App\Models\Superuser\User;
 use App\Services\AI\DTO\AiToolResult;
 
 interface AiToolInterface

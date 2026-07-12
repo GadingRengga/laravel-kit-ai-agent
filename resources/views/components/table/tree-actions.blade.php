@@ -1,6 +1,4 @@
-@props([
-    'target', // CSS selector ke <x-table.tree>, mis. "#tree-table"
-])
+@props(['target'])
 
 <div {{ $attributes->class('flex gap-2') }}>
     <button data-nt-tree-expand-all data-target="{{ $target }}" class="nt-btn nt-btn-secondary nt-btn-sm">

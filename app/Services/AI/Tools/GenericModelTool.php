@@ -2,7 +2,7 @@
 
 namespace App\Services\AI\Tools;
 
-use App\Models\User;
+use App\Models\Superuser\User;
 use App\Services\AI\Contracts\AiToolInterface;
 use App\Services\AI\DTO\AiToolResult;
 use Illuminate\Database\Eloquent\Model;
@@ -22,9 +22,7 @@ use Illuminate\Support\Facades\Validator;
  */
 class GenericModelTool implements AiToolInterface
 {
-    public function __construct(private readonly array $config)
-    {
-    }
+    public function __construct(private readonly array $config) {}
 
     public function name(): string
     {
@@ -80,8 +78,8 @@ class GenericModelTool implements AiToolInterface
 
         if (! class_exists($modelClass)) {
             throw new \RuntimeException(
-                "Model [{$modelClass}] belum ada di project ini. ".
-                "Lengkapi dulu sebelum tool [{$this->name()}] bisa dipakai."
+                "Model [{$modelClass}] belum ada di project ini. " .
+                    "Lengkapi dulu sebelum tool [{$this->name()}] bisa dipakai."
             );
         }
 
@@ -122,7 +120,7 @@ class GenericModelTool implements AiToolInterface
     private function renderSummary(array $validated): string
     {
         $summary = $this->config['summary_template']
-            ?? ('Buat data baru: **:'.array_key_first($this->config['fields'] ?? ['data' => null]).'**');
+            ?? ('Buat data baru: **:' . array_key_first($this->config['fields'] ?? ['data' => null]) . '**');
 
         foreach ($validated as $key => $value) {
             $summary = str_replace(":{$key}", (string) $value, $summary);

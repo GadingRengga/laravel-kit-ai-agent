@@ -5,7 +5,7 @@ namespace App\Services\AI;
 use App\Models\Ai\AiActionLog;
 use App\Models\Ai\AiConversation;
 use App\Models\Ai\AiMessage;
-use App\Models\User;
+use App\Models\Superuser\User;
 use App\Services\AI\DTO\ToolCallDTO;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Validation\ValidationException;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Superuser;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,7 +26,7 @@ class Role extends Model
     public function menus()
     {
         return $this->belongsToMany(Menu::class, 'role_has_menus', 'role_id', 'menu_id')
-                    ->withPivot(['can_view', 'can_create', 'can_edit', 'can_delete']);
+            ->withPivot(['can_view', 'can_create', 'can_edit', 'can_delete']);
     }
 
     public function isSuperUser(): bool

@@ -8,7 +8,7 @@ use App\Http\Requests\AI\StoreAiConnectionRequest;
 use App\Models\Ai\AiConnection;
 use App\Models\Ai\AiConversation;
 use App\Models\Ai\AiProvider;
-use App\Models\User;
+use App\Models\Superuser\User;
 use App\Services\AI\AiChatService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;

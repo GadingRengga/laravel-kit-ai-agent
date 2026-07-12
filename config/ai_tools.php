@@ -23,57 +23,20 @@
 */
 
 return [
-
     [
-        // Nama function, dikirim ke API sebagai nama tool. snake_case.
-        'name' => 'create_customer',
-
-        // Model Eloquent tujuan. Cukup tulis nama class-nya (string),
-        // TIDAK perlu class ini sudah pasti ada saat file config di-load —
-        // baru dicek saat tool ini benar-benar dipanggil.
-        'model' => \App\Models\Customer::class,
-
-        // Opsional: nama Gate/Policy ability yang dicek sebelum draft & confirm.
-        // Kosongkan (hapus baris ini) kalau belum ada Policy utk model ini.
+        'name' => 'create_menu',
+        'model' => '\App\Models\Menu::class',
         'ability' => 'create',
-
-        // Ini yang "mengajari" AI kapan tool ini relevan — tulis jelas & singkat.
-        'description' => 'Membuat data customer baru. Panggil hanya kalau user '
-            .'secara eksplisit minta dibuatkan customer/pelanggan baru dan sudah '
-            .'menyebutkan minimal nama customer-nya.',
-
-        // Template ringkasan yang tampil di kartu konfirmasi.
-        // :field_name akan diganti otomatis dari nilai yang sudah divalidasi.
-        'summary_template' => 'Buat customer baru: **:name**',
-
-        // Field yang boleh diisi AI. type: string|number|boolean.
+        'description' => 'Membuat menu baru untuk customer yang sudah ada.',
+        'summary_template' => 'Buat menu baru untuk **:customer_name** senilai **:total**',
         'fields' => [
-            'name' => [
-                'type' => 'string',
-                'required' => true,
-                'description' => 'Nama customer atau perusahaan',
-            ],
-            'email' => [
-                'type' => 'string',
-                'required' => false,
-                'description' => 'Alamat email customer, kosongkan jika tidak disebutkan',
-            ],
-            'phone' => [
-                'type' => 'string',
-                'required' => false,
-                'description' => 'Nomor telepon/WhatsApp customer',
-            ],
-            'company' => [
-                'type' => 'string',
-                'required' => false,
-                'description' => 'Nama perusahaan, jika berbeda dari nama customer',
-            ],
+            'customer_name' => ['type' => 'string', 'required' => true, 'description' => 'Nama customer tujuan order'],
+            'total'         => ['type' => 'number', 'required' => true, 'description' => 'Total nilai order dalam Rupiah'],
+            'notes'         => ['type' => 'string', 'required' => false, 'description' => 'Catatan tambahan'],
         ],
-
-        // Opsional: field yang otomatis diisi id user yang sedang login
-        // (menggantikan 'created_by' => $user->id di Action class lama).
         'stamp_user_as' => 'created_by',
     ],
+
 
     /*
     |--------------------------------------------------------------------------

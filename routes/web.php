@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Superuser\MenuController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,10 +32,11 @@ Route::middleware(['auth', 'active'])->group(function () {
     require __DIR__ . '/ai.php';
     require __DIR__ . '/ai-widget.php';
     // END AI AGENT
-    // Contoh route ERP lain menyusul di sini, mis:
-    // Route::resource('employees', EmployeeController::class);
-    // Route::resource('departments', DepartmentController::class);
-    // Route::resource('users', UserManagementController::class);
+
+    // SUPERUSER
+    Route::get('/superuser/menu', [MenuController::class, 'index'])
+        ->name('superuser.menu.index');
+    // END SUPERUSER
 });
 
 Route::get('/', function () {

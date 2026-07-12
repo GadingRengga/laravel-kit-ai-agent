@@ -30,7 +30,7 @@
     'label',
     'icon' => null,
     'expandable' => true,
-    'childrenTargetId' => true, // true = pakai default "children-{nodeId}", string = custom id, null/false = skip
+    'childrenTargetId' => true,
     'hidden' => false,
 ])
 

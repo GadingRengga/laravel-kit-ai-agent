@@ -1,12 +1,12 @@
 @props([
-    'align' => 'end', // end | start | center
+    'align' => 'end',
 ])
 
 @php
     $justify = match ($align) {
-        'start'  => 'justify-start',
+        'start' => 'justify-start',
         'center' => 'justify-center',
-        default  => 'justify-end',
+        default => 'justify-end',
     };
 @endphp
 

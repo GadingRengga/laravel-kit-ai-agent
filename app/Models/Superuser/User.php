@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Models;
+
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+namespace App\Models\Superuser;
+
+use App\Models\Employee;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
