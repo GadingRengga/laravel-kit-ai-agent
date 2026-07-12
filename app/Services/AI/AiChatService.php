@@ -30,12 +30,48 @@ class AiChatService
         string $userText,
         User $user,
         ?array $allowedTools = null,
+        array $attachments = [],
+        // ^ BUGFIX: parameter ini sebelumnya TIDAK ADA di sini, padahal
+        // AiChatController::store() sudah memanggilnya lewat named argument
+        // `attachments: $attachmentPaths`. Named argument yang tidak
+        // dikenali method tujuan = Fatal Error di PHP ("Unknown named
+        // parameter $attachments"), jadi SETIAP pesan yang dikirim dari
+        // /ai/chat (termasuk tanpa gambar sekalipun) gagal dengan 500,
+        // yang dari sisi user terasa seperti "tombol kirim tidak berfungsi".
     ): array {
-        AiMessage::create([
+        // BUGFIX: sebelumnya selalu mengirim key 'attachments' (walau
+        // nilainya null) ke AiMessage::create(). Karena 'attachments'
+        // sudah masuk $fillable, Eloquent tetap menyertakan kolom itu di
+        // query INSERT meski nilainya null — jadi kolomnya WAJIB ada di
+        // DB walau kamu cuma kirim pesan teks biasa tanpa gambar sama
+        // sekali. Sekarang key itu hanya disertakan kalau memang ada
+        // attachment beneran, supaya pesan teks biasa (dari widget MAUPUN
+        // dari halaman chat penuh tanpa lampiran) tidak pernah butuh
+        // kolom itu ada di DB. Kolom baru jadi relevan begitu kamu
+        // benar-benar pakai fitur lampir gambar di halaman chat penuh
+        // (widget belum punya fitur ini sama sekali).
+        $messageData = [
             'ai_conversation_id' => $conversation->id,
             'role'    => 'user',
             'content' => $userText,
-        ]);
+        ];
+
+        if (! empty($attachments)) {
+            $messageData['attachments'] = $attachments;
+        }
+
+        AiMessage::create($messageData);
+
+        // BUGFIX (history kurang informatif): judul percakapan sebelumnya
+        // TIDAK PERNAH diisi di mana pun, jadi sidebar riwayat selalu
+        // menampilkan fallback "Percakapan baru" untuk semua chat, selamanya.
+        // Isi otomatis dari pesan pertama user begitu percakapan belum
+        // punya judul, supaya riwayat gampang dibedakan satu sama lain.
+        if (blank($conversation->title) && trim($userText) !== '') {
+            $conversation->update([
+                'title' => \Illuminate\Support\Str::limit(trim($userText), 45),
+            ]);
+        }
 
         return $this->requestAssistantReply($conversation, $user, $allowedTools);
     }
@@ -55,12 +91,9 @@ class AiChatService
         );
 
         $provider = $this->providers->resolve($conversation->connection);
+        $payload = $this->buildMessagePayload($conversation);
 
-        $response = $provider->chat(
-            connection: $conversation->connection,
-            messages: $this->buildMessagePayload($conversation),
-            toolSchemas: $toolSchemas,
-        );
+        $response = $provider->chat(connection: $conversation->connection, messages: $payload, toolSchemas: $toolSchemas);
 
         // Kasus A: AI mau memanggil tool → jangan simpan sebagai teks biasa,
         // proses jadi draft dan JANGAN sentuh database bisnis dulu.
@@ -68,11 +101,44 @@ class AiChatService
             return $this->handleToolCall($conversation, $response->toolCalls[0], $user);
         }
 
+        // BUGFIX (balasan AI kosong): sebelumnya $response->content langsung
+        // disimpan & dirender apa adanya, walau isinya null/string kosong.
+        // Dari laporan nyata (lihat laravel.log), penyebabnya BUKAN selalu
+        // token reasoning habis (finishReason yang muncul justru "STOP",
+        // bukan "MAX_TOKENS") — kadang provider (terutama model "lite")
+        // memang sesekali balikin teks kosong walau statusnya sukses.
+        // Karena ini murni flakiness sesaat, coba ulang SEKALI dulu — kalau
+        // percobaan kedua juga kosong, baru benar-benar dianggap gagal &
+        // ditampilkan pesan fallback ke user.
+        $content = trim((string) $response->content);
+
+        if ($content === '') {
+            $retryResponse = $provider->chat(connection: $conversation->connection, messages: $payload, toolSchemas: $toolSchemas);
+
+            if ($retryResponse->hasToolCalls()) {
+                return $this->handleToolCall($conversation, $retryResponse->toolCalls[0], $user);
+            }
+
+            $response = $retryResponse;
+            $content = trim((string) $response->content);
+        }
+
+        if ($content === '') {
+            report(new \RuntimeException(
+                "Balasan AI kosong 2x berturut-turut untuk conversation #{$conversation->id} — "
+                    . 'kemungkinan jatah token habis (reasoning), konten kena filter, atau flakiness model. '
+                    . 'Pertimbangkan naikkan ai.max_response_tokens atau ganti model kalau ini sering terjadi.'
+            ));
+
+            $content = 'Maaf, saya tidak bisa memberi balasan untuk itu barusan. '
+                . 'Coba ulangi pertanyaannya, atau perpendek permintaannya.';
+        }
+
         // Kasus B: balasan teks biasa.
         $message = AiMessage::create([
             'ai_conversation_id' => $conversation->id,
             'role'    => 'assistant',
-            'content' => $response->content,
+            'content' => $content,
             'prompt_tokens'     => $response->promptTokens,
             'completion_tokens' => $response->completionTokens,
         ]);

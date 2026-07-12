@@ -14,12 +14,30 @@ class OpenAiProvider implements AiProviderInterface
     public function chat(AiConnection $connection, array $messages, array $toolSchemas): AiChatResponse
     {
         $config = config('ai.providers.openai');
+        $model = $connection->resolvedModel();
+
+        // BUGFIX (balasan AI kosong): model reasoning (o1/o3/gpt-5.x, dst)
+        // memakai budget token yang SAMA untuk "mikir" (reasoning token,
+        // tidak terlihat oleh user) dan untuk jawaban yang benar-benar
+        // dikirim balik. Kalau ai.max_response_tokens (default 500) terlalu
+        // kecil, bisa saja seluruh budget habis untuk reasoning sebelum
+        // sempat nulis jawaban → content kosong. Analog dengan fix yang
+        // sudah ada di GeminiProvider (maxOutputTokens di-clamp minimal
+        // 2048 untuk model 3.x). Selain itu, endpoint chat/completions
+        // MENOLAK parameter `max_tokens` untuk model reasoning — wajib
+        // pakai `max_completion_tokens`.
+        $isReasoningModel = (bool) preg_match('/^(o[0-9]|gpt-5)/i', $model);
 
         $payload = [
-            'model'       => $connection->resolvedModel(),
-            'messages'    => $messages,
-            'max_tokens'  => config('ai.max_response_tokens'),
+            'model'    => $model,
+            'messages' => $messages,
         ];
+
+        if ($isReasoningModel) {
+            $payload['max_completion_tokens'] = max((int) config('ai.max_response_tokens'), 2048);
+        } else {
+            $payload['max_tokens'] = config('ai.max_response_tokens');
+        }
 
         // Cuma sertakan 'tools' kalau memang ada — kirim array kosong tetap
         // menambah sedikit token overhead di beberapa model.
