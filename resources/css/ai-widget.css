@@ -82,6 +82,32 @@
   position: relative;
 }
 
+/* BUGFIX (UI kurang enak): judul/subjudul (mis. nama model panjang seperti
+   "Terhubung · gemini-3.1-flash-lite") sebelumnya bisa meluber keluar
+   header dan mendorong tombol-tombol di sampingnya jadi berantakan,
+   karena nt-modal-title-wrap tidak dibatasi lebar & tidak ada ellipsis. */
+.ai-widget-header .nt-modal-title-wrap {
+  min-width: 0;
+}
+
+#ai-widget-title,
+#ai-widget-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* BUGFIX (UI kurang enak): modal sebelumnya muncul instan (snap), terasa
+   kaku dibanding transisi lembut yang dipakai FAB & elemen lain di kit ini. */
+.ai-widget-dialog {
+  animation: aiWidgetPopIn .18s cubic-bezier(.34, 1.3, .64, 1);
+}
+
+@keyframes aiWidgetPopIn {
+  from { opacity: 0; transform: translateY(8px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 .ai-widget-icon-btn {
   width: 30px;
   height: 30px;
@@ -262,6 +288,22 @@
   flex: 1;
   overflow-y: auto;
   padding: 16px 18px;
+}
+
+/* BUGFIX (UI kurang enak): sebelumnya area pesan widget memakai scrollbar
+   default browser (tebal, tidak konsisten dengan .chat-conv-list yang
+   sudah dikustomisasi tipis di netra-chat.css). Disamakan di sini. */
+.ai-widget-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ai-widget-messages::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, .4);
+  border-radius: 6px;
+}
+
+.ai-widget-messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, .6);
 }
 
 .ai-widget-hero {

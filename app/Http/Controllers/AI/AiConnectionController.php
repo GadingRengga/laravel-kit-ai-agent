@@ -19,6 +19,21 @@ class AiConnectionController extends Controller
     {
         $provider = AiProvider::where('code', $request->provider_code)->firstOrFail();
 
+        // BUGFIX (history hanya sesuai AI yang dipilih): sebelumnya
+        // connect ke provider baru TIDAK menonaktifkan koneksi provider
+        // lain yang masih is_active=true. Akibatnya user bisa punya 2+
+        // AiConnection aktif sekaligus (mis. OpenAI dan Gemini), lalu
+        // `AiConnection::where('is_active', true)->first()` yang dipakai
+        // di AiChatController/AiWidgetController jadi ambigu — bisa
+        // balikin salah satu yang berbeda tiap request, sehingga
+        // percakapan/riwayat yang tampil ke user seolah "loncat-loncat"
+        // tergantung koneksi mana yang kebetulan ke-pick. Dengan
+        // menonaktifkan koneksi lain di sini, "AI yang sedang aktif"
+        // jadi deterministik: selalu yang terakhir kali dihubungkan.
+        AiConnection::where('user_id', Auth::id())
+            ->where('ai_provider_id', '!=', $provider->id)
+            ->update(['is_active' => false]);
+
         AiConnection::updateOrCreate(
             [
                 'user_id'        => Auth::id(),

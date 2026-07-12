@@ -65,6 +65,13 @@ class AiWidgetController extends Controller
         $user = Auth::user();
         $provider = AiProvider::where('code', $request->provider_code)->firstOrFail();
 
+        // BUGFIX (history hanya sesuai AI yang dipilih) — lihat penjelasan
+        // lengkap di AiConnectionController::store(), fix yang sama
+        // diterapkan di sini karena widget juga bisa dipakai untuk connect.
+        AiConnection::where('user_id', $user->id)
+            ->where('ai_provider_id', '!=', $provider->id)
+            ->update(['is_active' => false]);
+
         $connection = AiConnection::updateOrCreate(
             [
                 'user_id'        => $user->id,
@@ -149,17 +156,33 @@ class AiWidgetController extends Controller
 
     private function resolveConversation(User $user, AiConnection $connection): AiConversation
     {
-        // PENTING: filter juga by ai_connection_id yang sedang aktif, bukan
-        // cuma user_id. Kalau tidak, setelah user logout AI (AiConnection
-        // lama ke-delete) lalu connect ulang (AiConnection baru dibuat),
-        // query ini bisa balikin conversation LAMA yang ai_connection_id-nya
-        // masih menunjuk ke connection yang sudah dihapus → $conversation->connection
-        // jadi null → error waktu AiChatService manggil $provider->chat().
-        return AiConversation::where('user_id', $user->id)
-            ->where('ai_connection_id', $connection->id)
-            ->latest()
-            ->first()
-            ?? AiConversation::create(['user_id' => $user->id, 'ai_connection_id' => $connection->id]);
+        // BUGFIX (history hanya sesuai AI yang dipilih): implementasi lama
+        // di sini strict filter by ai_connection_id, jadi begitu user
+        // logout/connect ulang (atau ganti provider), AiConnection lama
+        // dianggap "beda" dari yang baru meski user cuma mau melanjutkan
+        // obrolan yang sama → widget selalu bikin percakapan BARU yang
+        // kosong, dan riwayat lama seolah hilang total dari widget
+        // (padahal masih ada di database, cuma tidak pernah ditemukan lagi
+        // oleh query ini). Dari sudut pandang user: "history cuma nongol
+        // sesuai AI yang lagi dipilih".
+        //
+        // Fix: ambil percakapan TERAKHIR milik user apa pun connection-nya,
+        // lalu re-attach ke connection yang sedang aktif sekarang kalau
+        // beda. Ini tetap menjaga jaminan dari komentar lama (conversation
+        // yang dipakai chat SELALU punya ai_connection_id yang valid &
+        // aktif, jadi $provider->chat() tidak akan pernah null), tapi tanpa
+        // mengorbankan kontinuitas riwayat percakapan.
+        $conversation = AiConversation::where('user_id', $user->id)->latest()->first();
+
+        if (! $conversation) {
+            return AiConversation::create(['user_id' => $user->id, 'ai_connection_id' => $connection->id]);
+        }
+
+        if ($conversation->ai_connection_id !== $connection->id) {
+            $conversation->update(['ai_connection_id' => $connection->id]);
+        }
+
+        return $conversation;
     }
 
     private function renderMessages(AiConversation $conversation): string

@@ -15,6 +15,7 @@ Route::middleware(['auth', 'throttle:ai-chat'])->prefix('ai')->name('ai.')->grou
     Route::get('/chat', [AiChatController::class, 'index'])->name('chat.index');
     Route::post('/chat/new', [AiChatController::class, 'newConversation'])->name('chat.new');
     Route::post('/conversations/{conversation}/messages', [AiChatController::class, 'store'])->name('chat.store');
+    Route::delete('/chat/{conversation}', [AiChatController::class, 'destroyConversation'])->name('chat.destroy');
 
     Route::post('/action-logs/{actionLog}/confirm', [AiChatController::class, 'confirmToolAction'])->name('action.confirm');
     Route::post('/action-logs/{actionLog}/reject', [AiChatController::class, 'rejectToolAction'])->name('action.reject');

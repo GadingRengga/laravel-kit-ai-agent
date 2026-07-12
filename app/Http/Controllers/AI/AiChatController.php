@@ -4,13 +4,16 @@ namespace App\Http\Controllers\AI;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AI\SendAiMessageRequest;
+use App\Models\Ai\AiActionLog; // NOTE: hilang di versi asli — dipakai di confirmToolAction()/rejectToolAction() tapi belum di-import. Sudah dibetulkan di sini.
 use App\Models\Ai\AiConnection;
 use App\Models\Ai\AiConversation;
 use App\Services\AI\AiChatService;
 use App\Services\AI\AiToolRegistry;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class AiChatController extends Controller
@@ -31,11 +34,22 @@ class AiChatController extends Controller
 
         $conversation = $this->resolveConversation($request, $user, $connection);
 
+        // BUGFIX (history kurang informatif): sebelumnya query ini cuma
+        // ambil id/title/updated_at, jadi sidebar tidak pernah tahu isi
+        // pesan terakhir untuk ditampilkan sebagai cuplikan (snippet).
+        // Ditambah eager-load 1 pesan terakhir per percakapan supaya
+        // _conv-item.blade.php bisa menampilkan cuplikan asli, bukan cuma
+        // jam relatif yang diulang dua kali (lihat _conv-item.blade.php).
+        $conversations = AiConversation::where('user_id', $user->id)
+            ->latest()
+            ->limit(20)
+            ->get(['id', 'title', 'updated_at'])
+            ->load(['messages' => fn($q) => $q->latest()->limit(1)]);
+
         return view('ai.chat', [
-            'conversation' => $conversation->load('messages'),
-            'connection'   => $connection,
-            'conversations' => AiConversation::where('user_id', $user->id)
-                ->latest()->limit(20)->get(['id', 'title', 'updated_at']),
+            'conversation'   => $conversation->load('messages'),
+            'connection'     => $connection,
+            'conversations'  => $conversations,
         ]);
     }
 
@@ -53,7 +67,34 @@ class AiChatController extends Controller
     }
 
     /**
+     * Hapus 1 percakapan beserta semua pesan & lampiran gambarnya.
+     * Dipanggil via fetch(DELETE) dari tombol trash di sidebar / header chat.
+     */
+    public function destroyConversation(AiConversation $conversation): JsonResponse|RedirectResponse
+    {
+        $this->authorizeConversation($conversation);
+
+        // Bersihkan file gambar yang tersimpan di disk 'public' sebelum baris DB-nya dihapus,
+        // supaya tidak ninggalin file yatim di storage/app/public/ai-attachments/...
+        foreach ($conversation->messages as $message) {
+            foreach ((array) ($message->attachments ?? []) as $path) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
+        $conversation->messages()->delete();
+        $conversation->delete();
+
+        if (request()->wantsJson()) {
+            return response()->json(['deleted' => true]);
+        }
+
+        return redirect()->route('ai.chat.index');
+    }
+
+    /**
      * Endpoint AJAX dipanggil dari textarea chat (lihat resources/js/ai-chat.js).
+     * Sekarang juga menerima gambar (multipart/form-data, field images[]).
      * Balikan: partial HTML berisi 1 bubble balasan AI (teks biasa ATAU
      * tool-confirm-card), langsung di-append ke #chat-messages oleh JS.
      */
@@ -63,11 +104,18 @@ class AiChatController extends Controller
 
         abort_unless($conversation->connection, 422, 'Hubungkan akun ChatGPT terlebih dahulu.');
 
+        $attachmentPaths = $this->storeUploadedImages($request, $conversation);
+
         $result = $this->chatService->sendUserMessage(
             conversation: $conversation,
             userText: $request->string('message')->toString(),
             user: Auth::user(),
             allowedTools: $this->allowedToolsForContext($request->input('context')),
+            attachments: $attachmentPaths,
+            // ^ NOTE: parameter baru. AiChatService::sendUserMessage() perlu disesuaikan
+            // supaya menyimpan $attachments ke kolom `attachments` (json) pada pesan
+            // role=user yang dibuatnya, dan (opsional) menyisipkan gambar ke payload
+            // yang dikirim ke provider AI kalau providernya mendukung vision/image input.
         );
 
         return $this->renderResult($result);
@@ -108,6 +156,25 @@ class AiChatController extends Controller
         $actionLog->update(['status' => 'rejected']);
 
         return view('ai.partials._tool-confirm-card', ['actionLog' => $actionLog]);
+    }
+
+    /**
+     * Simpan gambar yang diupload user ke disk 'public', dikelompokkan per
+     * percakapan supaya gampang dibersihkan waktu percakapan dihapus.
+     *
+     * @return array<int, string> daftar path relatif di disk 'public'
+     */
+    private function storeUploadedImages(SendAiMessageRequest $request, AiConversation $conversation): array
+    {
+        if (! $request->hasFile('images')) {
+            return [];
+        }
+
+        return collect($request->file('images'))
+            ->filter(fn($file) => $file->isValid())
+            ->map(fn($file) => $file->store("ai-attachments/{$conversation->id}", 'public'))
+            ->values()
+            ->all();
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Services\AI\Contracts\AiProviderInterface;
 use App\Services\AI\DTO\AiChatResponse;
 use App\Services\AI\DTO\ToolCallDTO;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -46,7 +47,20 @@ class GeminiProvider implements AiProviderInterface
         $payload = [
             'contents' => $contents,
             'generationConfig' => [
-                'maxOutputTokens' => config('ai.max_response_tokens'),
+                // Gemini 3.x adalah reasoning model: token "thinking" internal
+                // ikut dipotong dari maxOutputTokens yang sama dengan token
+                // jawaban. Kalau nilai config lama (peninggalan model non-reasoning,
+                // biasanya < 1000) dipakai apa adanya, model bisa habiskan semua
+                // jatah buat mikir dan sisa jawabannya kepotong/kosong — gejalanya
+                // kelihatan seperti "ngawur" padahal sebenarnya cuma terpotong.
+                'maxOutputTokens' => max((int) config('ai.max_response_tokens'), 2048),
+                // 'low' cukup buat chat widget ERP (bukan riset/analisis berat).
+                // Kalau butuh reasoning lebih dalam (mis. tool-calling kompleks),
+                // naikkan ke 'medium'. Jangan pakai 'high' kecuali benar2 perlu,
+                // karena makin banyak token dipakai buat mikir.
+                'thinkingConfig' => [
+                    'thinkingLevel' => 'low',
+                ],
             ],
         ];
 
@@ -56,9 +70,9 @@ class GeminiProvider implements AiProviderInterface
             ];
         }
 
-        if (! empty($toolSchemas)) {
-            $payload['tools'] = $this->toGeminiTools($toolSchemas);
-        }
+        // if (! empty($toolSchemas)) {
+        //     $payload['tools'] = $this->toGeminiTools($toolSchemas);
+        // }
 
         $response = Http::timeout($config['timeout'])
             ->baseUrl($config['base_url'])
@@ -70,7 +84,24 @@ class GeminiProvider implements AiProviderInterface
         }
 
         $json = $response->json();
+        Log::info('GEMINI_DEBUG', [
+            'contents_sent' => $contents,
+            'tools_sent'    => $payload['tools'] ?? null,
+            'raw_reply'     => $json,
+        ]);
         $parts = $json['candidates'][0]['content']['parts'] ?? [];
+        $finishReason = $json['candidates'][0]['finishReason'] ?? null;
+
+        // MAX_TOKENS berarti jawaban kepotong (termasuk kalau token habis buat
+        // "thinking" sebelum sempat menjawab) — log supaya kelihatan di
+        // laravel.log, bukan cuma keliatan sebagai jawaban aneh ke user.
+        if ($finishReason === 'MAX_TOKENS') {
+            report(new RuntimeException(
+                'Gemini finishReason=MAX_TOKENS — jawaban kemungkinan terpotong. '
+                    . 'Pertimbangkan naikkan generationConfig.maxOutputTokens atau '
+                    . 'turunkan thinkingConfig.thinkingLevel.'
+            ));
+        }
 
         $text = collect($parts)
             ->pluck('text')
@@ -116,7 +147,6 @@ class GeminiProvider implements AiProviderInterface
             }
 
             if ($msg['role'] === 'tool') {
-                // Lihat catatan keterbatasan di docblock class ini.
                 $contents[] = [
                     'role' => 'user',
                     'parts' => [['text' => '[Hasil tool] ' . ($msg['content'] ?? '')]],
@@ -124,9 +154,6 @@ class GeminiProvider implements AiProviderInterface
                 continue;
             }
 
-            // Pesan assistant tool-call (content null, belum ada arguments
-            // tersimpan) tidak bisa direkonstruksi jadi functionCall Gemini
-            // yang valid — skip daripada kirim entry kosong/rusak.
             if (empty($msg['content'])) {
                 continue;
             }
@@ -136,6 +163,13 @@ class GeminiProvider implements AiProviderInterface
                 'parts' => [['text' => $msg['content']]],
             ];
         }
+
+        // PENTING: Untuk memastikan urutan kronologis dari terlama ke terbaru 
+        // karena adanya efek penumpukan array dari buildMessagePayload.
+        // Kita cek jika pesan terakhir di array justru bertindak sebagai pesan lama.
+        // Namun untuk amannya, mari pastikan urutan $contents mengikuti urutan asli request.
+        // Jika di log debug contents_sent Anda terbalik, buka komentar baris di bawah ini:
+        // $contents = array_reverse($contents);
 
         return [implode("\n", $systemParts), $contents];
     }

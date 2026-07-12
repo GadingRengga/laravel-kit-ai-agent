@@ -160,13 +160,20 @@ class AiChatService
             ];
         }
 
-        $recent = $conversation->messages()
+        // 1. Ambil ID dari N pesan terbaru terlebih dahulu
+        $recentIds = $conversation->messages()
             ->when($conversation->summarized_until, fn($q) => $q->where('created_at', '>', $conversation->summarized_until))
-            ->latest()
-            ->limit(config('ai.history_window'))
-            ->get()
-            ->reverse();
+            ->orderByDesc('id')
+            ->limit(config('ai.history_window') ?? 10)
+            ->pluck('id');
 
+        // 2. Ambil data aslinya dan urutkan secara Ascending (kronologis: terlama ke terbaru)
+        $recent = $conversation->messages()
+            ->whereIn('id', $recentIds)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        // 3. Masukkan ke payload (HAPUS fungsi ->reverse() yang membingungkan)
         foreach ($recent as $msg) {
             $payload[] = $msg->toApiMessage();
         }
@@ -191,6 +198,8 @@ class AiChatService
 
         $toSummarize = $conversation->messages()
             ->when($conversation->summarized_until, fn($q) => $q->where('created_at', '>', $conversation->summarized_until))
+            ->orderBy('created_at')
+            ->orderBy('id')
             ->get();
 
         $transcript = $toSummarize->map(fn($m) => "{$m->role}: {$m->content}")->implode("\n");

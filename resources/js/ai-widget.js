@@ -223,6 +223,19 @@ const AiWidget = (() => {
   function autoResize(textarea) {
     textarea.style.height = 'auto';
     textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+    updateSendBtnState();
+  }
+
+  // BUGFIX (widget UI kurang enak): tombol kirim di widget sebelumnya
+  // TIDAK PERNAH mendapat class `.active` (lihat .chat-send-btn.active di
+  // netra-chat.css), jadi tampilannya selalu warna pudar/non-aktif walau
+  // user sudah mengetik sesuatu — beda dengan halaman /ai/chat penuh yang
+  // sudah punya updateSendBtnState() untuk ini. Disamakan di sini.
+  function updateSendBtnState() {
+    const ta = el('ai-widget-textarea');
+    const btn = el('ai-widget-send-btn');
+    if (!ta || !btn) return;
+    btn.classList.toggle('active', ta.value.trim().length > 0);
   }
 
   function handleKeydown(event) {
@@ -283,6 +296,7 @@ const AiWidget = (() => {
 
     textarea.value = '';
     autoResize(textarea);
+    updateSendBtnState();
     textarea.disabled = true;
     sending = true;
     scrollToBottom();

@@ -22,3 +22,4 @@ import './netra-form-wizard-lazy';
 import './netra-modal-trigger';
 import './netra-modal-confirm';
 import './ai-widget';
+import './ai-chat';

@@ -15,6 +15,11 @@ class AiMessage extends Model
         'tool_call_id',
         'prompt_tokens',
         'completion_tokens',
+        'attachments',
+    ];
+
+    protected $casts = [
+        'attachments' => 'array',
     ];
 
     public function conversation(): BelongsTo
