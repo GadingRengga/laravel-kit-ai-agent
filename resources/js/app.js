@@ -20,6 +20,7 @@ import './netra-tables-patch';
 import './netra-form-wizard-autoinit';
 import './netra-form-wizard-lazy';
 import './netra-modal-trigger';
+import './netra-chat';
 import './netra-modal-confirm';
 import './ai-widget';
 import './ai-chat';
