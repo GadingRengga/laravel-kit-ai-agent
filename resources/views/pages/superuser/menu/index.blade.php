@@ -11,5 +11,5 @@
 @endsection
 
 @section('content')
-    @include('management.menu.partials._panel')
+    @include('pages.superuser.menu.partials._panel')
 @endsection

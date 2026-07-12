@@ -35,7 +35,7 @@
         </x-slot:head>
 
         @forelse ($menus as $menu)
-            @include('management.menu.partials._row', ['menu' => $menu, 'level' => 1])
+            @include('pages.superuser.menu.partials._row', ['menu' => $menu, 'level' => 1])
         @empty
             <tr>
                 <td colspan="5" class="text-center text-[13px] text-slate-400 py-8">

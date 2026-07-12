@@ -19,7 +19,7 @@ class MenuController extends Controller
      */
     public function index(): View
     {
-        return view('management.menu.index', [
+        return view('pages.superuser.menu.index', [
             'menus' => $this->tree(),
         ]);
     }
@@ -30,7 +30,7 @@ class MenuController extends Controller
      */
     public function create(): View
     {
-        return view('management.menu.partials._form', [
+        return view('pages.superuser.menu.partials._form', [
             'menu' => new Menu(['is_active' => true, 'order' => 0]),
             'parents' => $this->parentOptions(),
         ]);
@@ -45,7 +45,7 @@ class MenuController extends Controller
         $id = $request['data'];
         $menu = Menu::findOrFail($id);
 
-        return view('management.menu.partials._form', [
+        return view('pages.superuser.menu.partials._form', [
             'menu' => $menu,
             'parents' => $this->parentOptions($menu->id),
         ]);
@@ -128,7 +128,7 @@ class MenuController extends Controller
      */
     protected function renderPanel(?string $error = null, ?string $success = null): View
     {
-        return view('management.menu.partials._panel', [
+        return view('pages.superuser.menu.partials._panel', [
             'menus' => $this->tree(),
             'error' => $error,
             'success' => $success,

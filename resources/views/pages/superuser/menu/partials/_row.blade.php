@@ -37,6 +37,6 @@
 
 @if ($hasChildren)
     @foreach ($menu->children as $child)
-        @include('management.menu.partials._row', ['menu' => $child, 'level' => $level + 1])
+        @include('pages.superuser.menu.partials._row', ['menu' => $child, 'level' => $level + 1])
     @endforeach
 @endif
