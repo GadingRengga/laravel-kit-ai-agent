@@ -3,6 +3,7 @@
 namespace App\Models\Superuser;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Role extends Model
 {
@@ -12,21 +13,22 @@ class Role extends Model
         'is_active' => 'boolean',
     ];
 
-    // Relasi manual (tanpa FK di DB, tapi tetap bisa dipakai Eloquent)
-    public function users()
+    /**
+     * User yang memiliki role ini (Many-to-Many).
+     */
+    public function users(): BelongsToMany
     {
-        return $this->hasMany(User::class, 'role_id');
+        return $this->belongsToMany(User::class, 'role_user', 'role_id', 'user_id')
+            ->withTimestamps();
     }
 
-    public function permissions()
+    /**
+     * Permission yang dimiliki role ini (Many-to-Many).
+     */
+    public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Permission::class, 'role_has_permissions', 'role_id', 'permission_id');
-    }
-
-    public function menus()
-    {
-        return $this->belongsToMany(Menu::class, 'role_has_menus', 'role_id', 'menu_id')
-            ->withPivot(['can_view', 'can_create', 'can_edit', 'can_delete']);
+        return $this->belongsToMany(Permission::class, 'permission_role', 'role_id', 'permission_id')
+            ->withTimestamps();
     }
 
     public function isSuperUser(): bool

@@ -22,36 +22,30 @@
 | developer" — bukan error 500. Lihat AiChatService::handleToolCall().
 |
 |--------------------------------------------------------------------------
-| Batasan akses: 'menu' + 'ability'
+| Batasan akses: 'permission'
 |--------------------------------------------------------------------------
-| 'menu'    slug menu (kolom `menus.slug`, lihat Manajemen Menu) yang jadi
-|           "rumah" fitur ini. Isi dengan slug menu sidebar yang paling
-|           relevan — mis. tool bikin data quotation → slug menu Quotation.
-| 'ability' salah satu: can_view, can_create, can_edit, can_delete — HARUS
-|           persis salah satu dari 4 ini (sama dengan kolom pivot
-|           position_has_menus / role_has_menus), bukan nama Gate ability
-|           bebas seperti sebelumnya.
+| Setiap tool bisa dibatasi aksesnya berdasarkan permission (slug).
+| User harus memiliki permission tersebut (melalui role-nya) agar bisa
+| menggunakan tool ini. Lihat User::hasPermission().
 |
-| Kombinasi keduanya dicek ke matrix "Akses Menu per Posisi" milik user
-| (lihat App\Models\Superuser\User::hasMenuAbility() dan
-| App\Services\AI\Tools\GenericModelTool::isAllowedFor()): kalau posisi
-| jabatan user tidak dicentang `ability` untuk `menu` tsb, AI tidak akan
-| menawarkan/menjalankan tool ini sama sekali untuk user itu.
+| Contoh: 'permission' => 'menu.create'
 |
-| Kosongkan salah satu ATAU keduanya kalau tool ini sengaja mau dibuka
-| untuk SEMUA user yang login, tanpa perlu setting akses per posisi dulu.
+| Kosongkan atau hilangkan key `permission` kalau tool ini sengaja
+| mau dibuka untuk SEMUA user yang sudah login.
+|
+| Legacy: key 'menu' + 'ability' masih didukung untuk backward compat,
+| tapi disarankan beralih ke 'permission'.
 */
 
 return [
     [
         'name' => 'create_menu',
         'model' => '\App\Models\Menu::class',
-        'menu' => 'menu', // TODO: ganti ke slug menu sidebar asli yang menaungi fitur pemesanan menu customer
-        'ability' => 'can_create',
+        'permission' => 'menu.create', // slug permission yang dicek via User::hasPermission()
         'description' => 'Membuat menu baru.',
-        'summary_template' => 'Buat menu baru untuk **:customer_name** senilai **:total**',
+        'summary_template' => 'Buat menu baru **:name**',
         'fields' => [
-            'namep' => ['name' => 'string', 'required' => true, 'description' => 'Nama menu sidebar'],
+            'name' => ['type' => 'string', 'required' => true, 'description' => 'Nama menu'],
         ],
         'stamp_user_as' => 'created_by',
     ],

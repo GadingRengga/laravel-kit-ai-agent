@@ -93,26 +93,26 @@ class GenericModelTool implements AiToolInterface
     }
 
     /**
-     * Cek apakah tool ini boleh dipakai user — berdasarkan hak akses POSISI
-     * JABATAN user atas menu yang di-declare di config (`menu` + `ability`),
-     * lihat User::hasMenuAbility(). Dulu ini pakai Gate::authorize(), tapi
-     * Policy-nya sendiri tidak pernah benar-benar dibuat/didaftarkan di
-     * project ini — jadi diganti pengecekan yang sudah benar-benar hidup:
-     * matrix akses menu per posisi (lihat fitur "Akses Menu per Posisi").
+     * Cek apakah tool ini boleh dipakai user — berdasarkan PERMISSION yang
+     * dimiliki user (dari role-role yang melekat). Lihat User::hasPermission().
      *
-     * Dipakai DUA tempat:
-     *   1. AiToolRegistry::allowedFor() — filter daftar tool SEBELUM
-     *      ditawarkan ke AI (AI tidak akan mencoba tool yang toh ditolak).
-     *   2. authorize() di bawah — penjaga terakhir saat toDraft()/confirm()
-     *      benar-benar dipanggil (defense-in-depth, jaga-jaga context tool
-     *      yang dikirim controller sudah usang/tidak sinkron).
+     * Config tool mendukung 2 mode:
+     *   - 'permission': slug permission (mis. "menu.create") — user harus
+     *     punya permission ini.
+     *   - 'menu' + 'ability' (legacy): tetap didukung untuk backward compat.
      *
-     * Tool yang config-nya belum diisi `menu`+`ability` dianggap TERBUKA
-     * untuk siapapun yang sudah login — sama seperti perilaku lama saat
-     * `ability` kosong (biar gampang dipakai tanpa setup akses dulu).
+     * Tool yang config-nya tidak diisi permission/menu dianggap TERBUKA
+     * untuk semua user yang sudah login.
      */
     public function isAllowedFor(User $user): bool
     {
+        $permissionSlug = $this->config['permission'] ?? null;
+
+        if ($permissionSlug) {
+            return $user->hasPermission($permissionSlug);
+        }
+
+        // Fallback ke menu+ability (legacy)
         $menuSlug = $this->config['menu'] ?? null;
         $ability = $this->config['ability'] ?? null;
 
@@ -130,7 +130,7 @@ class GenericModelTool implements AiToolInterface
         }
 
         throw new AuthorizationException(
-            "Posisi kamu tidak memiliki hak akses [{$this->config['ability']}] pada menu [{$this->config['menu']}]."
+            "Kamu tidak memiliki akses untuk menjalankan tool ini."
         );
     }
 

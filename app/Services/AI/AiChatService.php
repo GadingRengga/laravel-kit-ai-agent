@@ -99,7 +99,7 @@ class AiChatService
         );
 
         $provider = $this->providers->resolve($conversation->connection);
-        $payload = $this->buildMessagePayload($conversation);
+        $payload = $this->buildMessagePayload($conversation, $user, $allowedTools);
 
         $response = $provider->chat(connection: $conversation->connection, messages: $payload, toolSchemas: $toolSchemas);
 
@@ -223,9 +223,24 @@ class AiChatService
      * mentah dari DB. Ini implementasi strategi hemat token:
      *   system prompt + ringkasan (kalau ada) + N pesan terakhir.
      */
-    private function buildMessagePayload(AiConversation $conversation): array
-    {
+    private function buildMessagePayload(
+        AiConversation $conversation,
+        User $user,
+        ?array $allowedTools = null,
+    ): array {
         $payload = [['role' => 'system', 'content' => config('ai.system_prompt')]];
+
+        // Suntik daftar KEMAMPUAN NYATA milik user ini ke prompt. Tanpa ini,
+        // saat user bertanya "saya bisa akses apa saja?", AI cuma menebak dari
+        // contoh generik di system_prompt (customer/quotation/order) — TIDAK
+        // peduli permission user sebenarnya. Dengan blok ini, jawaban AI soal
+        // "apa yang bisa saya lakukan" selalu berbasis tool yang benar-benar
+        // diizinkan untuk user (hasil AiToolRegistry::allowedFor + filter
+        // context halaman kalau ada).
+        $payload[] = [
+            'role'    => 'system',
+            'content' => $this->buildCapabilityContext($user, $allowedTools),
+        ];
 
         if ($conversation->summary) {
             $payload[] = [
@@ -253,6 +268,46 @@ class AiChatService
         }
 
         return $payload;
+    }
+
+    /**
+     * Bangun blok system message berisi DAFTAR KEMAMPUAN NYATA milik user
+     * ini — sumber kebenaran saat user bertanya "saya bisa akses apa saja?".
+     *
+     * Daftar diambil dari tool yang benar-benar diizinkan
+     * (AiToolRegistry::allowedFor, yang di balik layar mengecek
+     * User::hasPermission / hasMenuAbility), lalu—kalau controller mengisi
+     * $allowedTools—dipersempit lagi ke context halaman aktif. Jadi isi blok
+     * ini SELALU sinkron dengan permission user, bukan contoh hardcoded.
+     *
+     * @param  string[]|null  $allowedTools
+     */
+    private function buildCapabilityContext(User $user, ?array $allowedTools = null): string
+    {
+        $tools = $this->tools->allowedFor(
+            $user,
+            $allowedTools ? $this->tools->only($allowedTools) : null
+        );
+
+        if (empty($tools)) {
+            return 'KEMAMPUAN AKTIF UNTUK USER INI: (kosong). '
+                . 'User ini BELUM punya izin untuk membuat/mengubah data apa pun lewat kamu. '
+                . 'Kalau user bertanya bisa akses apa saja, jawab jujur bahwa saat ini belum ada '
+                . 'aksi yang bisa kamu jalankan untuk mereka, dan sarankan menghubungi admin '
+                . 'untuk pengaturan hak akses. JANGAN mengarang daftar fitur.';
+        }
+
+        $lines = array_map(
+            fn($tool) => '- ' . $tool->name() . ': ' . $tool->description(),
+            $tools
+        );
+
+        return "KEMAMPUAN AKTIF UNTUK USER INI (berdasarkan hak akses/permission mereka):\n"
+            . implode("\n", $lines)
+            . "\n\nSaat user bertanya \"saya bisa akses apa saja / apa yang bisa kamu bantu\", "
+            . 'jawab HANYA berdasarkan daftar di atas — jangan menyebut fitur yang tidak ada di daftar, '
+            . 'dan jangan mengarang. Kalau user minta sesuatu di luar daftar ini, jelaskan dengan sopan '
+            . 'bahwa mereka belum punya akses untuk itu.';
     }
 
     /**

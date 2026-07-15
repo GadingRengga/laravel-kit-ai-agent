@@ -3,7 +3,10 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Superuser\MenuController;
-use App\Http\Controllers\Superuser\PositionMenuController;
+use App\Http\Controllers\Superuser\PermissionController;
+use App\Http\Controllers\Superuser\RoleController;
+use App\Http\Controllers\Superuser\UserController;
+use App\Http\Controllers\Superuser\UserRoleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,8 +41,17 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/superuser/menu', [MenuController::class, 'index'])
         ->name('superuser.menu.index');
 
-    Route::get('/superuser/position-menu', [PositionMenuController::class, 'index'])
-        ->name('superuser.position-menu.index');
+    Route::get('/superuser/role', [RoleController::class, 'index'])
+        ->name('superuser.role.index');
+
+    Route::get('/superuser/permission', [PermissionController::class, 'index'])
+        ->name('superuser.permission.index');
+
+    Route::get('/superuser/user', [UserController::class, 'index'])
+        ->name('superuser.user.index');
+
+    Route::get('/superuser/user-role', [UserRoleController::class, 'index'])
+        ->name('superuser.user-role.index');
     // END SUPERUSER
 });
 
