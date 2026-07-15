@@ -353,12 +353,14 @@ body {
   color: #a5b4fc;
 }
 
-/* ── Parent item dengan submenu aktif (has-active) ──
-   Diset oleh JS (initNavActive / click handler) saat salah satu
-   sub-item aktif. Memberi highlight warna pada parent link +
-   icon walaupun submenu sedang tertutup (collapsed). */
+
 .nav-item.has-active>.nav-link {
+  background: #EEF0FF;
   color: #3730A3;
+}
+
+.nav-item.has-active>.nav-link .nav-label {
+  font-weight: 600;
 }
 
 .nav-item.has-active>.nav-link .nav-icon {
@@ -366,6 +368,7 @@ body {
 }
 
 .dark .nav-item.has-active>.nav-link {
+  background: rgba(99, 102, 241, .1);
   color: #a5b4fc;
 }
 

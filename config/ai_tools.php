@@ -46,14 +46,12 @@ return [
     [
         'name' => 'create_menu',
         'model' => '\App\Models\Menu::class',
-        'menu' => 'menu-pesanan', // TODO: ganti ke slug menu sidebar asli yang menaungi fitur pemesanan menu customer
+        'menu' => 'menu', // TODO: ganti ke slug menu sidebar asli yang menaungi fitur pemesanan menu customer
         'ability' => 'can_create',
-        'description' => 'Membuat menu baru untuk customer yang sudah ada.',
+        'description' => 'Membuat menu baru.',
         'summary_template' => 'Buat menu baru untuk **:customer_name** senilai **:total**',
         'fields' => [
-            'customer_name' => ['type' => 'string', 'required' => true, 'description' => 'Nama customer tujuan order'],
-            'total'         => ['type' => 'number', 'required' => true, 'description' => 'Total nilai order dalam Rupiah'],
-            'notes'         => ['type' => 'string', 'required' => false, 'description' => 'Catatan tambahan'],
+            'namep' => ['name' => 'string', 'required' => true, 'description' => 'Nama menu sidebar'],
         ],
         'stamp_user_as' => 'created_by',
     ],
