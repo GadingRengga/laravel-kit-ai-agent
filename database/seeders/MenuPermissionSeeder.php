@@ -55,6 +55,10 @@ class MenuPermissionSeeder extends Seeder
         ]);
 
         $this->link('users', [
+            'user.view',
+            'user.create',
+            'user.edit',
+            'user.delete',
             'user-role.assign',
         ]);
 

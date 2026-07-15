@@ -972,3 +972,196 @@
   background: rgba(99, 102, 241, .25);
   border-radius: 10px;
 }
+
+/* ── Tool Confirm Card ── */
+.chat-tool-card {
+  background: var(--nt-chat-ai-bg);
+  border: 1px solid var(--nt-chat-ai-border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--nt-shadow-sm);
+  max-width: 600px;
+}
+
+.chat-tool-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--nt-text);
+}
+
+.chat-tool-card-head i {
+  color: var(--nt-primary);
+  font-size: 14px;
+}
+
+.chat-tool-summary {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--nt-text);
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: var(--nt-chat-msg-bg);
+  border-radius: 10px;
+}
+
+.chat-tool-summary strong {
+  color: var(--nt-primary-dark);
+  font-weight: 600;
+}
+
+.dark .chat-tool-summary strong {
+  color: #a5b4fc;
+}
+
+.chat-tool-error-note {
+  font-size: 12px;
+  color: #DC2626;
+  padding: 8px 12px;
+  background: rgba(220, 38, 38, .08);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.chat-tool-fields {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.chat-tool-field {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 12.5px;
+}
+
+.chat-tool-field dt {
+  font-weight: 600;
+  color: var(--nt-text-secondary);
+  text-transform: capitalize;
+}
+
+.chat-tool-field dd {
+  color: var(--nt-text);
+  word-break: break-word;
+}
+
+.chat-tool-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chat-tool-btn-confirm,
+.chat-tool-btn-edit,
+.chat-tool-btn-cancel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.chat-tool-btn-confirm {
+  background: var(--nt-chat-user-bg);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, .25);
+}
+
+.chat-tool-btn-confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, .35);
+}
+
+.chat-tool-btn-edit {
+  background: var(--nt-chat-msg-bg);
+  color: var(--nt-text);
+  border: 1px solid var(--nt-chat-ai-border);
+}
+
+.chat-tool-btn-edit:hover {
+  background: var(--nt-primary-light);
+  color: var(--nt-primary);
+}
+
+.dark .chat-tool-btn-edit:hover {
+  background: rgba(99, 102, 241, .15);
+  color: #a5b4fc;
+}
+
+.chat-tool-btn-cancel {
+  background: transparent;
+  color: var(--nt-text-muted);
+  border: 1px solid var(--nt-chat-ai-border);
+}
+
+.chat-tool-btn-cancel:hover {
+  background: rgba(220, 38, 38, .08);
+  color: #DC2626;
+  border-color: #DC2626;
+}
+
+.dark .chat-tool-btn-cancel:hover {
+  background: rgba(220, 38, 38, .15);
+  color: #f87171;
+}
+
+/* Tool card status badges */
+.chat-tool-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.chat-tool-badge--ok {
+  background: rgba(34, 197, 94, .12);
+  color: #16A34A;
+}
+
+.dark .chat-tool-badge--ok {
+  background: rgba(34, 197, 94, .18);
+  color: #4ADE80;
+}
+
+.chat-tool-badge--muted {
+  background: var(--nt-chat-msg-bg);
+  color: var(--nt-text-muted);
+}
+
+.chat-tool-badge--error {
+  background: rgba(220, 38, 38, .12);
+  color: #DC2626;
+}
+
+.dark .chat-tool-badge--error {
+  background: rgba(220, 38, 38, .18);
+  color: #f87171;
+}
+
+/* Tool card status variants */
+.chat-tool-card--confirmed {
+  border-color: rgba(34, 197, 94, .3);
+}
+
+.chat-tool-card--rejected {
+  opacity: 0.7;
+}
+
+.chat-tool-card--failed {
+  border-color: rgba(220, 38, 38, .3);
+}

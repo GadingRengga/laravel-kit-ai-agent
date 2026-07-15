@@ -39,16 +39,21 @@
 
 return [
     [
-        'name' => 'create_menu',
-        'model' => '\App\Models\Menu::class',
-        'permission' => 'menu.create', // slug permission yang dicek via User::hasPermission()
-        'description' => 'Membuat menu baru.',
-        'summary_template' => 'Buat menu baru **:name**',
+        'name' => 'create_user',
+        'model' => \App\Models\Superuser\User::class,
+        'permission' => 'user.create',
+        'description' => 'Membuat user baru dengan nama, email, username, password, dan role.',
+        'summary_template' => 'Buat user baru **:name** (:email) dengan role **:role_name**',
         'fields' => [
-            'name' => ['type' => 'string', 'required' => true, 'description' => 'Nama menu'],
+            'name' => ['type' => 'string', 'required' => true, 'description' => 'Nama lengkap user'],
+            'email' => ['type' => 'string', 'required' => true, 'description' => 'Email user'],
+            'username' => ['type' => 'string', 'required' => false, 'description' => 'Username untuk login'],
+            'password' => ['type' => 'string', 'required' => true, 'description' => 'Password untuk login (minimal 8 karakter)'],
+            'is_active' => ['type' => 'boolean', 'required' => false, 'description' => 'Status aktif user'],
         ],
         'stamp_user_as' => 'created_by',
     ],
+
 
 
     /*

@@ -36,6 +36,12 @@ class PermissionSeeder extends Seeder
             ['name' => 'Ubah Permission', 'slug' => 'permission.edit', 'group' => 'permission', 'description' => 'Mengubah permission & tautan menu'],
             ['name' => 'Hapus Permission', 'slug' => 'permission.delete', 'group' => 'permission', 'description' => 'Menghapus permission'],
 
+            // Manajemen User
+            ['name' => 'Lihat User', 'slug' => 'user.view', 'group' => 'user', 'description' => 'Melihat daftar user'],
+            ['name' => 'Tambah User', 'slug' => 'user.create', 'group' => 'user', 'description' => 'Menambahkan user baru'],
+            ['name' => 'Ubah User', 'slug' => 'user.edit', 'group' => 'user', 'description' => 'Mengubah data user'],
+            ['name' => 'Hapus User', 'slug' => 'user.delete', 'group' => 'user', 'description' => 'Menghapus user'],
+
             // Role User (assign role ke user)
             ['name' => 'Atur Role User', 'slug' => 'user-role.assign', 'group' => 'user-role', 'description' => 'Mengatur role yang dimiliki user'],
 
