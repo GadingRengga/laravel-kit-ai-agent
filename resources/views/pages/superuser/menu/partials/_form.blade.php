@@ -23,10 +23,10 @@
             fallback yang sudah didukung komponennya) supaya value tetap id asli.
         --}}
         <x-forms.select name="parent_id" label="Parent Menu">
-            <option value="" {{ $menu->parent_id ? '' : 'selected' }}>— Tanpa parent (menu utama) —</option>
-            @foreach ($parents as $parentId => $parentName)
-                <option value="{{ $parentId }}" @selected((string) old('parent_id', $menu->parent_id) === (string) $parentId)>
-                    {{ $parentName }}
+            <option value="">— Tanpa parent (menu utama) —</option>
+            @foreach ($parentOptions as $option)
+                <option value="{{ $option['id'] }}" @selected((string) old('parent_id', $menu->parent_id) === (string) $option['id'])>
+                    {{ $option['prefix'] }}{{ $option['name'] }}
                 </option>
             @endforeach
         </x-forms.select>

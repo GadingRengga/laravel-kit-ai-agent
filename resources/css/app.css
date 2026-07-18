@@ -1,4 +1,5 @@
 /* @import HARUS di baris paling atas, sebelum statement lain */
+@import 'tom-select/dist/css/tom-select.css';
 @import './netra-base.css';
 @import './netra-buttons.css';
 @import './netra-auth.css';

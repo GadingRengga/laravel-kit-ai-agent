@@ -50,6 +50,12 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/superuser/user', [UserController::class, 'index'])
         ->name('superuser.user.index');
 
+    // AJAX checkers for user form
+    Route::get('/superuser/user/check-username', [UserController::class, 'checkUsername'])
+        ->name('superuser.user.check-username');
+    Route::get('/superuser/user/check-email', [UserController::class, 'checkEmail'])
+        ->name('superuser.user.check-email');
+
     Route::get('/superuser/user-role', [UserRoleController::class, 'index'])
         ->name('superuser.user-role.index');
     // END SUPERUSER

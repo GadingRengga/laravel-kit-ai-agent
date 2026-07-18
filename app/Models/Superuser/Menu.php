@@ -26,6 +26,15 @@ class Menu extends Model
     }
 
     /**
+     * Ambil seluruh descendants (submenu berjenjang) secara eager-loaded.
+     * Dipakai untuk render tree unlimited depth.
+     */
+    public function allChildren()
+    {
+        return $this->children()->with('allChildren');
+    }
+
+    /**
      * Permission yang terhubung ke menu ini (Many-to-Many).
      * Menu muncul jika user punya minimal 1 permission yang terhubung ke sini.
      */

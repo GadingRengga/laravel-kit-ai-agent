@@ -8,8 +8,6 @@
 
     @if ($hasChildren)
         <x-slot:toggle>
-            {{-- :loaded="true" karena children sudah eager-loaded langsung sebagai baris di bawah,
-                 bukan lazy-load lewat AJAX --}}
             <x-table.tree-toggle node-id="menu-{{ $menu->id }}" :loaded="true" />
         </x-slot:toggle>
     @endif
@@ -29,7 +27,7 @@
                 data-nt-modal-target="modal-sm" live-click="edit({{ $menu->id }})" live-target="#modal-sm"
                 live-loading="#menu-form-modal" />
             <x-table.action icon="fa-regular fa-trash-can" title="Hapus" danger
-                confirm="Yakin hapus menu &quot;{{ $menu->name }}&quot;?" live-click="destroy({{ $menu->id }})"
+                confirm="Yakin hapus menu "{{ $menu->name }}"?" live-click="destroy({{ $menu->id }})"
                 live-target="#menu-panel" live-loading="#menu-panel" />
         </x-table.actions>
     </x-table.cell>

@@ -33,6 +33,7 @@ class MenuController extends Controller
         return view('pages.superuser.menu.partials._form', [
             'menu' => new Menu(['is_active' => true, 'order' => 0]),
             'parents' => $this->parentOptions(),
+            'parentOptions' => $this->buildParentOptions(collect()),
         ]);
     }
 
@@ -48,6 +49,7 @@ class MenuController extends Controller
         return view('pages.superuser.menu.partials._form', [
             'menu' => $menu,
             'parents' => $this->parentOptions($menu->id),
+            'parentOptions' => $this->buildParentOptions(collect(), $menu->id),
         ]);
     }
 
@@ -136,28 +138,66 @@ class MenuController extends Controller
     }
 
     /**
-     * Ambil menu level-1 (root) beserta children-nya, terurut.
-     * Starter kit ini membatasi 2 level (menu utama + submenu) supaya
-     * tampilan sidebar tetap sederhana — Menu model sendiri sebenarnya
-     * mendukung parent_id berjenjang tanpa batas kalau nanti mau dikembangkan.
+     * Ambil menu root beserta seluruh descendants (unlimited depth), terurut.
      */
     protected function tree()
     {
         return Menu::whereNull('parent_id')
-            ->with(['children' => fn($q) => $q->orderBy('order')])
+            ->with('allChildren')
             ->orderBy('order')
             ->get();
     }
 
     /**
-     * Opsi dropdown "Parent Menu" — hanya menu root, minus dirinya sendiri
+     * Opsi dropdown "Parent Menu" — semua menu kecuali dirinya sendiri
      * kalau sedang edit (mencegah menu jadi parent dari dirinya sendiri).
      */
     protected function parentOptions(?int $excludeId = null)
     {
-        return Menu::whereNull('parent_id')
-            ->when($excludeId, fn($q) => $q->where('id', '!=', $excludeId))
+        return Menu::when($excludeId, fn($q) => $q->where('id', '!=', $excludeId))
             ->orderBy('order')
             ->pluck('name', 'id');
+    }
+
+    /**
+     * Build parent options dengan indentasi untuk dropdown form.
+     *
+     * @param  \Illuminate\Support\Collection  $flatIds  [id => name] dari parentOptions()
+     * @param  int|null  $selectedId
+     * @return array
+     */
+    protected function buildParentOptions($flatIds, $selectedId = null): array
+    {
+        $tree = Menu::whereNull('parent_id')
+            ->with('allChildren')
+            ->orderBy('order')
+            ->get();
+
+        $result = [];
+        $this->flattenMenuTree($tree, $result, '');
+
+        // Filter out excluded id (current menu being edited)
+        if ($selectedId) {
+            $result = array_filter($result, fn($item) => $item['id'] != $selectedId);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Flatten menu tree recursively dengan prefix indentasi.
+     */
+    protected function flattenMenuTree($menus, &$result, $prefix): void
+    {
+        foreach ($menus as $menu) {
+            $result[] = [
+                'id' => $menu->id,
+                'name' => $menu->name,
+                'prefix' => $prefix,
+            ];
+            if ($menu->children->isNotEmpty()) {
+                $this->flattenMenuTree($menu->children, $result, $prefix . '&nbsp;&nbsp;&nbsp;&nbsp;');
+            }
+        }
     }
 }

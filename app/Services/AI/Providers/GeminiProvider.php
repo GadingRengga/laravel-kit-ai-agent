@@ -70,9 +70,9 @@ class GeminiProvider implements AiProviderInterface
             ];
         }
 
-        // if (! empty($toolSchemas)) {
-        //     $payload['tools'] = $this->toGeminiTools($toolSchemas);
-        // }
+        if (! empty($toolSchemas)) {
+            $payload['tools'] = $this->toGeminiTools($toolSchemas);
+        }
 
         $response = Http::timeout($config['timeout'])
             ->baseUrl($config['base_url'])

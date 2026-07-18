@@ -21,6 +21,9 @@ class User extends Authenticatable
         'avatar',
         'is_active',
         'created_by',
+        'employee_id',
+        'last_login_at',
+        'last_login_ip',
     ];
 
     protected $hidden = [
@@ -51,6 +54,14 @@ class User extends Authenticatable
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id');
+    }
+
+    /**
+     * User yang membuat user ini.
+     */
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     /**

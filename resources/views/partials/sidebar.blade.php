@@ -1,30 +1,37 @@
 @php
     use App\Models\Superuser\Menu;
+
+    $buildNavItems = function ($menus, $prefix = '') use (&$buildNavItems) {
+        return $menus
+            ->map(function (Menu $menu) use ($prefix, $buildNavItems) {
+                $currentPrefix = $prefix . '&nbsp;&nbsp;&nbsp;&nbsp;';
+                $item = [
+                    'label' => $menu->name,
+                    'icon' => $menu->icon ?: 'fa-solid fa-circle-dot',
+                    'route' => $menu->route ?: '#',
+                    'prefix' => $prefix,
+                ];
+
+                if ($menu->children->isNotEmpty()) {
+                    $item['children'] = $buildNavItems($menu->children, $currentPrefix);
+                }
+
+                return $item;
+            })
+            ->all();
+    };
+
     $navGroups = $navGroups ?? [
         [
             'label' => null,
-            'items' => Menu::query()
-                ->whereNull('parent_id')
-                ->where('is_active', true)
-                ->with(['children' => fn($q) => $q->where('is_active', true)->orderBy('order')])
-                ->orderBy('order')
-                ->get()
-                ->map(
-                    fn(Menu $menu) => [
-                        'label' => $menu->name,
-                        'icon' => $menu->icon ?: 'fa-solid fa-circle-dot',
-                        'route' => $menu->route ?: '#',
-                        'children' => $menu->children
-                            ->map(
-                                fn(Menu $child) => [
-                                    'label' => $child->name,
-                                    'route' => $child->route ?: '#',
-                                ],
-                            )
-                            ->all(),
-                    ],
-                )
-                ->all(),
+            'items' => $buildNavItems(
+                Menu::query()
+                    ->whereNull('parent_id')
+                    ->where('is_active', true)
+                    ->with('allChildren')
+                    ->orderBy('order')
+                    ->get(),
+            ),
         ],
     ];
 @endphp
@@ -58,50 +65,7 @@
             @endif
 
             @foreach ($group['items'] as $item)
-                @php
-                    $hasChildren = !empty($item['children']);
-                    $isActive = !$hasChildren && request()->is($item['route'] ?? '');
-
-                    // cek apakah salah satu child aktif
-                    $hasActiveChild =
-                        $hasChildren &&
-                        collect($item['children'])->contains(
-                            fn($child) => request()->is($child['route'] ?? '__none__'),
-                        );
-                @endphp
-
-                <div
-                    class="nav-item relative {{ $isActive ? 'active' : '' }} {{ $hasActiveChild ? 'has-active' : '' }}">
-                    @if ($hasChildren)
-                        <a href="#" onclick="toggleSubmenu(this,event)"
-                            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
-                            <i class="nav-icon {{ $item['icon'] }} text-[14px] shrink-0 w-5 text-center"></i>
-                            <span
-                                class="nav-label whitespace-nowrap transition-all duration-200">{{ $item['label'] }}</span>
-                            <i
-                                class="chevron {{ $hasActiveChild ? 'open' : '' }} fa-solid fa-chevron-right text-[10px] ml-auto"></i>
-                        </a>
-
-                        <div class="submenu {{ $hasActiveChild ? 'open' : '' }} pl-8 mt-1 space-y-0.5">
-                            @foreach ($item['children'] as $child)
-                                <div class="nav-item {{ request()->is($child['route']) ? 'active' : '' }}">
-                                    <a href="{{ url($child['route']) }}"
-                                        class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-[13px]">
-                                        <span class="nav-label">{{ $child['label'] }}</span>
-                                    </a>
-                                </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <a href="{{ url($item['route']) }}"
-                            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
-                            <i class="nav-icon {{ $item['icon'] }} text-[14px] shrink-0 w-5 text-center"></i>
-                            <span
-                                class="nav-label whitespace-nowrap transition-all duration-200">{{ $item['label'] }}</span>
-                        </a>
-                    @endif
-                    <span class="nav-tooltip">{{ $item['label'] }}</span>
-                </div>
+                @include('partials.sidebar-item', ['item' => $item])
             @endforeach
         @empty
             {{-- Belum ada menu sama sekali di database --}}
