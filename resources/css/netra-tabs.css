@@ -1,0 +1,378 @@
+/* ═══════════════════════════════════════════════════════
+   Netra UI — Tabs Navigation Component
+   Bagian dari Netra UI Design System (modular split)
+   Membutuhkan netra-base.css (CSS variables --nt-*).
+   Pasangannya: netra-tabs.js (wajib untuk sliding indicator,
+   keyboard nav, mode URL/client, ARIA state).
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Tabs Variables ── */
+:root {
+  --nt-tabs-track-bg: #F0F1FF;
+  --nt-tabs-track-border: #E4E7FF;
+  --nt-tabs-indicator-h: 3px;
+  --nt-tabs-radius: 12px;
+  --nt-tabs-gap: 6px;
+  --nt-tabs-transition: 320ms cubic-bezier(.65, 0, .35, 1);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SHARED BASE — struktur dipakai semua varian style
+   ═══════════════════════════════════════════════════════ */
+
+.nt-tabs {
+  position: relative;
+  width: 100%;
+}
+
+.nt-tabs-list {
+  position: relative;
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nt-tab {
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  position: relative;
+  z-index: 2;
+  user-select: none;
+  transition: color .18s ease, background .18s ease, border-color .18s ease;
+}
+
+.nt-tab:focus-visible {
+  outline: 2px solid var(--nt-primary);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.nt-tab-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2.5px 6px;
+  border-radius: 999px;
+  background: var(--nt-primary-light);
+  color: var(--nt-primary);
+  transition: background .18s ease, color .18s ease;
+}
+
+.nt-tabs-indicator {
+  position: absolute;
+  pointer-events: none;
+  transition: transform var(--nt-tabs-transition), width var(--nt-tabs-transition), height var(--nt-tabs-transition);
+}
+
+.nt-tabs-panels {
+  position: relative;
+}
+
+.nt-tab-panel {
+  animation: nt-tab-fade-in .28s ease;
+}
+
+@keyframes nt-tab-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .nt-tabs-indicator,
+  .nt-tab,
+  .nt-tab-panel {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   1. UNDERLINE — sliding gradient underline, klasik & elegan
+   ═══════════════════════════════════════════════════════ */
+
+.nt-tabs--underline .nt-tabs-list {
+  gap: 28px;
+  border-bottom: 1px solid var(--nt-card-border);
+}
+
+.nt-tabs--underline .nt-tab {
+  padding: 13px 1px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--nt-text-muted);
+}
+
+.nt-tabs--underline .nt-tab:hover {
+  color: var(--nt-text-secondary);
+}
+
+.nt-tabs--underline .nt-tab[aria-selected="true"] {
+  color: var(--nt-text);
+  font-weight: 600;
+}
+
+.nt-tabs--underline .nt-tab[aria-selected="true"] .nt-tab-badge {
+  background: var(--nt-primary);
+  color: #fff;
+}
+
+.nt-tabs--underline .nt-tabs-indicator {
+  bottom: -1px;
+  left: 0;
+  height: var(--nt-tabs-indicator-h);
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--nt-primary), var(--nt-accent));
+  box-shadow: 0 2px 10px var(--nt-primary-ring);
+}
+
+.dark .nt-tabs--underline .nt-tabs-list {
+  border-bottom-color: #334155;
+}
+
+.dark .nt-tabs--underline .nt-tab {
+  color: #94A3B8;
+}
+
+.dark .nt-tabs--underline .nt-tab:hover {
+  color: #CBD5E1;
+}
+
+.dark .nt-tabs--underline .nt-tab[aria-selected="true"] {
+  color: #F1F5F9;
+}
+
+/* ═══════════════════════════════════════════════════════
+   2. PILL / SEGMENTED — track kaca dengan pill yang meluncur
+   ═══════════════════════════════════════════════════════ */
+
+.nt-tabs--pill .nt-tabs-list {
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--nt-tabs-track-bg);
+  border: 1px solid var(--nt-tabs-track-border);
+}
+
+.nt-tabs--pill .nt-tab {
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--nt-sidebar-text);
+}
+
+.nt-tabs--pill .nt-tab[aria-selected="true"] {
+  color: var(--nt-primary-dark);
+}
+
+.nt-tabs--pill .nt-tabs-indicator {
+  top: 4px;
+  left: 0;
+  bottom: 4px;
+  border-radius: 999px;
+  background: var(--nt-surface);
+  box-shadow: var(--nt-shadow-sm), 0 1px 0 rgba(255, 255, 255, .6) inset;
+}
+
+.dark .nt-tabs--pill .nt-tabs-list {
+  background: rgba(15, 23, 42, .5);
+  border-color: #334155;
+}
+
+.dark .nt-tabs--pill .nt-tab {
+  color: #94A3B8;
+}
+
+.dark .nt-tabs--pill .nt-tab[aria-selected="true"] {
+  color: #E0E7FF;
+}
+
+.dark .nt-tabs--pill .nt-tabs-indicator {
+  background: #4338CA;
+  box-shadow: 0 2px 10px rgba(67, 56, 202, .45);
+}
+
+/* ═══════════════════════════════════════════════════════
+   3. VERTICAL RAIL — tab vertikal bergaya sidebar, dengan
+      accent bar yang meluncur naik/turun (orientation=vertical)
+   ═══════════════════════════════════════════════════════ */
+
+.nt-tabs--vertical {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+}
+
+.nt-tabs--vertical .nt-tabs-list {
+  flex-direction: column;
+  align-items: stretch;
+  width: 208px;
+  flex-shrink: 0;
+  gap: 2px;
+  padding-left: 3px;
+}
+
+.nt-tabs--vertical .nt-tab {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--nt-sidebar-text);
+  justify-content: flex-start;
+}
+
+.nt-tabs--vertical .nt-tab i {
+  width: 16px;
+  text-align: center;
+  color: var(--nt-sidebar-icon);
+  font-size: 13px;
+  transition: color .18s ease;
+}
+
+.nt-tabs--vertical .nt-tab:hover {
+  background: var(--nt-sidebar-hover-bg);
+}
+
+.nt-tabs--vertical .nt-tab[aria-selected="true"] {
+  color: var(--nt-primary-dark);
+  font-weight: 600;
+}
+
+.nt-tabs--vertical .nt-tab[aria-selected="true"] i {
+  color: var(--nt-primary);
+}
+
+.nt-tabs--vertical .nt-tab-badge {
+  margin-left: auto;
+}
+
+.nt-tabs--vertical .nt-tabs-indicator {
+  left: -3px;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--nt-primary), var(--nt-accent));
+  box-shadow: 0 0 12px var(--nt-primary-ring);
+}
+
+.nt-tabs--vertical .nt-tabs-panels {
+  flex: 1;
+  min-width: 0;
+}
+
+.dark .nt-tabs--vertical .nt-tab {
+  color: #94A3B8;
+}
+
+.dark .nt-tabs--vertical .nt-tab:hover {
+  background: rgba(99, 102, 241, .12);
+}
+
+.dark .nt-tabs--vertical .nt-tab[aria-selected="true"] {
+  color: #A5B4FC;
+}
+
+@media (max-width: 640px) {
+  .nt-tabs--vertical {
+    flex-direction: column;
+  }
+
+  .nt-tabs--vertical .nt-tabs-list {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .nt-tabs--vertical .nt-tabs-indicator {
+    display: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   4. FOLDER — signature style: tab menyatu dengan panel
+      seperti kartu berkas fisik, tanpa perlu indikator JS
+   ═══════════════════════════════════════════════════════ */
+
+.nt-tabs--folder .nt-tabs-list {
+  gap: var(--nt-tabs-gap);
+  align-items: flex-end;
+  padding-left: 4px;
+}
+
+.nt-tabs--folder .nt-tab {
+  padding: 11px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--nt-text-muted);
+  background: var(--nt-tabs-track-bg);
+  border: 1px solid var(--nt-card-border);
+  border-bottom: none;
+  border-radius: var(--nt-tabs-radius) var(--nt-tabs-radius) 0 0;
+  margin-bottom: -1px;
+  transform: translateY(0);
+}
+
+.nt-tabs--folder .nt-tab:hover {
+  color: var(--nt-text-secondary);
+  background: var(--nt-sidebar-hover-bg);
+}
+
+.nt-tabs--folder .nt-tab[aria-selected="true"] {
+  background: var(--nt-surface);
+  color: var(--nt-primary-dark);
+  border-color: var(--nt-card-border);
+  box-shadow: 0 -6px 14px rgba(79, 70, 229, .05);
+  z-index: 3;
+}
+
+.nt-tabs--folder .nt-tabs-panels {
+  position: relative;
+  background: var(--nt-surface);
+  border: 1px solid var(--nt-card-border);
+  border-radius: 0 var(--nt-card-radius) var(--nt-card-radius) var(--nt-card-radius);
+  padding: 24px;
+}
+
+.nt-tabs--folder .nt-tabs-indicator {
+  display: none;
+}
+
+.dark .nt-tabs--folder .nt-tab {
+  background: #1E293B;
+  border-color: #334155;
+  color: #94A3B8;
+}
+
+.dark .nt-tabs--folder .nt-tab:hover {
+  background: #263449;
+}
+
+.dark .nt-tabs--folder .nt-tab[aria-selected="true"] {
+  background: #0F172A;
+  color: #A5B4FC;
+  border-color: #334155;
+}
+
+.dark .nt-tabs--folder .nt-tabs-panels {
+  background: #0F172A;
+  border-color: #334155;
+}

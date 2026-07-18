@@ -1,0 +1,418 @@
+/* ═══════════════════════════════════════════════════════
+   Netra UI — Loading & Progress Components
+   Bagian dari Netra UI Design System (modular split)
+   Membutuhkan netra-base.css (CSS variables --nt-*).
+   ═══════════════════════════════════════════════════════ */
+
+:root {
+  --nt-load-track: #E8EAFF;
+  --nt-load-track-dark: #262A45;
+}
+
+.dark { --nt-load-track: var(--nt-load-track-dark); }
+
+/* ═══════════════════════════════════════
+   1. SPINNERS
+   ═══════════════════════════════════════ */
+
+/* Base sizing — apply a size class alongside .nt-spinner-* */
+.nt-spin-sm { --nt-spin-size: 16px; --nt-spin-w: 2px; }
+.nt-spin-md { --nt-spin-size: 24px; --nt-spin-w: 2.5px; }
+.nt-spin-lg { --nt-spin-size: 36px; --nt-spin-w: 3.5px; }
+.nt-spin-xl { --nt-spin-size: 52px; --nt-spin-w: 4px; }
+
+/* --- Ring spinner (single arc) --- */
+.nt-spinner-ring {
+  width: var(--nt-spin-size, 24px);
+  height: var(--nt-spin-size, 24px);
+  border-radius: 50%;
+  border: var(--nt-spin-w, 2.5px) solid rgba(79, 70, 229, .15);
+  border-top-color: var(--nt-primary);
+  animation: nt-spin .7s linear infinite;
+  display: inline-block;
+}
+
+/* --- Dual-ring (two-tone, elegant) --- */
+.nt-spinner-dual {
+  width: var(--nt-spin-size, 24px);
+  height: var(--nt-spin-size, 24px);
+  border-radius: 50%;
+  border: var(--nt-spin-w, 2.5px) solid transparent;
+  border-top-color: var(--nt-primary);
+  border-right-color: var(--nt-accent);
+  animation: nt-spin .8s cubic-bezier(.5, 0, .5, 1) infinite;
+  display: inline-block;
+}
+
+/* --- Soft arc with fading trail (premium) --- */
+.nt-spinner-arc {
+  width: var(--nt-spin-size, 24px);
+  height: var(--nt-spin-size, 24px);
+  display: inline-block;
+  position: relative;
+}
+
+.nt-spinner-arc svg { width: 100%; height: 100%; animation: nt-spin .9s linear infinite; }
+.nt-spinner-arc circle {
+  fill: none;
+  stroke: var(--nt-primary);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 90 150;
+}
+
+@keyframes nt-spin { to { transform: rotate(360deg); } }
+
+/* --- Dots (three pulsing dots) --- */
+.nt-spinner-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: var(--nt-spin-size, 24px);
+}
+
+.nt-spinner-dots span {
+  width: calc(var(--nt-spin-size, 24px) * .26);
+  height: calc(var(--nt-spin-size, 24px) * .26);
+  min-width: 5px;
+  min-height: 5px;
+  border-radius: 50%;
+  background: var(--nt-primary);
+  animation: nt-dot-bounce 1s ease-in-out infinite;
+}
+
+.nt-spinner-dots span:nth-child(2) { background: var(--nt-accent); animation-delay: .12s; }
+.nt-spinner-dots span:nth-child(3) { animation-delay: .24s; }
+
+@keyframes nt-dot-bounce {
+  0%, 60%, 100% { transform: scale(.6); opacity: .5; }
+  30% { transform: scale(1); opacity: 1; }
+}
+
+/* --- Pulse (single breathing circle) --- */
+.nt-spinner-pulse {
+  width: var(--nt-spin-size, 24px);
+  height: var(--nt-spin-size, 24px);
+  border-radius: 50%;
+  background: var(--nt-primary);
+  display: inline-block;
+  position: relative;
+}
+
+.nt-spinner-pulse::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  animation: nt-pulse-ring 1.4s cubic-bezier(0, .3, .7, 1) infinite;
+}
+
+@keyframes nt-pulse-ring {
+  0% { transform: scale(1); opacity: .55; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+/* --- Bars (equalizer style) --- */
+.nt-spinner-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: var(--nt-spin-size, 24px);
+}
+
+.nt-spinner-bars span {
+  width: calc(var(--nt-spin-size, 24px) * .16);
+  min-width: 3px;
+  height: 35%;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--nt-primary), var(--nt-accent));
+  animation: nt-bar-grow .9s ease-in-out infinite;
+}
+
+.nt-spinner-bars span:nth-child(1) { animation-delay: 0s; }
+.nt-spinner-bars span:nth-child(2) { animation-delay: .12s; }
+.nt-spinner-bars span:nth-child(3) { animation-delay: .24s; }
+.nt-spinner-bars span:nth-child(4) { animation-delay: .36s; }
+
+@keyframes nt-bar-grow {
+  0%, 100% { height: 30%; }
+  50% { height: 100%; }
+}
+
+/* --- Ripple (concentric expanding rings) --- */
+.nt-spinner-ripple {
+  width: var(--nt-spin-size, 36px);
+  height: var(--nt-spin-size, 36px);
+  position: relative;
+  display: inline-block;
+}
+
+.nt-spinner-ripple span {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2.5px solid var(--nt-primary);
+  opacity: 0;
+  animation: nt-ripple 1.6s cubic-bezier(0, .2, .8, 1) infinite;
+}
+
+.nt-spinner-ripple span:nth-child(2) { animation-delay: .5s; border-color: var(--nt-accent); }
+
+@keyframes nt-ripple {
+  0% { transform: scale(.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+/* --- Color modifiers (usable on any spinner) --- */
+.nt-spin-white { border-color: rgba(255, 255, 255, .3); border-top-color: #fff; background: #fff; color: #fff; }
+.nt-spin-white.nt-spinner-dual { border-top-color: #fff; border-right-color: rgba(255, 255, 255, .55); }
+.nt-spin-white.nt-spinner-dots span,
+.nt-spin-white.nt-spinner-pulse,
+.nt-spin-white.nt-spinner-ripple span { background: #fff; border-color: #fff; }
+
+.nt-spin-success { border-top-color: var(--nt-success); }
+.nt-spin-success.nt-spinner-dots span, .nt-spin-success.nt-spinner-pulse { background: var(--nt-success); }
+.nt-spin-error { border-top-color: var(--nt-error); }
+.nt-spin-error.nt-spinner-dots span, .nt-spin-error.nt-spinner-pulse { background: var(--nt-error); }
+
+/* ═══════════════════════════════════════
+   2. PROGRESS BAR
+   ═══════════════════════════════════════ */
+.nt-progress {
+  width: 100%;
+  height: 8px;
+  border-radius: 99px;
+  background: var(--nt-load-track);
+  overflow: hidden;
+  position: relative;
+}
+
+.nt-progress-sm { height: 5px; }
+.nt-progress-lg { height: 11px; }
+
+.nt-progress-bar {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--nt-primary), var(--nt-accent));
+  transition: width .5s cubic-bezier(.4, 0, .2, 1);
+  position: relative;
+}
+
+/* Animated sheen moving across the determinate fill */
+.nt-progress-bar::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .45), transparent);
+  animation: nt-progress-sheen 1.6s ease-in-out infinite;
+}
+
+@keyframes nt-progress-sheen {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* --- Indeterminate progress --- */
+.nt-progress-indeterminate .nt-progress-bar {
+  width: 40% !important;
+  position: absolute;
+  animation: nt-progress-slide 1.3s cubic-bezier(.4, 0, .2, 1) infinite;
+}
+
+.nt-progress-indeterminate .nt-progress-bar::after { display: none; }
+
+@keyframes nt-progress-slide {
+  0% { left: -40%; }
+  100% { left: 100%; }
+}
+
+/* --- Progress with label --- */
+.nt-progress-row { display: flex; align-items: center; gap: 10px; }
+.nt-progress-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--nt-text-muted);
+  min-width: 32px;
+  text-align: right;
+}
+
+/* --- Circular progress --- */
+.nt-progress-circle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+}
+
+.nt-progress-circle svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.nt-progress-circle .nt-pc-track { fill: none; stroke: var(--nt-load-track); stroke-width: 8; }
+.nt-progress-circle .nt-pc-fill {
+  fill: none;
+  stroke: url(#nt-pc-gradient);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset .6s cubic-bezier(.4, 0, .2, 1);
+}
+
+.nt-progress-circle .nt-pc-value {
+  position: absolute;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--nt-text);
+}
+
+/* ═══════════════════════════════════════
+   3. SKELETON LOADERS
+   ═══════════════════════════════════════ */
+.nt-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--nt-load-track);
+  border-radius: 8px;
+  display: block;
+}
+
+.nt-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .75), transparent);
+  animation: nt-shimmer 1.6s ease-in-out infinite;
+}
+
+.dark .nt-skeleton::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .07), transparent);
+}
+
+@keyframes nt-shimmer {
+  100% { transform: translateX(100%); }
+}
+
+.nt-skeleton-text { height: 11px; border-radius: 5px; margin-bottom: 7px; }
+.nt-skeleton-text.w-25 { width: 25%; }
+.nt-skeleton-text.w-40 { width: 40%; }
+.nt-skeleton-text.w-60 { width: 60%; }
+.nt-skeleton-text.w-75 { width: 75%; }
+.nt-skeleton-text.w-90 { width: 90%; }
+.nt-skeleton-text.w-100 { width: 100%; }
+.nt-skeleton-text:last-child { margin-bottom: 0; }
+
+.nt-skeleton-title { height: 16px; border-radius: 6px; width: 45%; margin-bottom: 10px; }
+
+.nt-skeleton-avatar { width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; }
+.nt-skeleton-avatar-sm { width: 30px; height: 30px; }
+.nt-skeleton-avatar-lg { width: 56px; height: 56px; }
+
+.nt-skeleton-thumb { width: 100%; aspect-ratio: 16/9; border-radius: 12px; }
+
+.nt-skeleton-btn { height: 36px; width: 96px; border-radius: 10px; }
+
+.nt-skeleton-badge { height: 20px; width: 64px; border-radius: 99px; }
+
+/* --- Composite skeleton cards --- */
+.nt-skeleton-row { display: flex; align-items: center; gap: 12px; }
+
+.nt-skeleton-card {
+  background: var(--nt-card-bg);
+  border: 1px solid var(--nt-card-border);
+  border-radius: var(--nt-card-radius);
+  padding: 16px;
+}
+
+.nt-skeleton-table-row { display: flex; align-items: center; gap: 16px; padding: 12px 4px; }
+.nt-skeleton-table-row .nt-skeleton { flex: 1; }
+
+/* ═══════════════════════════════════════
+   4. BUTTON LOADING STATE
+   (used with .nt-btn from netra-buttons.css)
+   ═══════════════════════════════════════ */
+.nt-btn.is-loading {
+  color: transparent !important;
+  pointer-events: none;
+  position: relative;
+}
+
+.nt-btn.is-loading > * { visibility: hidden; }
+
+.nt-btn.is-loading::after {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .35);
+  border-top-color: #fff;
+  animation: nt-spin .6s linear infinite;
+  visibility: visible;
+}
+
+.nt-btn.is-loading.nt-btn-secondary::after,
+.nt-btn.is-loading.nt-btn-outline::after,
+.nt-btn.is-loading.nt-btn-ghost::after {
+  border-color: rgba(79, 70, 229, .25);
+  border-top-color: var(--nt-primary);
+}
+
+/* ═══════════════════════════════════════
+   5. FULL-PAGE / CONTAINER OVERLAY LOADER
+   ═══════════════════════════════════════ */
+.nt-loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(244, 245, 255, .72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .22s ease;
+}
+
+.dark .nt-loading-overlay { background: rgba(13, 15, 26, .72); }
+
+.nt-loading-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+
+/* Contained variant — absolute within a relatively-positioned parent (e.g. a card) */
+.nt-loading-overlay.is-contained { position: absolute; border-radius: inherit; }
+
+.nt-loading-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 28px 32px;
+  background: var(--nt-card-bg);
+  border: 1px solid var(--nt-card-border);
+  border-radius: 18px;
+  box-shadow: var(--nt-shadow-lg);
+  transform: translateY(6px) scale(.97);
+  transition: transform .24s cubic-bezier(.34, 1.3, .64, 1);
+}
+
+.nt-loading-overlay.is-open .nt-loading-card { transform: translateY(0) scale(1); }
+
+.nt-loading-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--nt-text-secondary);
+}
+
+/* ═══════════════════════════════════════
+   6. RESPONSIVE
+   ═══════════════════════════════════════ */
+@media (max-width: 640px) {
+  .nt-loading-card { padding: 22px 24px; }
+}
