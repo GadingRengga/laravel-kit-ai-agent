@@ -31,6 +31,17 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
+
+    {{-- Global Loading Overlay --}}
+    <div id="nt-loading-overlay" class="nt-loading-overlay" style="display: none;">
+        <div class="nt-loading-card">
+            <span class="nt-spinner-dual nt-spin-lg"></span>
+            <p class="nt-loading-text" data-nt-loading-text>Memuat…</p>
+        </div>
+    </div>
+
+    {{-- Global Alert Container --}}
+    <div id="nt-alert-container" class="nt-alert-container"></div>
 </head>
 
 <body class="h-full overflow-hidden font-sans antialiased">
@@ -59,9 +70,19 @@
 
                 <main class="page-content">
                     @if (session('success'))
-                        <div class="stat-card px-4 py-3 mb-4 text-[13px] text-emerald-600 dark:text-emerald-400">
-                            {{ session('success') }}
-                        </div>
+                        <x-alert tone="success" :title="session('success')" class="mb-4" />
+                    @endif
+
+                    @if (session('error'))
+                        <x-alert tone="error" :title="session('error')" class="mb-4" />
+                    @endif
+
+                    @if (session('warning'))
+                        <x-alert tone="warning" :title="session('warning')" class="mb-4" />
+                    @endif
+
+                    @if (session('info'))
+                        <x-alert tone="info" :title="session('info')" class="mb-4" />
                     @endif
 
                     @yield('content')
@@ -96,10 +117,14 @@
 
         document.addEventListener('live-dom:afterUpdate', function(e) {
             initNetra(e.target);
+            handleLiveLoading(e.target);
+            handleLiveCallbackAfter(e.target);
         });
 
         document.addEventListener('live-dom:afterSpa', function(e) {
             initNetra(e.target);
+            handleLiveLoading(e.target);
+            handleLiveCallbackAfter(e.target);
             // setActiveMenu(e.detail?.url);
             // initNavActive();
             // restoreSidebarCollapsedState();

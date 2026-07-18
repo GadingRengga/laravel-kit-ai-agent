@@ -1,15 +1,11 @@
 <div id="user-role-panel" live-scope="Superuser.UserRoleController">
 
     @if ($error ?? null)
-        <div class="stat-card px-4 py-3 mb-4 text-[13px] text-red-600 dark:text-red-400">
-            <i class="fa-solid fa-circle-exclamation mr-1.5"></i>{{ $error }}
-        </div>
+        <x-alert tone="error" :title="$error" class="mb-4" />
     @endif
 
     @if ($success ?? null)
-        <div class="stat-card px-4 py-3 mb-4 text-[13px] text-emerald-600 dark:text-emerald-400">
-            <i class="fa-solid fa-circle-check mr-1.5"></i>{{ $success }}
-        </div>
+        <x-alert tone="success" :title="$success" class="mb-4" />
     @endif
 
     <div class="comp-section-header flex items-center justify-between mb-3">

@@ -1,19 +1,20 @@
 @php
     use App\Models\Superuser\Menu;
 
-    $buildNavItems = function ($menus, $prefix = '') use (&$buildNavItems) {
+    $buildNavItems = function ($menus, $prefix = '', $level = 0) use (&$buildNavItems) {
         return $menus
-            ->map(function (Menu $menu) use ($prefix, $buildNavItems) {
+            ->map(function (Menu $menu) use ($prefix, $level, $buildNavItems) {
                 $currentPrefix = $prefix . '&nbsp;&nbsp;&nbsp;&nbsp;';
                 $item = [
                     'label' => $menu->name,
                     'icon' => $menu->icon ?: 'fa-solid fa-circle-dot',
                     'route' => $menu->route ?: '#',
                     'prefix' => $prefix,
+                    'level' => $level,
                 ];
 
                 if ($menu->children->isNotEmpty()) {
-                    $item['children'] = $buildNavItems($menu->children, $currentPrefix);
+                    $item['children'] = $buildNavItems($menu->children, $currentPrefix, $level + 1);
                 }
 
                 return $item;
@@ -65,7 +66,7 @@
             @endif
 
             @foreach ($group['items'] as $item)
-                @include('partials.sidebar-item', ['item' => $item])
+                @include('partials.sidebar-item', ['item' => $item, 'level' => $item['level'] ?? 0])
             @endforeach
         @empty
             {{-- Belum ada menu sama sekali di database --}}

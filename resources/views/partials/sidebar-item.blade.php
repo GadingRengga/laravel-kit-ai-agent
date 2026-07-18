@@ -4,9 +4,13 @@
     $hasActiveChild =
         $hasChildren &&
         collect($item['children'])->contains(fn($child) => request()->is($child['route'] ?? '__none__'));
+    $level = $level ?? ($item['level'] ?? 0);
+    $indentAmount = $level * 4;
+    $indentClass = $level > 0 ? 'ml-' . $indentAmount : '';
 @endphp
 
-<div class="nav-item relative {{ $isActive ? 'active' : '' }} {{ $hasActiveChild ? 'has-active' : '' }}">
+<div
+    class="nav-item relative {{ $isActive ? 'active' : '' }} {{ $hasActiveChild ? 'has-active' : '' }} {{ $indentClass }}">
     @if ($hasChildren)
         <a href="#" onclick="toggleSubmenu(this,event)"
             class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors">
@@ -17,7 +21,7 @@
 
         <div class="submenu {{ $hasActiveChild ? 'open' : '' }} mt-1 space-y-0.5">
             @foreach ($item['children'] as $child)
-                @include('partials.sidebar-item', ['item' => $child])
+                @include('partials.sidebar-item', ['item' => $child, 'level' => $level + 1])
             @endforeach
         </div>
     @else

@@ -2,17 +2,11 @@
 
     {{-- Flash Messages --}}
     @if ($error ?? null)
-        <div class="stat-card px-4 py-3 mb-4 text-[13px] text-red-600 dark:text-red-400 flex items-center gap-2">
-            <i class="fa-solid fa-circle-exclamation"></i>
-            <span>{{ $error }}</span>
-        </div>
+        <x-alert tone="error" :title="$error" class="mb-4" />
     @endif
 
     @if ($success ?? null)
-        <div class="stat-card px-4 py-3 mb-4 text-[13px] text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
-            <i class="fa-solid fa-circle-check"></i>
-            <span>{{ $success }}</span>
-        </div>
+        <x-alert tone="success" :title="$success" class="mb-4" />
     @endif
 
     {{-- Main Card --}}

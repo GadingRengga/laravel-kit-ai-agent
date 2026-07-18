@@ -60,7 +60,7 @@
         <button type="button" class="nt-btn nt-btn-secondary" data-nt-modal-close>Batal</button>
 
         <x-button type="button" variant="primary" icon="fa-solid fa-floppy-disk"
-            live-click="{{ $isEdit ? 'update' : 'store' }}" live-target="#role-panel" live-loading="#role-form-modal"
+            live-click="{{ $isEdit ? 'update' : 'store' }}" live-target="#role-panel" live-loading="#card-container"
             data-nt-modal-close>
             Simpan
         </x-button>

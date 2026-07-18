@@ -100,7 +100,7 @@
                         <x-table.actions>
                             <x-table.action icon="fa-regular fa-pen-to-square" title="Edit Role" data-nt-modal-btn
                                 data-nt-modal-target="modal-sm" live-click="edit({{ $role->id }})"
-                                live-target="#modal-sm" live-loading="#role-form-modal" />
+                                live-target="#modal-sm" live-loading="#nt-loading-overlay" />
                             @if ($role->slug !== 'super_user')
                                 <x-table.action icon="fa-regular fa-trash-can" title="Hapus Role" danger
                                     confirm="Yakin ingin menghapus role {{ $role->name }}?"
