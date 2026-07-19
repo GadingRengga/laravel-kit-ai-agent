@@ -28,14 +28,10 @@
     'spinner' => 'dual',
 ])
 
-<div {{ $attributes->class([
-    'nt-loading-overlay',
-    'is-contained' => $contained,
-    'is-open' => $open,
-]) }}>
+<div {{ $attributes->class(['nt-loading-overlay', 'is-contained' => $contained, 'is-open' => $open]) }}>
     <div class="nt-loading-card">
         <x-loading.spinner :style="$spinner" size="lg" />
-        @if($text)
+        @if ($text)
             <p class="nt-loading-text">{{ $text }}</p>
         @endif
     </div>

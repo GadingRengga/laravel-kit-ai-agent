@@ -1,5 +1,5 @@
 /* @import HARUS di baris paling atas, sebelum statement lain */
-@import 'tom-select/dist/css/tom-select.css';
+
 @import './netra-base.css';
 @import './netra-buttons.css';
 @import './netra-auth.css';
@@ -13,6 +13,8 @@
 @import './netra-wizard-lazy.css';
 @import './ai-widget.css';
 @import './netra-chat.css';
+@import './netra-alerts.css';
+@import './netra-loading.css';
 
 @tailwind base;
 @tailwind components;

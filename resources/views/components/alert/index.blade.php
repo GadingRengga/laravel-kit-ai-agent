@@ -23,7 +23,7 @@
             Berlaku sampai akhir bulan ini.
         </x-alert>
 
-        {{-- glass mode di atas background berwarna --}}
+       
         <div style="background:linear-gradient(120deg,#4F46E5,#06B6D4 60%,#22C55E)" class="p-6 rounded-2xl">
             <x-alert tone="success" mode="glass" title="Backup selesai">3.2GB berhasil dicadangkan.</x-alert>
         </div>
@@ -74,13 +74,14 @@
     "nt-alert-tone-{$tone}",
     'nt-alert-compact' => $compact,
     'nt-alert-banner' => $banner,
-]) }} role="alert">
+]) }}
+    role="alert">
     <div class="nt-alert-icon"><i class="{{ $iconClass }}"></i></div>
 
     <div class="nt-alert-content">
-        @if($title)
+        @if ($title)
             <p class="nt-alert-title">{{ $title }}</p>
-            @if(!$compact && ($slot->isNotEmpty() || isset($actions)))
+            @if (!$compact && ($slot->isNotEmpty() || isset($actions)))
                 <p class="nt-alert-desc">{{ $slot }}</p>
             @endif
         @else
@@ -94,7 +95,7 @@
         @endisset
     </div>
 
-    @if($dismissible)
+    @if ($dismissible)
         <button type="button" class="nt-alert-close" onclick="ntAlert.dismiss(this)" aria-label="Tutup">
             <i class="fa-solid fa-xmark"></i>
         </button>

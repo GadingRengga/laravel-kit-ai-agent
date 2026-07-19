@@ -485,3 +485,105 @@
 
   .nt-alert-banner .nt-alert-content { flex-direction: column; align-items: flex-start; gap: 1px; }
 }
+
+/* ═══════════════════════════════════════
+   7. CONFIRM DIALOG (ntAlert.confirm)
+   Dialog "apakah kamu yakin?" — dipakai lewat
+   ntAlert.confirm({...}) di netra-alerts.js.
+   Berdiri sendiri, tidak butuh #app-modal-confirm.
+   ═══════════════════════════════════════ */
+.nt-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(15, 23, 42, .48);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  animation: nt-confirm-fade-in .18s ease forwards;
+}
+
+.nt-confirm-overlay.nt-confirm-leaving {
+  animation: nt-confirm-fade-out .16s ease forwards;
+}
+
+@keyframes nt-confirm-fade-in { to { opacity: 1; } }
+@keyframes nt-confirm-fade-out { to { opacity: 0; } }
+
+.nt-confirm-box {
+  width: 100%;
+  max-width: 400px;
+  background: var(--nt-surface, #fff);
+  border-radius: var(--nt-alert-radius);
+  box-shadow: 0 20px 48px -12px rgba(15, 23, 42, .32);
+  padding: 24px;
+  font-family: 'DM Sans', sans-serif;
+  transform: translateY(8px) scale(.96);
+  opacity: 0;
+  animation: nt-confirm-in .22s cubic-bezier(.34, 1.2, .64, 1) forwards;
+}
+
+.nt-confirm-overlay.nt-confirm-leaving .nt-confirm-box {
+  animation: nt-confirm-out .16s ease forwards;
+}
+
+@keyframes nt-confirm-in {
+  from { opacity: 0; transform: translateY(8px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes nt-confirm-out {
+  to { opacity: 0; transform: translateY(8px) scale(.96); }
+}
+
+.nt-confirm-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.nt-confirm-box[data-tone="primary"] .nt-confirm-icon { background: var(--nt-alert-primary-soft); color: var(--nt-alert-primary-icon); }
+.nt-confirm-box[data-tone="accent"]  .nt-confirm-icon { background: var(--nt-alert-accent-soft);  color: var(--nt-alert-accent-icon); }
+.nt-confirm-box[data-tone="success"] .nt-confirm-icon { background: var(--nt-alert-success-soft); color: var(--nt-alert-success-icon); }
+.nt-confirm-box[data-tone="error"]   .nt-confirm-icon { background: var(--nt-alert-error-soft);   color: var(--nt-alert-error-icon); }
+.nt-confirm-box[data-tone="warning"] .nt-confirm-icon { background: var(--nt-alert-warning-soft); color: var(--nt-alert-warning-icon); }
+.nt-confirm-box[data-tone="info"]    .nt-confirm-icon { background: var(--nt-alert-info-soft);    color: var(--nt-alert-info-icon); }
+.nt-confirm-box[data-tone="neutral"] .nt-confirm-icon { background: var(--nt-alert-neutral-soft); color: var(--nt-alert-neutral-icon); }
+
+.nt-confirm-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 6px;
+}
+
+.nt-confirm-message {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #475569;
+  margin: 0;
+}
+
+.nt-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.dark .nt-confirm-box { background: #1E293B; }
+.dark .nt-confirm-title { color: #F1F5F9; }
+.dark .nt-confirm-message { color: #94A3B8; }
+
+@media (max-width: 480px) {
+  .nt-confirm-actions { flex-direction: column-reverse; }
+  .nt-confirm-actions .nt-btn { width: 100%; }
+}

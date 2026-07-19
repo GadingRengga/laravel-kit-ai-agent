@@ -17,7 +17,5 @@
     'ghost' => false,
 ])
 
-<button type="button" {{ $attributes->class([
-    'nt-alert-action-btn',
-    'is-ghost' => $ghost,
-]) }}>{{ $slot }}</button>
+<button type="button"
+    {{ $attributes->class(['nt-alert-action-btn', 'is-ghost' => $ghost]) }}>{{ $slot }}</button>

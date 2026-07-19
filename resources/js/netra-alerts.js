@@ -37,6 +37,19 @@
      ntAlert.error(message, title?)
      ntAlert.warning(message, title?)
      ntAlert.info(message, title?)
+
+   CONFIRM DIALOG ("Apakah kamu yakin?"):
+     const ok = await ntAlert.confirm({
+       title: 'Hapus data?',
+       message: 'Data akan dihapus permanen.',
+       tone: 'error',              // primary | accent | success | error | warning | info | neutral
+       confirmText: 'Ya, hapus',
+       cancelText: 'Batal',
+     });
+     // ok === true  → user klik tombol konfirmasi
+     // ok === false → user batal / klik backdrop / tekan Esc
+
+     Alias global: await ntAlertConfirm({...})
    ═══════════════════════════════════════════════════════ */
 const ntAlert = (() => {
   const DEFAULT_ICONS = {
@@ -155,10 +168,98 @@ const ntAlert = (() => {
     return (message, title, opts = {}) => toast({ tone, message, title, ...opts });
   }
 
+  /**
+   * ntAlert.confirm({ title, message, confirmText, cancelText, tone, icon, reverseButtons })
+   *
+   * Dialog konfirmasi "Apakah kamu yakin?" — berdiri sendiri (tidak butuh
+   * blade shell modal terpisah). Mengembalikan Promise<boolean>:
+   *   - true   kalau user klik tombol konfirmasi ("Ya")
+   *   - false  kalau user klik batal, klik backdrop, atau tekan Esc
+   *
+   * Contoh:
+   *   const ok = await ntAlert.confirm({
+   *     title: 'Hapus data?',
+   *     message: `Data "${user.name}" akan dihapus permanen dan tidak bisa dikembalikan.`,
+   *     tone: 'error',
+   *     confirmText: 'Ya, hapus',
+   *     cancelText: 'Batal',
+   *   });
+   *   if (ok) {
+   *     await fetch(`/users/${user.id}`, { method: 'DELETE' });
+   *   }
+   */
+  function confirm({
+    title = 'Konfirmasi',
+    message = 'Apakah kamu yakin?',
+    confirmText = 'Ya',
+    cancelText = 'Batal',
+    tone = 'warning',
+    icon = null,
+    reverseButtons = false,
+  } = {}) {
+    return new Promise((resolve) => {
+      const iconClass = icon || DEFAULT_ICONS[tone] || DEFAULT_ICONS.warning;
+      const confirmBtnClass = {
+        error: 'nt-btn-danger',
+        warning: 'nt-btn-warning',
+        success: 'nt-btn-success',
+      }[tone] || 'nt-btn-primary';
+
+      const overlay = document.createElement('div');
+      overlay.className = 'nt-confirm-overlay';
+
+      const confirmBtnHtml = `<button type="button" class="nt-btn ${confirmBtnClass}" data-nt-confirm-ok>${confirmText}</button>`;
+      const cancelBtnHtml = `<button type="button" class="nt-btn nt-btn-secondary" data-nt-confirm-cancel>${cancelText}</button>`;
+
+      overlay.innerHTML = `
+        <div class="nt-confirm-box" data-tone="${tone}" role="alertdialog" aria-modal="true" aria-labelledby="nt-confirm-title" aria-describedby="nt-confirm-message">
+          <div class="nt-confirm-icon"><i class="${iconClass}"></i></div>
+          <p class="nt-confirm-title" id="nt-confirm-title">${title}</p>
+          <p class="nt-confirm-message" id="nt-confirm-message">${message}</p>
+          <div class="nt-confirm-actions">
+            ${reverseButtons ? confirmBtnHtml + cancelBtnHtml : cancelBtnHtml + confirmBtnHtml}
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(overlay);
+      document.body.style.overflow = 'hidden';
+
+      let settled = false;
+      function finish(result) {
+        if (settled) return;
+        settled = true;
+        document.removeEventListener('keydown', onKeydown);
+        overlay.classList.add('nt-confirm-leaving');
+        document.body.style.overflow = '';
+        setTimeout(() => overlay.remove(), 180);
+        resolve(result);
+      }
+
+      function onKeydown(e) {
+        if (e.key === 'Escape') finish(false);
+        if (e.key === 'Enter') finish(true);
+      }
+
+      overlay.querySelector('[data-nt-confirm-ok]').addEventListener('click', () => finish(true));
+      overlay.querySelector('[data-nt-confirm-cancel]').addEventListener('click', () => finish(false));
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) finish(false);
+      });
+      document.addEventListener('keydown', onKeydown);
+
+      // Fokus otomatis ke tombol konfirmasi
+      requestAnimationFrame(() => {
+        overlay.querySelector('[data-nt-confirm-ok]').focus({ preventScroll: true });
+      });
+    });
+  }
+
   return {
     toast,
     dismiss,
     clearAll,
+    confirm,
     success: shorthand('success'),
     error: shorthand('error'),
     warning: shorthand('warning'),
@@ -170,6 +271,9 @@ const ntAlert = (() => {
 })();
 
 window.ntAlert = ntAlert;
+
+// Alias langsung: await ntAlertConfirm({...}) → true / false
+window.ntAlertConfirm = ntAlert.confirm;
 
 if (!window.NetraUI) window.NetraUI = {};
 window.NetraUI.alert = ntAlert;

@@ -10,5 +10,21 @@
 @endsection
 
 @section('content')
-    @include('pages.superuser.user.partials._panel')
+    <div id="user-panel" live-scope="Superuser.UserController">
+
+        @include('pages.superuser.user.partials._panel')
+    </div>
+
 @endsection
+
+@if (isset($success))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if ($success)
+                ntAlert.success('Operasi berhasil dilakukan.', 'Berhasil');
+            @else
+                ntAlert.error('Operasi gagal dilakukan.', 'Gagal');
+            @endif
+        });
+    </script>
+@endif

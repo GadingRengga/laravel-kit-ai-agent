@@ -32,24 +32,15 @@
 
     @stack('styles')
 
-    {{-- Global Loading Overlay --}}
-    <div id="nt-loading-overlay" class="nt-loading-overlay" style="display: none;">
-        <div class="nt-loading-card">
-            <span class="nt-spinner-dual nt-spin-lg"></span>
-            <p class="nt-loading-text" data-nt-loading-text>Memuat…</p>
-        </div>
-    </div>
-
-    {{-- Global Alert Container --}}
-    <div id="nt-alert-container" class="nt-alert-container"></div>
 </head>
 
 <body class="h-full overflow-hidden font-sans antialiased">
 
     <div id="mob-overlay" class="fixed inset-0 bg-black/40 z-30 hidden opacity-0 lg:hidden"
         onclick="closeMobileSidebar()"></div>
-
     <div id="app">
+        <x-loading.overlay id="loading" text="Memuat data…" contained style="display: none;" />
+
 
         <div live-spa-region="sidebar">
             @include('partials.sidebar')
@@ -113,18 +104,16 @@
             NetraUI.initEditableTable(root);
             NetraUI.initGanttTable(root);
             NetraUI.initBasicTable(root);
+            NetraUI.initBasicTable(root);
         }
 
         document.addEventListener('live-dom:afterUpdate', function(e) {
             initNetra(e.target);
-            handleLiveLoading(e.target);
-            handleLiveCallbackAfter(e.target);
+
         });
 
         document.addEventListener('live-dom:afterSpa', function(e) {
             initNetra(e.target);
-            handleLiveLoading(e.target);
-            handleLiveCallbackAfter(e.target);
             // setActiveMenu(e.detail?.url);
             // initNavActive();
             // restoreSidebarCollapsedState();
@@ -132,6 +121,16 @@
 
         window.liveDomConfig = {
             spaExcludePrefixes: ['/logout']
+        };
+
+        // resources/js/app.js atau file terpisah, dimuat setelah netra-alerts.js
+        window.confirmDelete = function(el) {
+            return ntAlertConfirm({
+                title: 'Hapus data?',
+                message: `Data akan dihapus permanen.`,
+                tone: 'error',
+                confirmText: 'Ya, hapus',
+            });
         };
     </script>
 </body>

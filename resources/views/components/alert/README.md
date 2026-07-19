@@ -48,6 +48,37 @@ ntAlert.toast({ tone: 'accent', title: 'AI selesai memproses', message: 'Ringkas
 ntAlert.clearAll();
 ```
 
+### Confirm Dialog — "Apakah kamu yakin?" (JS API, bukan Blade)
+
+Dialog konfirmasi berdiri sendiri (tidak butuh blade shell modal terpisah), mengembalikan `Promise<boolean>`: `true` kalau user klik tombol konfirmasi, `false` kalau batal/klik backdrop/tekan Esc.
+
+```js
+const ok = await ntAlert.confirm({
+    title: 'Hapus data?',
+    message: `Data "${user.name}" akan dihapus permanen dan tidak bisa dikembalikan.`,
+    tone: 'error',            // primary | accent | success | error | warning | info | neutral (default: warning)
+    icon: null,               // class FontAwesome, default otomatis mengikuti tone
+    confirmText: 'Ya, hapus', // default: 'Ya'
+    cancelText: 'Batal',      // default: 'Batal'
+    reverseButtons: false,    // true → tombol konfirmasi di kiri
+});
+
+if (ok) {
+    await fetch(`/users/${user.id}`, { method: 'DELETE' });
+    ntAlert.success('User berhasil dihapus.');
+} else {
+    ntAlert.info('Dibatalkan.');
+}
+```
+
+Alias global tanpa prefix `ntAlert.`:
+
+```js
+if (await ntAlertConfirm({ message: 'Simpan perubahan?' })) {
+    // lanjut simpan...
+}
+```
+
 ## Props `<x-alert>`
 
 | Prop | Tipe | Default | Keterangan |

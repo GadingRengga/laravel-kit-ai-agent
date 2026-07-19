@@ -80,8 +80,10 @@ class UserController extends Controller
     /**
      * Hapus user.
      */
-    public function destroy(int $id): View
+    public function destroy($request): View
     {
+
+        $id = $request->data;
         $user = User::findOrFail($id);
 
         // Prevent deleting superuser
@@ -230,6 +232,7 @@ class UserController extends Controller
 
     protected function renderPanel(?string $error = null, ?string $success = null): View
     {
+
         return view('pages.superuser.user.partials._panel', [
             'users' => $this->users(),
             'error' => $error,

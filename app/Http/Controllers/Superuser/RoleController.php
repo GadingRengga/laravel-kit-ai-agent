@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Superuser\Permission;
 use App\Models\Superuser\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -68,19 +69,41 @@ class RoleController extends Controller
     /**
      * Hapus role.
      */
-    public function destroy(int $id): View
+    public function destroy(Request $request): View
     {
-        $role = Role::findOrFail($id);
+        $id = $request->input('data');
+
+        if (!is_numeric($id)) {
+            return $this->renderPanel(error: 'ID role tidak valid.');
+        }
+
+        $role = Role::find((int) $id);
+
+        if (!$role) {
+            return $this->renderPanel(error: 'Role tidak ditemukan atau sudah dihapus.');
+        }
 
         if ($role->slug === 'super_user') {
             return $this->renderPanel(error: 'Role Super User tidak bisa dihapus.');
         }
 
-        $role->users()->detach();
-        $role->permissions()->detach();
-        $role->delete();
+        DB::beginTransaction();
 
-        return $this->renderPanel(success: 'Role "' . $role->name . '" berhasil dihapus.');
+        try {
+            $roleName = $role->name;
+
+            $role->users()->detach();
+            $role->permissions()->detach();
+            $role->delete();
+
+            DB::commit();
+
+            return $this->renderPanel(success: "Role \"{$roleName}\" berhasil dihapus.");
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return $this->renderPanel(error: 'Terjadi kesalahan saat menghapus role. Coba lagi nanti.');
+        }
     }
 
     protected function save(Request $request, ?int $id = null): View
@@ -107,16 +130,32 @@ class RoleController extends Controller
         $permissionIds = $data['permission_ids'] ?? [];
         unset($data['permission_ids']);
 
-        $role = Role::updateOrCreate(['id' => $id], $data);
+        DB::beginTransaction();
 
-        // Sync permission hanya jika bukan super_user (super_user punya akses penuh via logika di User model)
-        if ($role->slug !== 'super_user') {
-            $role->permissions()->sync($permissionIds);
+        try {
+            $role = Role::updateOrCreate(
+                ['id' => $id],
+                $data
+            );
+
+            // Super User memiliki seluruh permission secara otomatis
+            if ($role->slug !== 'super_user') {
+                $role->permissions()->sync($permissionIds);
+            }
+
+            DB::commit();
+
+            return $this->renderPanel(
+                success: $id
+                    ? 'Role berhasil diperbarui.'
+                    : 'Role baru berhasil ditambahkan.'
+            );
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return $this->renderPanel(
+                error: $e->getMessage()
+            );
         }
-
-        return $this->renderPanel(
-            success: $id ? 'Role berhasil diperbarui.' : 'Role baru berhasil ditambahkan.'
-        );
     }
 
     protected function renderPanel(?string $error = null, ?string $success = null): View

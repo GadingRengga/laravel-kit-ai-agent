@@ -10,5 +10,17 @@
 @endsection
 
 @section('content')
-    @include('pages.superuser.role.partials._panel')
+    <div id="role-panel" live-scope="Superuser.RoleController">
+        @include('pages.superuser.role.partials._panel')
+    </div>
+    <script>
+        window.alert = function(el, response) {
+            if (response?.success) {
+                ntAlert.success(response.message || 'User berhasil dihapus.', 'Berhasil');
+            } else {
+                ntAlert.error(response.message || 'Gagal menghapus user.', 'Gagal');
+            }
+        };
+    </script>
+
 @endsection
