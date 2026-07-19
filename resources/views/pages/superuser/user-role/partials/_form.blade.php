@@ -44,7 +44,7 @@
         <button type="button" class="nt-btn nt-btn-secondary" data-nt-modal-close>Batal</button>
 
         <x-button type="button" variant="primary" icon="fa-solid fa-floppy-disk" live-click="update"
-            live-target="#user-role-panel" live-loading="#user-role-form-modal" data-nt-modal-close>
+            live-target="#user-role-panel" live-loading="#loading" live-callback-after="alert" data-nt-modal-close>
             Simpan
         </x-button>
     </x-slot:footer>

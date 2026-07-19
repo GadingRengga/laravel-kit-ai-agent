@@ -128,7 +128,8 @@
             </button>
 
             <x-button type="button" variant="primary" icon="fa-solid fa-floppy-disk"
-                live-click="{{ $isEdit ? 'update' : 'store' }}" live-target="#user-panel" data-nt-modal-close>
+                live-click="{{ $isEdit ? 'update' : 'store' }}" live-target="#user-panel" live-loading="#loading"
+                live-callback-after="alert" data-nt-modal-close>
                 {{ $isEdit ? 'Perbarui User' : 'Simpan User Baru' }}
             </x-button>
         </x-slot:footer>

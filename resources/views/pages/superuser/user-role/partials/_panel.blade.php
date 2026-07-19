@@ -1,16 +1,11 @@
-<div id="user-role-panel" live-scope="Superuser.UserRoleController">
-
-    @if ($error ?? null)
-        <x-alert tone="error" :title="$error" class="mb-4" />
-    @endif
-
-    @if ($success ?? null)
-        <x-alert tone="success" :title="$success" class="mb-4" />
-    @endif
-
-    <div class="comp-section-header flex items-center justify-between mb-3">
-        <p class="comp-section-title">Daftar User</p>
-    </div>
+{{-- Main Card --}}
+<x-card>
+    <x-slot:header>
+        <div>
+            <p class="comp-section-title">Daftar User</p>
+            <p class="comp-section-desc">Atur role yang dimiliki setiap user.</p>
+        </div>
+    </x-slot:header>
 
     <x-table searchable id="user-role-table">
         <x-slot:head>
@@ -35,7 +30,7 @@
                     <x-table.actions>
                         <x-table.action icon="fa-solid fa-shield-halved" title="Atur Role" data-nt-modal-btn
                             data-nt-modal-target="modal-sm" live-click="edit({{ $user->id }})"
-                            live-target="#modal-sm" />
+                            live-target="#modal-sm" live-loading="#loading" />
                     </x-table.actions>
                 </x-table.cell>
             </x-table.row>
@@ -47,4 +42,4 @@
             </tr>
         @endforelse
     </x-table>
-</div>
+</x-card>

@@ -27,8 +27,8 @@
                 data-nt-modal-target="modal-sm" live-click="edit({{ $menu->id }})" live-target="#modal-sm"
                 live-loading="#menu-form-modal" />
             <x-table.action icon="fa-regular fa-trash-can" title="Hapus" danger
-                confirm="Yakin hapus menu "{{ $menu->name }}"?" live-click="destroy({{ $menu->id }})"
-                live-target="#menu-panel" live-loading="#menu-panel" />
+                live-click="destroy({{ $menu->id }})" live-target="#menu-panel" live-loading="#loading"
+                live-callback-before="confirmDelete" live-callback-after="alert" />
         </x-table.actions>
     </x-table.cell>
 </x-table.tree-row>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Superuser\Menu;
 use App\Models\Superuser\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -68,14 +69,37 @@ class PermissionController extends Controller
     /**
      * Hapus permission.
      */
-    public function destroy(int $id): View
+    public function destroy(Request $request): View
     {
-        $permission = Permission::findOrFail($id);
-        $permission->roles()->detach();
-        $permission->menus()->detach();
-        $permission->delete();
+        $id = $request->input('data');
 
-        return $this->renderPanel(success: 'Permission "' . $permission->name . '" berhasil dihapus.');
+        if (!is_numeric($id)) {
+            return $this->renderPanel(error: 'ID permission tidak valid.');
+        }
+
+        $permission = Permission::find((int) $id);
+
+        if (!$permission) {
+            return $this->renderPanel(error: 'Permission tidak ditemukan atau sudah dihapus.');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $permName = $permission->name;
+
+            $permission->roles()->detach();
+            $permission->menus()->detach();
+            $permission->delete();
+
+            DB::commit();
+
+            return $this->renderPanel(success: "Permission \"{$permName}\" berhasil dihapus.");
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return $this->renderPanel(error: 'Terjadi kesalahan saat menghapus permission. Coba lagi nanti.');
+        }
     }
 
     protected function save(Request $request, ?int $id = null): View
@@ -101,12 +125,24 @@ class PermissionController extends Controller
         $menuIds = $data['menu_ids'] ?? [];
         unset($data['menu_ids']);
 
-        $permission = Permission::updateOrCreate(['id' => $id], $data);
-        $permission->menus()->sync($menuIds);
+        DB::beginTransaction();
 
-        return $this->renderPanel(
-            success: $id ? 'Permission berhasil diperbarui.' : 'Permission baru berhasil ditambahkan.'
-        );
+        try {
+            $permission = Permission::updateOrCreate(['id' => $id], $data);
+            $permission->menus()->sync($menuIds);
+
+            DB::commit();
+
+            return $this->renderPanel(
+                success: $id ? 'Permission berhasil diperbarui.' : 'Permission baru berhasil ditambahkan.'
+            );
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return $this->renderPanel(
+                error: 'Terjadi kesalahan saat menyimpan permission. Coba lagi nanti.'
+            );
+        }
     }
 
     protected function renderPanel(?string $error = null, ?string $success = null): View

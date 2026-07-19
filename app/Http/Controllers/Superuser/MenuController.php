@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Superuser;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Management\MenuRuleProvider;
 use App\Models\Superuser\Menu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -77,9 +77,19 @@ class MenuController extends Controller
      * (harus hapus/pindahkan submenu-nya dulu).
      * Dipanggil dari: live-click="destroy({id})" live-target="#menu-panel"
      */
-    public function destroy(int $id): View
+    public function destroy(Request $request): View
     {
-        $menu = Menu::withCount('children')->findOrFail($id);
+        $id = $request->input('data');
+
+        if (!is_numeric($id)) {
+            return $this->renderPanel(error: 'ID menu tidak valid.');
+        }
+
+        $menu = Menu::withCount('children')->find((int) $id);
+
+        if (!$menu) {
+            return $this->renderPanel(error: 'Menu tidak ditemukan atau sudah dihapus.');
+        }
 
         if ($menu->children_count > 0) {
             return $this->renderPanel(
@@ -87,9 +97,21 @@ class MenuController extends Controller
             );
         }
 
-        $menu->delete();
+        DB::beginTransaction();
 
-        return $this->renderPanel(success: 'Menu "' . $menu->name . '" berhasil dihapus.');
+        try {
+            $menuName = $menu->name;
+
+            $menu->delete();
+
+            DB::commit();
+
+            return $this->renderPanel(success: "Menu \"{$menuName}\" berhasil dihapus.");
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return $this->renderPanel(error: 'Terjadi kesalahan saat menghapus menu. Coba lagi nanti.');
+        }
     }
 
     /**
@@ -100,11 +122,18 @@ class MenuController extends Controller
     protected function save(Request $request): View
     {
         $id = $request->id;
-        $validator = Validator::make(
-            $request->all(),
-            MenuRuleProvider::rules($id),
-            MenuRuleProvider::messages()
-        );
+        $rules = [
+            'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:menus,slug,' . ($id ?: 'NULL') . ',id',
+            'description' => 'nullable|string|max:500',
+            'icon' => 'nullable|string|max:255',
+            'route' => 'nullable|string|max:255',
+            'parent_id' => 'nullable|integer|exists:menus,id',
+            'order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return $this->renderPanel(error: $validator->errors()->first());
@@ -115,11 +144,23 @@ class MenuController extends Controller
         $data['order'] = $data['order'] ?? 0;
         $data['is_active'] = $request->boolean('is_active');
 
-        Menu::updateOrCreate(['id' => $id], $data);
+        DB::beginTransaction();
 
-        return $this->renderPanel(
-            success: $id ? 'Menu berhasil diperbarui.' : 'Menu baru berhasil ditambahkan.'
-        );
+        try {
+            Menu::updateOrCreate(['id' => $id], $data);
+
+            DB::commit();
+
+            return $this->renderPanel(
+                success: $id ? 'Menu berhasil diperbarui.' : 'Menu baru berhasil ditambahkan.'
+            );
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return $this->renderPanel(
+                error: 'Terjadi kesalahan saat menyimpan menu. Coba lagi nanti.'
+            );
+        }
     }
 
     /**

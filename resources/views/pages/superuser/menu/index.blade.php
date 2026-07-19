@@ -11,5 +11,16 @@
 @endsection
 
 @section('content')
-    @include('pages.superuser.menu.partials._panel')
+    <div id="menu-panel" live-scope="Superuser.MenuController">
+        @include('pages.superuser.menu.partials._panel')
+    </div>
+    <script>
+        window.alert = function(el, response) {
+            if (response?.success) {
+                ntAlert.success(response.message || 'Menu berhasil dihapus.', 'Berhasil');
+            } else {
+                ntAlert.error(response.message || 'Gagal memproses menu.', 'Gagal');
+            }
+        };
+    </script>
 @endsection

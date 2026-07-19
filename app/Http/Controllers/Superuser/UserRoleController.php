@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Superuser\Role;
 use App\Models\Superuser\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
@@ -52,12 +53,34 @@ class UserRoleController extends Controller
         }
 
         $data = $validator->validated();
-        $user = User::findOrFail($data['user_id']);
-        $user->roles()->sync($data['role_ids'] ?? []);
 
-        return $this->renderPanel(
-            success: 'Role untuk user "' . $user->name . '" berhasil disimpan.'
-        );
+        if (!isset($data['user_id']) || !is_numeric($data['user_id'])) {
+            return $this->renderPanel(error: 'ID user tidak valid.');
+        }
+
+        $user = User::find((int) $data['user_id']);
+
+        if (!$user) {
+            return $this->renderPanel(error: 'User tidak ditemukan.');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $user->roles()->sync($data['role_ids'] ?? []);
+
+            DB::commit();
+
+            return $this->renderPanel(
+                success: 'Role untuk user "' . $user->name . '" berhasil disimpan.'
+            );
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return $this->renderPanel(
+                error: 'Terjadi kesalahan saat menyimpan role user. Coba lagi nanti.'
+            );
+        }
     }
 
     protected function renderPanel(?string $error = null, ?string $success = null): View

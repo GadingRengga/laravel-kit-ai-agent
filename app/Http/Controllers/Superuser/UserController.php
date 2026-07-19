@@ -7,6 +7,7 @@ use App\Models\Employee;
 use App\Models\Superuser\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -80,11 +81,19 @@ class UserController extends Controller
     /**
      * Hapus user.
      */
-    public function destroy($request): View
+    public function destroy(Request $request): View
     {
+        $id = $request->input('data');
 
-        $id = $request->data;
-        $user = User::findOrFail($id);
+        if (!is_numeric($id)) {
+            return $this->renderPanel(error: 'ID user tidak valid.');
+        }
+
+        $user = User::find((int) $id);
+
+        if (!$user) {
+            return $this->renderPanel(error: 'User tidak ditemukan atau sudah dihapus.');
+        }
 
         // Prevent deleting superuser
         if ($user->isSuperUser()) {
@@ -96,11 +105,22 @@ class UserController extends Controller
             return $this->renderPanel(error: 'Anda tidak bisa menghapus akun Anda sendiri.');
         }
 
-        // Detach all roles before deleting
-        $user->roles()->detach();
-        $user->delete();
+        DB::beginTransaction();
 
-        return $this->renderPanel(success: 'User "' . $user->name . '" berhasil dihapus.');
+        try {
+            $userName = $user->name;
+
+            $user->roles()->detach();
+            $user->delete();
+
+            DB::commit();
+
+            return $this->renderPanel(success: "User \"{$userName}\" berhasil dihapus.");
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return $this->renderPanel(error: 'Terjadi kesalahan saat menghapus user. Coba lagi nanti.');
+        }
     }
 
     /**
@@ -109,7 +129,16 @@ class UserController extends Controller
     public function toggleStatus(Request $request): View
     {
         $id = $request->input('data');
-        $user = User::findOrFail($id);
+
+        if (!is_numeric($id)) {
+            return $this->renderPanel(error: 'ID user tidak valid.');
+        }
+
+        $user = User::find((int) $id);
+
+        if (!$user) {
+            return $this->renderPanel(error: 'User tidak ditemukan.');
+        }
 
         if ($user->isSuperUser()) {
             return $this->renderPanel(error: 'Status Super User tidak bisa diubah.');
@@ -120,10 +149,20 @@ class UserController extends Controller
             return $this->renderPanel(error: 'Anda tidak bisa menonaktifkan akun Anda sendiri.');
         }
 
-        $user->update(['is_active' => !$user->is_active]);
+        DB::beginTransaction();
 
-        $status = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
-        return $this->renderPanel(success: "User \"{$user->name}\" berhasil {$status}.");
+        try {
+            $user->update(['is_active' => !$user->is_active]);
+
+            DB::commit();
+
+            $status = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
+            return $this->renderPanel(success: "User \"{$user->name}\" berhasil {$status}.");
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return $this->renderPanel(error: 'Terjadi kesalahan saat mengubah status user. Coba lagi nanti.');
+        }
     }
 
     /**
@@ -216,18 +255,30 @@ class UserController extends Controller
             $data['created_by'] = Auth::id();
         }
 
-        $user = User::updateOrCreate(['id' => $id], $data);
+        DB::beginTransaction();
 
-        // Sync employee_id (needs separate handling because it was unset)
-        if ($id) {
-            $user->update(['employee_id' => $employeeId]);
+        try {
+            $user = User::updateOrCreate(['id' => $id], $data);
+
+            // Sync employee_id (needs separate handling because it was unset)
+            if ($id) {
+                $user->update(['employee_id' => $employeeId]);
+            }
+
+            // Sync roles
+            $user->roles()->sync($roleIds);
+
+            DB::commit();
+
+            $message = $id ? 'User berhasil diperbarui.' : 'User baru berhasil ditambahkan.';
+            return $this->renderPanel(success: $message);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return $this->renderPanel(
+                error: 'Terjadi kesalahan saat menyimpan user. Coba lagi nanti.'
+            );
         }
-
-        // Sync roles
-        $user->roles()->sync($roleIds);
-
-        $message = $id ? 'User berhasil diperbarui.' : 'User baru berhasil ditambahkan.';
-        return $this->renderPanel(success: $message);
     }
 
     protected function renderPanel(?string $error = null, ?string $success = null): View

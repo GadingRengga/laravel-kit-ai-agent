@@ -47,8 +47,8 @@
         <button type="button" class="nt-btn nt-btn-secondary" data-nt-modal-close>Batal</button>
 
         <x-button type="button" variant="primary" icon="fa-solid fa-floppy-disk"
-            live-click="{{ $isEdit ? 'update' : 'store' }}" live-target="#menu-panel" live-loading="#menu-form-modal"
-            data-nt-modal-close>
+            live-click="{{ $isEdit ? 'update' : 'store' }}" live-target="#menu-panel" live-loading="#loading"
+            live-callback-after="alert" data-nt-modal-close>
             Simpan
         </x-button>
     </x-slot:footer>

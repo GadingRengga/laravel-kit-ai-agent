@@ -10,5 +10,16 @@
 @endsection
 
 @section('content')
-    @include('pages.superuser.permission.partials._panel')
+    <div id="permission-panel" live-scope="Superuser.PermissionController">
+        @include('pages.superuser.permission.partials._panel')
+    </div>
+    <script>
+        window.alert = function(el, response) {
+            if (response?.success) {
+                ntAlert.success(response.message || 'Permission berhasil dihapus.', 'Berhasil');
+            } else {
+                ntAlert.error(response.message || 'Gagal memproses permission.', 'Gagal');
+            }
+        };
+    </script>
 @endsection

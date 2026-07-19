@@ -169,7 +169,8 @@
                         @if (!$user->isSuperUser())
                             <x-table.action icon="fa-regular fa-trash-can" title="Hapus User" danger
                                 live-click="destroy({{ $user->id }})" live-target="#user-panel"
-                                live-loading="#loading" live-callback-before="confirmDelete" />
+                                live-loading="#loading" live-callback-before="confirmDelete"
+                                live-callback-after="alert" />
                         @endif
                     </x-table.actions>
                 </x-table.cell>
