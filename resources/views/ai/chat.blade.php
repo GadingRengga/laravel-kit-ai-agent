@@ -148,15 +148,15 @@
     @include('ai.partials._connection-modal')
 
     <script>
-        const AI_CONVERSATION_ID = {{ $conversation->id }};
-        const AI_SEND_URL = "{{ route('ai.chat.store', $conversation) }}";
-        const AI_DELETE_URL_TEMPLATE = "{{ route('ai.chat.destroy', ['conversation' => '__ID__']) }}";
-        const AI_NEW_CHAT_URL = "{{ route('ai.chat.new') }}";
-        const AI_INDEX_URL = "{{ route('ai.chat.index') }}";
-        const AI_CONFIRM_URL_TEMPLATE = "{{ route('ai.action.confirm', ['actionLog' => '__ID__']) }}";
-        const AI_REJECT_URL_TEMPLATE = "{{ route('ai.action.reject', ['actionLog' => '__ID__']) }}";
-        const AI_CSRF_TOKEN = "{{ csrf_token() }}";
-        const AI_USER_INITIALS = "{{ \Illuminate\Support\Str::of(Auth::user()->name)->substr(0, 2)->upper() }}";
+        window.AI_CONVERSATION_ID = {{ $conversation->id }};
+        window.AI_SEND_URL = "{{ route('ai.chat.store', $conversation) }}";
+        window.AI_DELETE_URL_TEMPLATE = "{{ route('ai.chat.destroy', ['conversation' => '__ID__']) }}";
+        window.AI_NEW_CHAT_URL = "{{ route('ai.chat.new') }}";
+        window.AI_INDEX_URL = "{{ route('ai.chat.index') }}";
+        window.AI_CONFIRM_URL_TEMPLATE = "{{ route('ai.action.confirm', ['actionLog' => '__ID__']) }}";
+        window.AI_REJECT_URL_TEMPLATE = "{{ route('ai.action.reject', ['actionLog' => '__ID__']) }}";
+        window.AI_CSRF_TOKEN = "{{ csrf_token() }}";
+        window.AI_USER_INITIALS = "{{ \Illuminate\Support\Str::of(Auth::user()->name)->substr(0, 2)->upper() }}";
     </script>
     @vite('resources/js/ai-chat.js')
 @endsection

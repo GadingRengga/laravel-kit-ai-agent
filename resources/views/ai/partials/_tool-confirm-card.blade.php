@@ -5,7 +5,9 @@
     $hiddenFields = ['password', 'password_confirmation', 'remember_token'];
 @endphp
 
-<div class="chat-msg-row ai" id="ai-action-{{ $actionLog->id }}" data-log-id="{{ $actionLog->id }}">
+<div class="chat-msg-row ai" id="ai-action-{{ $actionLog->id }}" data-log-id="{{ $actionLog->id }}"
+    data-confirm-url="{{ route('ai.action.confirm', $actionLog) }}"
+    data-reject-url="{{ route('ai.action.reject', $actionLog) }}" data-csrf="{{ csrf_token() }}">
     <div class="chat-avatar ai"><i class="fa-solid fa-sparkles"></i></div>
     <div class="chat-msg-col">
 

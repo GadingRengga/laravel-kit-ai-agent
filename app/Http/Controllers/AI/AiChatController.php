@@ -126,7 +126,23 @@ class AiChatController extends Controller
     {
         $this->authorizeActionLog($actionLog);
 
-        $tool = $this->tools->get($actionLog->tool_name);
+        // BUGFIX: kalau tool_name di draft lama ini sudah tidak terdaftar lagi
+        // (mis. entry-nya dihapus dari config/ai_tools.php setelah draft dibuat,
+        // atau ada deploy versi baru pas draft masih menggantung di layar user),
+        // $this->tools->get() melempar InvalidArgumentException. Sebelumnya ini
+        // TIDAK ditangkap sama sekali di sini → user dapat error 500 mentah pas
+        // klik "Buat Sekarang". Sekarang ditangani sama seperti kegagalan tool
+        // lainnya: tandai gagal + kasih pesan yang masuk akal.
+        try {
+            $tool = $this->tools->get($actionLog->tool_name);
+        } catch (\Throwable $e) {
+            $actionLog->update([
+                'status' => 'failed',
+                'failure_reason' => "Tool [{$actionLog->tool_name}] sudah tidak tersedia lagi.",
+            ]);
+
+            return view('ai.partials._tool-confirm-card', ['actionLog' => $actionLog->fresh()]);
+        }
 
         try {
             $model = $tool->confirm($actionLog->payload, Auth::user());
