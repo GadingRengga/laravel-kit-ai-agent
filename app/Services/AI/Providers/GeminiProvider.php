@@ -146,6 +146,7 @@ class GeminiProvider implements AiProviderInterface
                 continue;
             }
 
+            // ── Tool response → format functionResponse ───────────────────
             if ($msg['role'] === 'tool') {
                 $contents[] = [
                     'role' => 'user',
@@ -154,22 +155,52 @@ class GeminiProvider implements AiProviderInterface
                 continue;
             }
 
+            // ── Assistant dengan tool_calls → format functionCall ─────────
+            if ($msg['role'] === 'assistant' && ! empty($msg['tool_calls'])) {
+                $parts = [];
+
+                // Jika ada teks juga, sertakan sebagai text part
+                if (! empty($msg['content'])) {
+                    $parts[] = ['text' => $msg['content']];
+                }
+
+                // Konversi setiap tool call ke functionCall part
+                foreach ($msg['tool_calls'] as $call) {
+                    $args = json_decode($call['function']['arguments'] ?? '{}');
+
+                    // Pastikan args adalah object {}, bukan array [] atau null
+                    // json_decode('{}') sudah menghasilkan stdClass object yang benar
+                    // json_decode('[]') menghasilkan array — harus diubah ke object
+                    if (!is_object($args)) {
+                        $args = (object) [];
+                    }
+
+                    $parts[] = [
+                        'functionCall' => [
+                            'name' => $call['function']['name'],
+                            'args' => $args,
+                        ],
+                    ];
+                }
+
+                $contents[] = [
+                    'role' => 'model',
+                    'parts' => $parts,
+                ];
+                continue;
+            }
+
+            // ── Skip pesan kosong tanpa tool_calls ────────────────────────
             if (empty($msg['content'])) {
                 continue;
             }
 
+            // ── User / Assistant biasa (teks saja) ────────────────────────
             $contents[] = [
                 'role' => $msg['role'] === 'assistant' ? 'model' : 'user',
                 'parts' => [['text' => $msg['content']]],
             ];
         }
-
-        // PENTING: Untuk memastikan urutan kronologis dari terlama ke terbaru 
-        // karena adanya efek penumpukan array dari buildMessagePayload.
-        // Kita cek jika pesan terakhir di array justru bertindak sebagai pesan lama.
-        // Namun untuk amannya, mari pastikan urutan $contents mengikuti urutan asli request.
-        // Jika di log debug contents_sent Anda terbalik, buka komentar baris di bawah ini:
-        // $contents = array_reverse($contents);
 
         return [implode("\n", $systemParts), $contents];
     }

@@ -42,16 +42,16 @@
         <x-loading.overlay id="loading" text="Memuat data…" contained style="display: none;" />
 
 
-        <div live-spa-region="sidebar">
+        <div>
             @include('partials.sidebar')
         </div>
 
         <div id="main-col">
-            <div live-spa-region="header">
+            <div>
                 @include('partials.header')
             </div>
 
-            <div id="page-wrapper" live-spa-region="main">
+            <div id="page-wrapper">
 
                 @hasSection('page-title')
                     <div class="page-title-bar px-4 lg:px-8 py-5 shrink-0">

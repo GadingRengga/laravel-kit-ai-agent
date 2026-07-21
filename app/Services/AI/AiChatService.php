@@ -163,6 +163,8 @@ class AiChatService
             'role'      => 'assistant',
             'content'   => null,
             'tool_name' => $call->name,
+            'tool_arguments' => $call->arguments,
+            'tool_call_id' => $call->id,
         ]);
 
         try {
@@ -172,6 +174,20 @@ class AiChatService
             // catch(\Throwable) di bawah, BUKAN dibiarkan jadi error 500.
             $tool = $this->tools->get($call->name);
             $draft = $tool->toDraft($call->arguments, $user);
+
+            // DIRECT RESULT (READ operation) — langsung kirim balik ke AI
+            // sebagai tool response, tanpa perlu draft/confirm dari user.
+            if ($draft->isDirect) {
+                $resultContent = $this->formatDirectResult($draft);
+                AiMessage::create([
+                    'ai_conversation_id' => $conversation->id,
+                    'role'         => 'tool',
+                    'content'      => $resultContent,
+                    'tool_call_id' => $call->id,
+                ]);
+                $assistantMsg->update(['prompt_tokens' => 0, 'completion_tokens' => 0]);
+                return $this->requestAssistantReply($conversation, $user);
+            }
         } catch (ValidationException $e) {
             // Argumen AI gak valid — balas ke AI sebagai tool response supaya
             // ia bisa tanya ulang ke user, BUKAN dilempar sebagai error ke user.
@@ -198,8 +214,20 @@ class AiChatService
             // dan simpan detailnya ke log supaya developer bisa cek.
             report($e);
 
+            // Kalau masih dalam konteks direct (READ error), beri tahu AI
+            // supaya bisa merespon dengan sopan ke user
+            if (isset($draft) && $draft->isDirect) {
+                AiMessage::create([
+                    'ai_conversation_id' => $conversation->id,
+                    'role'         => 'tool',
+                    'content'      => 'Terjadi kesalahan saat membaca data: ' . $e->getMessage(),
+                    'tool_call_id' => $call->id,
+                ]);
+                return $this->requestAssistantReply($conversation, $user);
+            }
+
             $assistantMsg->update([
-                'content' => 'Maaf, saya belum bisa membuatkan data itu untuk sekarang. '
+                'content' => 'Maaf, saya belum bisa memproses permintaan itu untuk sekarang. '
                     . 'Silakan hubungi developer aplikasi untuk menambahkan fitur ini.',
             ]);
 
@@ -216,6 +244,128 @@ class AiChatService
         ]);
 
         return ['type' => 'tool_draft', 'message' => $assistantMsg, 'actionLog' => $actionLog];
+    }
+
+    /**
+     * Format hasil READ jadi teks yang bisa dibaca AI, sehingga AI bisa
+     * merangkai kalimat respon yang natural ke user dan LANJUT ke tool
+     * lain jika user memberi perintah berikutnya.
+     *
+     * Support menampilkan relasi (seperti roles, employee, createdBy)
+     * yang di-load via with() di query — data array/object dari relasi
+     * akan diformat sebagai sub-item.
+     *
+     * PENTING: Di akhir selalu ada instruksi bahwa AI BOLEH langsung
+     * memanggil tool lain (update/delete) berdasarkan data ini tanpa
+     * harus menjawab dengan daftar ulang.
+     */
+    private function formatDirectResult(\App\Services\AI\DTO\AiToolResult $draft): string
+    {
+        $results = $draft->directResult;
+
+        if (empty($results)) {
+            return 'Hasil pencarian: tidak ada data ditemukan. '
+                . 'Kamu boleh memberitahu user bahwa data tidak ditemukan, '
+                . 'dan tanya apakah user ingin mencari dengan kata kunci lain.';
+        }
+
+        // ── Helper untuk format relasi ─────────────────────────────────────
+        $formatRelations = function (array $item): array {
+            $relationLines = [];
+            foreach ($item as $key => $value) {
+                // Skip kolom biasa (id, name, email, dll) — handle di bagian utama
+                if (is_scalar($value) || is_null($value)) {
+                    continue;
+                }
+
+                // Format relasi BelongsToMany seperti roles — array of objects
+                if (is_array($value)) {
+                    $labels = [];
+                    foreach ($value as $relItem) {
+                        if (is_array($relItem)) {
+                            $relName = $relItem['name'] ?? $relItem['title'] ?? $relItem['slug'] ?? json_encode($relItem);
+                            $labels[] = $relName;
+                        }
+                    }
+                    if (! empty($labels)) {
+                        $relationLines[] = "{$key}: " . implode(', ', $labels);
+                    }
+                }
+            }
+            return $relationLines;
+        };
+
+        // ── Helper untuk format field scalar ──────────────────────────────
+        $formatScalars = function (array $item, array $skipKeys = []): array {
+            $lines = [];
+            $skip = array_merge($skipKeys, ['password', 'remember_token', 'avatar', 'last_login_ip']);
+            foreach ($item as $key => $value) {
+                if (in_array($key, $skip, true)) continue;
+                if (is_scalar($value) && !is_null($value)) {
+                    // Format boolean jadi teks
+                    if (is_bool($value)) {
+                        $value = $value ? 'Aktif' : 'Tidak Aktif';
+                    }
+                    $lines[] = "{$key}: {$value}";
+                }
+            }
+            return $lines;
+        };
+
+        // ── Single item — tampilkan detail lengkap ────────────────────────
+        if (count($results) === 1) {
+            $item = $results[0];
+            $lines = [];
+
+            // Kolom utama
+            $lines[] = "─── DATA DETAIL ───";
+            $lines = array_merge($lines, $formatScalars($item));
+
+            // Relasi
+            $relLines = $formatRelations($item);
+            if (! empty($relLines)) {
+                $lines[] = "─── RELASI ───";
+                $lines = array_merge($lines, $relLines);
+            }
+
+            return implode("\n", $lines)
+                . "\n\n---\n"
+                . 'INSTRUKSI: Sampaikan data ini ke user dengan bahasa natural. '
+                . 'Jika user langsung memberi perintah lanjutan (ubah/hapus data ini), '
+                . 'KAMU BOLEH LANGSUNG PANGGIL TOOL update_xxx / delete_xxx dengan ID yang sesuai. '
+                . 'JANGAN tanya "apa lagi yang bisa dibantu" — langsung proses perintah user.';
+        }
+
+        // ── Multiple items — tampilkan daftar ringkas ─────────────────────
+        $lines = [];
+        foreach ($results as $index => $item) {
+            // Cari kolom identifier (name, title, code, email, id)
+            $label = $item['name'] ?? $item['title'] ?? $item['code'] ?? $item['email'] ?? $item['id'] ?? "#" . ($index + 1);
+
+            // Tambah info role jika ada relasi roles
+            $roleInfo = '';
+            if (! empty($item['roles'])) {
+                $roleNames = [];
+                foreach ($item['roles'] as $role) {
+                    if (is_array($role) && ! empty($role['name'])) {
+                        $roleNames[] = $role['name'];
+                    }
+                }
+                if (! empty($roleNames)) {
+                    $roleInfo = ' [' . implode(', ', $roleNames) . ']';
+                }
+            }
+
+            $lines[] = "- {$label} (ID: {$item['id']}){$roleInfo}";
+        }
+
+        return "Ditemukan " . count($results) . " data:\n" . implode("\n", $lines)
+            . "\n\n---\n"
+            . 'INSTRUKSI: Sampaikan daftar ini ke user secara ringkas, '
+            . 'sertakan informasi role jika ada. '
+            . 'Jika user memberi perintah spesifik pada salah satu data (misal "hapus paijo" atau "ubah user id 5"), '
+            . 'KAMU BOLEH LANGSUNG PANGGIL TOOL yang sesuai dengan ID yang benar. '
+            . 'JANGAN ulangi daftar lengkap lagi — langsung eksekusi perintah user.';
     }
 
     /**
