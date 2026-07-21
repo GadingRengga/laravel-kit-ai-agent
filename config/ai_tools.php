@@ -52,6 +52,39 @@ return [
     | Tidak perlu bikin file PHP baru sama sekali.
     |--------------------------------------------------------------------------
     */
+    [
+        'name' => 'create_user',
+        'model' => \App\Models\Superuser\User::class,
+        'menu' => 'user',
+        'ability' => 'can_user',
+        'description' => 'Membuat user baru dengan nama, email, username, password, dan role. Role bisa diisi dengan nama role (misal: "Staff", "Admin") atau ID role.',
+        'summary_template' => 'Buat User baru',
+        'fields' => [
+            'name'     => ['type' => 'string', 'description' => 'Nama lengkap user'],
+            'email'    => ['type' => 'string', 'format' => 'email', 'description' => 'Email user'],
+            'username' => ['type' => 'string', 'description' => 'Username untuk login (opsional)'],
+            'password' => ['type' => 'string', 'description' => 'Password untuk login (minimal 8 karakter)'],
+            'role'     => ['type' => 'string', 'description' => 'Nama role (misal: Staff, Admin) atau ID role'],
+            'is_active' => ['type' => 'boolean', 'description' => 'Status aktif user (default: true)'],
+        ],
+        'stamp_user_as' => 'created_by',
+    ],
+    [
+        'name' => 'read_user',
+        'model' => \App\Models\Superuser\User::class,
+        'menu' => 'user',
+        'ability' => 'can_user', // Atau bisa disesuaikan jika ada permission khusus view (misal: 'view_user')
+        'description' => 'Mencari atau menampilkan data user/pengguna berdasarkan filter tertentu seperti nama, email, username, status aktif, atau mengambil satu user spesifik.',
+        'summary_template' => 'Menampilkan data User',
+        'fields' => [
+            'id'        => ['type' => 'integer', 'description' => 'ID user spesifik (gunakan jika ingin melihat 1 data detail)'],
+            'search'    => ['type' => 'string', 'description' => 'Kata kunci untuk mencari berdasarkan nama, email, atau username'],
+            'role'      => ['type' => 'string', 'description' => 'Filter berdasarkan nama role tertentu'],
+            'is_active' => ['type' => 'boolean', 'description' => 'Filter status aktif user (true untuk aktif, false untuk tidak aktif)'],
+            'limit'     => ['type' => 'integer', 'description' => 'Membatasi jumlah data user yang ditampilkan (default: 10)'],
+        ],
+        'stamp_user_as' => null, // Tidak perlu stamp user karena hanya membaca data
+    ],
     // [
     //     'name' => 'create_order',
     //     'model' => \App\Models\Order::class,

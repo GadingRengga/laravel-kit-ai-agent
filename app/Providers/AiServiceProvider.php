@@ -52,11 +52,11 @@ class AiServiceProvider extends ServiceProvider
             // dsb), tetap bisa daftarkan Tool class manual di sini seperti
             // sebelumnya — dibungkus try/catch juga supaya kalau class-nya
             // belum lengkap, TIDAK menjatuhkan seluruh fitur chat:
-            try {
-                $registry->register($app->make(\App\Services\AI\Tools\CreateUserTool::class));
-            } catch (\Throwable $e) {
-                Log::warning('[AI] Gagal mendaftarkan CreateUserTool, dilewati.', ['error' => $e->getMessage()]);
-            }
+            // try {
+            //     $registry->register($app->make(\App\Services\AI\Tools\CreateUserTool::class));
+            // } catch (\Throwable $e) {
+            //     Log::warning('[AI] Gagal mendaftarkan CreateUserTool, dilewati.', ['error' => $e->getMessage()]);
+            // }
 
             return $registry;
         });
