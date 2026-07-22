@@ -4,9 +4,10 @@ namespace App\Http\Controllers\AI;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AI\SendAiMessageRequest;
-use App\Models\Ai\AiActionLog; // NOTE: hilang di versi asli — dipakai di confirmToolAction()/rejectToolAction() tapi belum di-import. Sudah dibetulkan di sini.
+use App\Models\Ai\AiActionLog;
 use App\Models\Ai\AiConnection;
 use App\Models\Ai\AiConversation;
+use App\Models\Ai\AiMessage;
 use App\Services\AI\AiChatService;
 use App\Services\AI\AiToolRegistry;
 use Illuminate\Http\JsonResponse;
@@ -47,7 +48,7 @@ class AiChatController extends Controller
             ->load(['messages' => fn($q) => $q->latest()->limit(1)]);
 
         return view('ai.chat', [
-            'conversation'   => $conversation->load('messages'),
+            'conversation'   => $conversation->load('messages.actionLog'),
             'connection'     => $connection,
             'conversations'  => $conversations,
         ]);
@@ -126,13 +127,25 @@ class AiChatController extends Controller
     {
         $this->authorizeActionLog($actionLog);
 
-        // BUGFIX: kalau tool_name di draft lama ini sudah tidak terdaftar lagi
-        // (mis. entry-nya dihapus dari config/ai_tools.php setelah draft dibuat,
-        // atau ada deploy versi baru pas draft masih menggantung di layar user),
-        // $this->tools->get() melempar InvalidArgumentException. Sebelumnya ini
-        // TIDAK ditangkap sama sekali di sini → user dapat error 500 mentah pas
-        // klik "Buat Sekarang". Sekarang ditangani sama seperti kegagalan tool
-        // lainnya: tandai gagal + kasih pesan yang masuk akal.
+        // BUGFIX (race condition antar-tab/klik ganda): sebelumnya status
+        // selain 'proposed' membuat authorizeActionLog() abort(409) — dari
+        // sisi user (mis. 2 tab dibuka bersamaan, atau tombol double-click)
+        // ini tampil sebagai error mentah padahal aksinya sendiri sudah
+        // beres di request lain. Cukup tampilkan kartu apa adanya, jangan
+        // proses ulang / jangan sisipkan tool response ganda.
+        if ($actionLog->status !== 'proposed') {
+            return view('ai.partials._tool-confirm-card', ['actionLog' => $actionLog]);
+        }
+
+        $conversation = $actionLog->conversation;
+
+        // BUGFIX: sebelumnya dicari lewat heuristik tool_name+latest() di
+        // sini langsung. Sekarang pakai resolveToolCallMessage() yang
+        // prioritaskan relasi ai_message_id eksplisit (lihat AiActionLog),
+        // supaya tidak salah pasangan kalau ada beberapa draft tool yang
+        // sama dalam 1 percakapan.
+        $assistantMsg = $actionLog->resolveToolCallMessage();
+
         try {
             $tool = $this->tools->get($actionLog->tool_name);
         } catch (\Throwable $e) {
@@ -147,21 +160,57 @@ class AiChatController extends Controller
         try {
             $model = $tool->confirm($actionLog->payload, Auth::user());
 
+            // BUGFIX: setelah tool berhasil dieksekusi, sisipkan tool response
+            // ke history percakapan. Tanpa ini, history pesan akan memiliki
+            // assistant message dengan tool_calls tapi TIDAK ADA tool response
+            // setelahnya — format percakapan jadi invalid. Provider AI (baik
+            // OpenAI maupun Gemini) akan error saat user kirim pesan berikutnya
+            // (misalnya "terimakasih") karena ada tool_call yang menggantung
+            // tanpa hasil.
+            AiMessage::create([
+                'ai_conversation_id' => $conversation->id,
+                'role'         => 'tool',
+                'content'      => 'Eksekusi tool berhasil.',
+                'tool_call_id' => $assistantMsg?->tool_call_id ?? ('call_' . $actionLog->id),
+                'tool_name'    => $actionLog->tool_name,
+            ]);
+
             $actionLog->update([
                 'status'             => 'confirmed',
                 'created_model_type' => $model::class,
                 'created_model_id'   => $model->getKey(),
             ]);
+
+            // JANGAN panggil AI untuk merespon — terlalu riskan karena:
+            // 1. Kalau panggilan AI gagal (timeout/rate limit), history jadi
+            //    tool_call → tool_response → user("terimakasih")
+            //    → DUA user berurutan, Gemini/AI lain menolak format ini.
+            // 2. AI bisa memanggil tool LAGI secara rekursif, memperumit state.
+            //
+            // Solusi: insert assistant message default sebagai penutup agar
+            // alternasi role tetap valid. User bisa lanjut chat seperti biasa.
+            AiMessage::create([
+                'ai_conversation_id' => $conversation->id,
+                'role'    => 'assistant',
+                'content' => 'Data berhasil diproses.',
+            ]);
+
+            return view('ai.partials._tool-confirm-card', ['actionLog' => $actionLog->fresh()]);
         } catch (\Throwable $e) {
+            // Kalau gagal, sisipkan tool response gagal supaya history tetap valid
+            AiMessage::create([
+                'ai_conversation_id' => $conversation->id,
+                'role'         => 'tool',
+                'content'      => 'Eksekusi tool gagal: ' . $e->getMessage(),
+                'tool_call_id' => $assistantMsg?->tool_call_id ?? ('call_' . $actionLog->id),
+                'tool_name'    => $actionLog->tool_name,
+            ]);
+
             $actionLog->update(['status' => 'failed', 'failure_reason' => $e->getMessage()]);
             report($e);
 
             return view('ai.partials._tool-confirm-card', ['actionLog' => $actionLog->fresh()]);
         }
-
-        // Sengaja TIDAK memanggil AI lagi cuma untuk kalimat "sudah dibuat" —
-        // itu murni templat statis, gak perlu ongkos token tambahan.
-        return view('ai.partials._tool-confirm-card', ['actionLog' => $actionLog->fresh()]);
     }
 
     /** User menekan "Batal" di tool-confirm-card. */
@@ -169,9 +218,52 @@ class AiChatController extends Controller
     {
         $this->authorizeActionLog($actionLog);
 
+        // BUGFIX (race condition antar-tab/klik ganda) — sama seperti di
+        // confirmToolAction(): kalau statusnya sudah bukan 'proposed', jangan
+        // proses ulang / sisipkan tool response ganda, cukup tampilkan state
+        // terkini.
+        if ($actionLog->status !== 'proposed') {
+            return view('ai.partials._tool-confirm-card', ['actionLog' => $actionLog]);
+        }
+
+        $conversation = $actionLog->conversation;
+
+        // BUGFIX (root cause "AI kadang tidak mau CRUD" & error setelah CRUD):
+        // Sebelumnya method ini HANYA update status jadi 'rejected' — tidak
+        // pernah menyisipkan tool response. Padahal saat tool_draft dibuat
+        // (lihat AiChatService::handleToolCall), sudah ada AiMessage role
+        // 'assistant' dengan tool_calls terisi (tool_name != null). Assistant
+        // message dengan tool_calls WAJIB diikuti tool response — ini syarat
+        // keras format OpenAI ("messages with role 'tool' must be a response
+        // to a preceding message with 'tool_calls'"), dan tanpa itu, provider
+        // menolak request berikutnya (400) begitu conversation ini dipakai
+        // lagi (termasuk saat user mencoba CRUD lain, atau sekadar bilang
+        // "terimakasih"). Sisipkan tool response di sini juga, sama seperti
+        // confirmToolAction(), supaya history selalu valid apa pun keputusan
+        // user. Pakai resolveToolCallMessage() (relasi ai_message_id) supaya
+        // tidak salah pasangan seperti heuristik lama.
+        $assistantMsg = $actionLog->resolveToolCallMessage();
+
+        AiMessage::create([
+            'ai_conversation_id' => $conversation->id,
+            'role'         => 'tool',
+            'content'      => 'Dibatalkan oleh user.',
+            'tool_call_id' => $assistantMsg?->tool_call_id ?? ('call_' . $actionLog->id),
+            'tool_name'    => $actionLog->tool_name,
+        ]);
+
+        // Tutup dengan assistant message biasa (bukan panggil AI lagi) —
+        // alasan sama seperti di confirmToolAction(): supaya alternasi role
+        // tetap valid tanpa risiko AI memanggil tool lagi secara rekursif.
+        AiMessage::create([
+            'ai_conversation_id' => $conversation->id,
+            'role'    => 'assistant',
+            'content' => 'Baik, aksi dibatalkan.',
+        ]);
+
         $actionLog->update(['status' => 'rejected']);
 
-        return view('ai.partials._tool-confirm-card', ['actionLog' => $actionLog]);
+        return view('ai.partials._tool-confirm-card', ['actionLog' => $actionLog->fresh()]);
     }
 
     /**
@@ -196,13 +288,15 @@ class AiChatController extends Controller
     /**
      * Batasi tools yang dikirim ke AI sesuai halaman asal chat dibuka —
      * mengurangi ukuran payload 'tools' yang dikirim tiap request.
+     *
+     * Tool name di sini HARUS cocok dengan 'name' di config/ai_tools.php.
+     * Kalau tidak ada, panggil $this->tools->only() di AiChatService dan
+     * tool yang tidak dikenal akan silent-skip.
      */
     private function allowedToolsForContext(?string $context): ?array
     {
         return match ($context) {
-            'customer'   => ['create_customer'],
-            'quotation'  => ['create_customer', 'create_quotation'],
-            'order'      => ['create_order'],
+            'user'      => null, // semua tool user (create/read/update/delete user)
             default      => null, // null = semua tool terdaftar
         };
     }
@@ -239,6 +333,11 @@ class AiChatController extends Controller
     private function authorizeActionLog(AiActionLog $actionLog): void
     {
         abort_unless($actionLog->user_id === Auth::id(), 403);
-        abort_if($actionLog->status !== 'proposed', 409, 'Aksi ini sudah diproses sebelumnya.');
+        // BUGFIX: dulu ada abort_if(status !== 'proposed', 409, ...) di sini.
+        // Itu bikin klik ganda / 2 tab terbuka bersamaan tampil sebagai error
+        // mentah ke user walau aksinya sendiri sudah selesai di request lain.
+        // Sekarang confirmToolAction()/rejectToolAction() masing-masing
+        // menangani status non-'proposed' secara idempotent (langsung
+        // tampilkan state terkini tanpa proses ulang).
     }
 }

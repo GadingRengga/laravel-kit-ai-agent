@@ -48,6 +48,13 @@ return [
     | Cukup tambah 1 array per tool — tidak perlu bikin class baru.
     */
 
+    // CATATAN SCOPE: tool User di bawah ini SENGAJA tidak diisi 'scope' —
+    // dianggap global (admin/superuser memang boleh kelola semua user).
+    // Untuk entity bisnis (quotation/order/project/dll) yang harus
+    // terisolasi per user/departemen, WAJIB isi 'scope' => 'own_department'
+    // atau 'own_records' (lihat GenericModelTool::applyScope()) — kalau
+    // lupa, itu jadi celah IDOR: user bisa baca/analisis data user lain.
+
     // ── CREATE USER ─────────────────────────────────────────────────────────
     [
         'name'        => 'create_user',
@@ -57,11 +64,11 @@ return [
         'description' => 'Membuat user baru. Parameter: nama, email, username (opsional), password, role, is_active (opsional).',
         'summary_template' => 'Buat User baru: **:name**',
         'fields' => [
-            'name'      => ['type' => 'string',  'description' => 'Nama lengkap user'],
-            'email'     => ['type' => 'string',  'format' => 'email', 'description' => 'Email user'],
+            'name'      => ['type' => 'string',  'description' => 'Nama lengkap user', 'required' => true],
+            'email'     => ['type' => 'string',  'format' => 'email', 'description' => 'Email user', 'required' => true],
             'username'  => ['type' => 'string',  'description' => 'Username untuk login (opsional)'],
-            'password'  => ['type' => 'string',  'description' => 'Password untuk login (minimal 8 karakter)'],
-            'role'      => ['type' => 'string',  'description' => 'Nama role (misal: Staff, Admin) atau ID role'],
+            'password'  => ['type' => 'string',  'description' => 'Password untuk login (minimal 8 karakter)', 'required' => true],
+            'role'      => ['type' => 'string',  'description' => 'Nama role (misal: Staff, Admin) atau ID role', 'required' => true],
             'is_active' => ['type' => 'boolean', 'description' => 'Status aktif user (default: true)'],
         ],
         'stamp_user_as' => 'created_by',
@@ -79,13 +86,18 @@ return [
         'with' => ['roles', 'employee'],
         // Whitelist relasi yang diizinkan — AI tidak bisa load relasi di luar ini
         'allowed_with' => ['roles', 'employee', 'createdBy'],
+        // Filter relasi generic — AI bisa filter berdasarkan nama role
+        'relation_filters' => [
+            'role' => ['relation' => 'roles', 'field' => 'name'],
+        ],
         'fields' => [
             'id'        => ['type' => 'integer', 'description' => 'ID user spesifik (gunakan untuk melihat 1 data detail)'],
             'search'    => ['type' => 'string',  'description' => 'Kata kunci untuk mencari berdasarkan nama, email, atau username'],
             'role'      => ['type' => 'string',  'description' => 'Filter berdasarkan nama role tertentu (misal: Staff, Admin)'],
             'is_active' => ['type' => 'boolean', 'description' => 'Filter status aktif (true=aktif, false=tidak aktif)'],
             'with'      => ['type' => 'array',   'description' => 'Relasi tambahan yang ingin ditampilkan. Pilihan: ["roles", "employee", "createdBy"]'],
-            'limit'     => ['type' => 'integer', 'description' => 'Membatasi jumlah data (default: 10)'],
+            'limit'     => ['type' => 'integer', 'description' => 'Membatasi jumlah data per halaman (default: 10)'],
+            'page'      => ['type' => 'integer', 'description' => 'Halaman ke berapa (default: 1). Gunakan untuk mengambil halaman berikutnya'],
         ],
     ],
 
@@ -98,7 +110,7 @@ return [
         'description' => 'Mengubah data user yang sudah ada. Parameter wajib: id. Parameter opsional yang bisa diubah: name, email, username, password, is_active.',
         'summary_template' => 'Update User ID **:id**',
         'fields' => [
-            'id'        => ['type' => 'integer', 'description' => 'ID user yang akan diubah'],
+            'id'        => ['type' => 'integer', 'description' => 'ID user yang akan diubah', 'required' => true],
             'name'      => ['type' => 'string',  'description' => 'Nama baru user (opsional)'],
             'email'     => ['type' => 'string',  'format' => 'email', 'description' => 'Email baru (opsional)'],
             'username'  => ['type' => 'string',  'description' => 'Username baru (opsional)'],
@@ -116,7 +128,7 @@ return [
         'description' => 'Menghapus user berdasarkan ID. Parameter: id (wajib).',
         'summary_template' => 'Hapus User ID **:id**',
         'fields' => [
-            'id' => ['type' => 'integer', 'description' => 'ID user yang akan dihapus'],
+            'id' => ['type' => 'integer', 'description' => 'ID user yang akan dihapus', 'required' => true],
         ],
     ],
 
@@ -168,6 +180,27 @@ return [
     |     'permission'  => 'order.delete',
     |     'description' => 'Menghapus data order...',
     |     'fields' => [...],
+    | ],
+    |
+    | Untuk ANALISIS (agregasi — total/rata-rata/jumlah, opsional per kelompok):
+    | [
+    |     'name'        => 'analyze_order',
+    |     'model'       => \App\Models\Order::class,
+    |     'operation'   => 'aggregate',
+    |     'permission'  => 'order.view',
+    |     'scope'       => 'own_department', // WAJIB diisi utk entity bisnis
+    |     'description' => 'Analisis data order: total nilai, jumlah, rata-rata, '
+    |         . 'bisa dikelompokkan per status/customer/dll.',
+    |     'date_column'    => 'created_at',        // dipakai utk date_from/date_to
+    |     'aggregatable'   => ['total_value'],      // whitelist kolom yg boleh di-sum/avg
+    |     'groupable'      => ['status'],           // whitelist kolom yg boleh di-group_by
+    |     'numeric_filters' => ['total_value'],     // opsional: filter total_value_min/max
+    |     'fields' => [
+    |         // field metric/column/group_by + date_from/date_to/xxx_min/xxx_max
+    |         // OTOMATIS di-inject oleh GenericModelTool::schema() berdasarkan
+    |         // 'date_column'/'numeric_filters'/'aggregatable'/'groupable' di atas —
+    |         // tidak perlu ditulis manual di sini.
+    |     ],
     | ],
     */
 

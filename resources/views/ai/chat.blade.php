@@ -103,6 +103,18 @@
                         ])
                     @elseif ($message->role === 'assistant' && $message->content)
                         @include('ai.partials._message-ai', ['message' => $message])
+                    @elseif ($message->isToolCall() && $message->actionLog)
+                        {{--
+                            BUGFIX: sebelumnya pesan tool_call (content=null)
+                            selalu di-skip di sini — sama seperti bug yang
+                            diperbaiki di AiWidgetController::renderMessages().
+                            Akibatnya draft CRUD yang masih 'proposed' hilang
+                            dari tampilan begitu halaman di-refresh (padahal
+                            actionLog-nya masih ada di DB dan tombol Batal/
+                            Konfirmasi jadi tidak bisa diakses lagi). Render
+                            ulang kartu konfirmasinya di sini.
+                        --}}
+                        @include('ai.partials._tool-confirm-card', ['actionLog' => $message->actionLog])
                     @endif
                 @empty
                     <div class="chat-hero" id="chat-hero">

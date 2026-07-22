@@ -1162,6 +1162,14 @@
   opacity: 0.7;
 }
 
+/* BUGFIX: status baru 'superseded' (draft auto-ditutup karena user lanjut
+   kirim pesan baru) sebelumnya tidak punya styling — kartu jadi tampil
+   seperti masih 'proposed' padahal sudah tidak aktif. Reuse tampilan
+   'rejected' karena maknanya serupa (draft ini sudah tidak berlaku). */
+.chat-tool-card--superseded {
+  opacity: 0.7;
+}
+
 .chat-tool-card--failed {
   border-color: rgba(220, 38, 38, .3);
 }

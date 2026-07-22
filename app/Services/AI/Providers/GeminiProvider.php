@@ -24,16 +24,19 @@ use RuntimeException;
  *   `candidates[0].content.parts[].functionCall`, dan TIDAK punya `id`
  *   bawaan seperti OpenAI — jadi kita generate id sendiri.
  *
- * CATATAN keterbatasan (biar gak salah ekspektasi):
- * Pesan ber-role 'tool' (hasil eksekusi tool call sebelumnya) saat ini
- * dikonversi jadi teks biasa role 'user' ("[Hasil tool] ..."), BUKAN
- * `functionResponse` native Gemini. Ini karena `AiMessage::toApiMessage()`
- * saat ini belum menyimpan `tool_name` di payload pesan role 'tool' —
- * cuma `tool_call_id` — padahal Gemini butuh `name` fungsi buat
- * `functionResponse`. Solusinya BUKAN di file ini, tapi butuh tambahan
- * kecil di AiMessage::toApiMessage() (lihat catatan di bawah file ini).
- * Sebelum itu diterapkan, degradasi ke teks biasa ini tetap fungsional
- * untuk melanjutkan percakapan, cuma bukan implementasi "murni" native.
+ * CATATAN PENTING — Function Calling di Gemini:
+ * Gemini menolak history yang berisi functionCall native tanpa ditutup
+ * functionResponse native (dengan content berupa OBJECT). Karena tool
+ * response kita selalu string teks biasa, functionCall + functionResponse
+ * native TIDAK BISA dipakai.
+ *
+ * Solusi: SEMUA pesan yang terkait functionCall/toolCall dikirim sebagai
+ * teks biasa:
+ *   - Assistant dengan tool_calls → "[AI memanggil tool: nama_tool]"
+ *   - Tool response (role='tool')  → di-skip (sudah diwakili teks di atas)
+ *
+ * Ini membuat Gemini tidak pernah melihat functionCall native, sehingga
+ * tidak perlu functionResponse. Alternasi role tetap valid (model → user).
  */
 class GeminiProvider implements AiProviderInterface
 {
@@ -146,46 +149,39 @@ class GeminiProvider implements AiProviderInterface
                 continue;
             }
 
-            // ── Tool response → format functionResponse ───────────────────
+            // ── Tool response → skip ──────────────────────────────────────
+            // Tool response dikirim sebagai teks di Gemini karena:
+            // 1. functionResponse native butuh content berupa OBJECT — response
+            //    kita selalu string teks biasa.
+            // 2. functionCall yang tidak ditutup functionResponse native akan
+            //    dianggap error oleh Gemini.
+            // Solusi aman: skip tool response, functionCall-nya juga dikirim
+            // sebagai teks biasa agar alternasi role tetap valid.
             if ($msg['role'] === 'tool') {
-                $contents[] = [
-                    'role' => 'user',
-                    'parts' => [['text' => '[Hasil tool] ' . ($msg['content'] ?? '')]],
-                ];
+                // Skip — tidak perlu dikirim karena functionCall-nya juga
+                // akan dikirim sebagai teks biasa (bukan format native).
                 continue;
             }
 
-            // ── Assistant dengan tool_calls → format functionCall ─────────
+            // ── Assistant dengan tool_calls → kirim sebagai teks biasa ────
+            // JANGAN kirim sebagai functionCall native Gemini karena:
+            // 1. functionCall WAJIB ditutup functionResponse (format object)
+            // 2. Kita tidak bisa kirim functionResponse native karena content
+            //    tool response kita string, bukan object.
+            // 3. Kalau functionCall menggantung → Gemini error.
+            // Solusi: kirim sebagai teks biasa, beri prefix "[AI memanggil tool]".
             if ($msg['role'] === 'assistant' && ! empty($msg['tool_calls'])) {
-                $parts = [];
+                $toolNames = collect($msg['tool_calls'])->pluck('function.name')->implode(', ');
 
-                // Jika ada teks juga, sertakan sebagai text part
+                $text = '[AI memanggil tool: ' . $toolNames . ']';
+
                 if (! empty($msg['content'])) {
-                    $parts[] = ['text' => $msg['content']];
-                }
-
-                // Konversi setiap tool call ke functionCall part
-                foreach ($msg['tool_calls'] as $call) {
-                    $args = json_decode($call['function']['arguments'] ?? '{}');
-
-                    // Pastikan args adalah object {}, bukan array [] atau null
-                    // json_decode('{}') sudah menghasilkan stdClass object yang benar
-                    // json_decode('[]') menghasilkan array — harus diubah ke object
-                    if (!is_object($args)) {
-                        $args = (object) [];
-                    }
-
-                    $parts[] = [
-                        'functionCall' => [
-                            'name' => $call['function']['name'],
-                            'args' => $args,
-                        ],
-                    ];
+                    $text = $msg['content'] . "\n\n" . $text;
                 }
 
                 $contents[] = [
                     'role' => 'model',
-                    'parts' => $parts,
+                    'parts' => [['text' => $text]],
                 ];
                 continue;
             }

@@ -72,6 +72,25 @@ return [
     lalu tanyakan ke user apakah ingin melanjutkan. Setelah user konfirmasi,
     baru data benar-benar diproses.
 
+    ─── ANALISIS DATA (agregasi: total, rata-rata, jumlah) ─────────────────
+    Untuk pertanyaan yang butuh ANGKA TOTAL/RATA-RATA/JUMLAH (bukan daftar
+    detail per baris) — misal "berapa total nilai quotation bulan ini",
+    "rata-rata order per customer", "jumlah project on hand per status" —
+    WAJIB gunakan tool analyze_xxx (operation aggregate), JANGAN memakai
+    read_xxx lalu menjumlahkan sendiri dari hasilnya. Alasan: hasil read_xxx
+    dibatasi limit/pagination, sehingga kalau kamu menjumlahkan dari situ,
+    hasilnya bisa jauh dari benar walau kelihatan meyakinkan.
+
+    Kalau tool analyze_xxx yang relevan tersedia (cek daftar KEMAMPUAN AKTIF),
+    tentukan dulu: metric (count/sum/avg), column (kalau bukan count), dan
+    rentang tanggal (date_from/date_to) sesuai maksud user ("bulan ini",
+    "kuartal lalu" → terjemahkan ke tanggal eksplisit YYYY-MM-DD berdasarkan
+    tanggal hari ini). Kalau user minta breakdown ("per status", "per
+    customer"), isi juga group_by.
+
+    Hasil dari tool aggregate SUDAH FINAL dan PASTI — sampaikan apa adanya,
+    jangan dihitung ulang, dibulatkan, atau ditaksir ulang olehmu sendiri.
+
     ─── MULTI-STEP REASONING ───────────────────────────────────────────────
     User bisa memberi perintah BERTAHAP dalam satu percakapan. Contoh:
     User: "List user"

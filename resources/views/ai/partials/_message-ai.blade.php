@@ -8,7 +8,11 @@
     <div class="chat-avatar ai"><i class="fa-solid fa-sparkles"></i></div>
     <div class="chat-msg-col">
         @php
-            $content = $message->content ?? '';
+            // BUGFIX: AI kadang mengirim HTML mentah dalam response.
+            // Strip semua tag HTML sebelum diproses — baik untuk detail card,
+            // data table, maupun teks biasa. Sistem hanya mendukung format
+            // plain text sederhana.
+            $content = strip_tags($message->content ?? '');
         @endphp
 
         {{-- ── DETAIL CARD: single item dengan section --}}
@@ -114,6 +118,13 @@
     {{-- ── TEKS BIASA --}}
 @else
     <div class="chat-bubble ai">
+        @php
+            // BUGFIX: AI kadang mengirim HTML mentah (<span>, <div>, dll)
+            // dalam response teksnya. Strip semua tag HTML dulu sebelum
+            // diproses, karena sistem hanya mendukung markdown minimal:
+            // **bold**, *italic*, - bullet list.
+            $cleanContent = strip_tags($content);
+        @endphp
         {!! nl2br(
             e(
                 preg_replace(
@@ -124,7 +135,7 @@
                         '<span class="chat-list-item">• $1</span>',
                         '<span class="chat-list-item">$1. $2</span>',
                     ],
-                    $content,
+                    $cleanContent,
                 ),
             ),
         ) !!}

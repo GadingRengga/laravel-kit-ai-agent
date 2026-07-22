@@ -45,13 +45,27 @@
                     <span class="chat-tool-badge chat-tool-badge--ok"><i class="fa-solid fa-check"></i> Tersimpan</span>
                 @elseif ($status === 'rejected')
                     <span class="chat-tool-badge chat-tool-badge--muted">Dibatalkan</span>
+                @elseif ($status === 'superseded')
+                    {{-- BUGFIX: status baru dari AiChatService::closeDanglingDrafts() —
+                        draft yang otomatis ditutup karena user lanjut kirim pesan baru
+                        tanpa klik Batal/Konfirmasi terlebih dahulu. --}}
+                    <span class="chat-tool-badge chat-tool-badge--muted">Digantikan pesan baru</span>
                 @elseif ($status === 'failed')
                     <span class="chat-tool-badge chat-tool-badge--error"><i class="fa-solid fa-xmark"></i> Gagal</span>
                 @endif
             </div>
 
             {{-- Summary --}}
-            <p class="chat-tool-summary">{!! $actionLog->summary !!}</p>
+            {{--
+                SECURITY FIX: sebelumnya {!! !!} (raw/unescaped). $actionLog->summary
+                dibangun oleh GenericModelTool::renderSummary() lewat str_replace()
+                terhadap summary_template dengan NILAI FIELD YANG BERASAL DARI ARGUMEN
+                AI (yang pada akhirnya berasal dari teks bebas user) — tidak ada
+                sanitasi di sisi situ. Merender ini sebagai raw HTML = stored XSS
+                (user tinggal minta AI membuat data dengan nama berisi
+                "<img src=x onerror=...>"). Escape dengan {{ }} seperti biasa.
+            --}}
+            <p class="chat-tool-summary">{{ $actionLog->summary }}</p>
 
             {{-- Error message --}}
             @if ($status === 'failed' && $actionLog->failure_reason)

@@ -39,6 +39,18 @@ class AiChatService
         // /ai/chat (termasuk tanpa gambar sekalipun) gagal dengan 500,
         // yang dari sisi user terasa seperti "tombol kirim tidak berfungsi".
     ): array {
+        // BUGFIX (draft menggantung): kalau masih ada AiActionLog berstatus
+        // 'proposed' di percakapan ini — user mengirim pesan baru tanpa klik
+        // Konfirmasi/Batal dulu — tutup draft itu SEBELUM user message baru
+        // disimpan. Tanpa ini, AiMessage assistant dengan tool_calls terisi
+        // tetap ikut terkirim ke provider (lewat buildMessagePayload) tanpa
+        // pernah diikuti tool response, dan provider (terutama OpenAI) MENOLAK
+        // riwayat yang punya tool_calls menggantung begitu percakapan dipakai
+        // lagi. _tool-confirm-card.blade.php sudah lama punya cabang tampilan
+        // untuk status 'superseded' ini; method inilah yang tadinya belum
+        // pernah benar-benar dibuat.
+        $this->closeDanglingDrafts($conversation);
+
         // BUGFIX: sebelumnya selalu mengirim key 'attachments' (walau
         // nilainya null) ke AiMessage::create(). Karena 'attachments'
         // sudah masuk $fillable, Eloquent tetap menyertakan kolom itu di
@@ -234,8 +246,17 @@ class AiChatService
             return ['type' => 'text', 'message' => $assistantMsg->fresh()];
         }
 
+        // BUGFIX: kolom ai_message_id (migration 2026_07_22_000000) sebelumnya
+        // TIDAK PERNAH diisi di sini, padahal migration itu dibuat khusus supaya
+        // resolveToolCallMessage() bisa mencocokkan draft ↔ tool_call message lewat
+        // relasi eksplisit (bukan tebakan tool_name+content-null+latest()). Tanpa
+        // baris ini, resolveToolCallMessage() SELALU jatuh ke heuristik lama, dan
+        // kalau user memicu tool yang sama 2x sebelum draft pertama dikonfirmasi/
+        // dibatalkan, tool_call_id bisa salah pasang lagi — persis bug yang migration
+        // itu seharusnya menutup.
         $actionLog = AiActionLog::create([
             'ai_conversation_id' => $conversation->id,
+            'ai_message_id' => $assistantMsg->id,
             'user_id'    => $user->id,
             'tool_name'  => $call->name,
             'summary'    => $draft->summary,
@@ -262,6 +283,37 @@ class AiChatService
     private function formatDirectResult(\App\Services\AI\DTO\AiToolResult $draft): string
     {
         $results = $draft->directResult;
+
+        // ── Hasil AGGREGATE (angka tunggal) ─────────────────────────────────
+        // Dibedakan dari hasil list biasa: aggregate tanpa group_by selalu
+        // associative dengan key 'value' & 'metric' (lihat
+        // GenericModelTool::executeAggregate()), BUKAN array numerik of item.
+        if (is_array($results) && array_key_exists('value', $results) && array_key_exists('metric', $results)) {
+            $metricLabel = match ($results['metric']) {
+                'sum' => 'Total',
+                'avg' => 'Rata-rata',
+                default => 'Jumlah',
+            };
+            $columnLabel = $results['column'] ? " {$results['column']}" : '';
+
+            return "{$metricLabel}{$columnLabel}: {$results['value']}\n\n---\n"
+                . 'INSTRUKSI: Angka ini SUDAH DIHITUNG PASTI oleh sistem (bukan estimasi/tebakan). '
+                . 'Sampaikan apa adanya ke user dengan bahasa natural, JANGAN dihitung ulang, '
+                . 'dibulatkan, atau diperkirakan ulang sendiri.';
+        }
+
+        // ── Hasil AGGREGATE dengan GROUP BY (per kelompok) ──────────────────
+        if (is_array($results) && isset($results[0]) && is_array($results[0]) && array_key_exists('value', $results[0])) {
+            $lines = array_map(function ($row) {
+                $groupKey = array_key_first(array_diff_key($row, ['value' => null]));
+                $groupVal = $groupKey ? ($row[$groupKey] ?? '(kosong)') : '?';
+                return "- {$groupVal}: {$row['value']}";
+            }, $results);
+
+            return "Hasil analisis per kelompok:\n" . implode("\n", $lines) . "\n\n---\n"
+                . 'INSTRUKSI: Angka-angka ini SUDAH FINAL dari sistem (bukan estimasi). '
+                . 'Sampaikan apa adanya ke user, JANGAN dijumlahkan/dihitung ulang secara manual.';
+        }
 
         if (empty($results)) {
             return 'Hasil pencarian: tidak ada data ditemukan. '
@@ -458,6 +510,36 @@ class AiChatService
             . 'jawab HANYA berdasarkan daftar di atas — jangan menyebut fitur yang tidak ada di daftar, '
             . 'dan jangan mengarang. Kalau user minta sesuatu di luar daftar ini, jelaskan dengan sopan '
             . 'bahwa mereka belum punya akses untuk itu.';
+    }
+
+    /**
+     * Tutup semua draft tool-call yang masih 'proposed' di percakapan ini
+     * (belum di-confirm/reject user) dengan status 'superseded', dan
+     * sisipkan tool response penutup supaya riwayat tetap valid — sama
+     * seperti pola di AiChatController::rejectToolAction(), cuma dipicu
+     * otomatis oleh pesan baru, bukan klik tombol "Batal".
+     *
+     * Dipanggil di awal sendUserMessage() sebelum user message baru
+     * disimpan, supaya tidak ada tool_calls yang menggantung tanpa
+     * tool response saat requestAssistantReply() dipanggil berikutnya.
+     */
+    private function closeDanglingDrafts(AiConversation $conversation): void
+    {
+        $dangling = $conversation->actionLogs()->where('status', 'proposed')->get();
+
+        foreach ($dangling as $actionLog) {
+            $assistantMsg = $actionLog->resolveToolCallMessage();
+
+            AiMessage::create([
+                'ai_conversation_id' => $conversation->id,
+                'role'         => 'tool',
+                'content'      => 'Dibatalkan otomatis: percakapan dilanjutkan tanpa konfirmasi/pembatalan usulan ini.',
+                'tool_call_id' => $assistantMsg?->tool_call_id ?? ('call_' . $actionLog->id),
+                'tool_name'    => $actionLog->tool_name,
+            ]);
+
+            $actionLog->update(['status' => 'superseded']);
+        }
     }
 
     /**

@@ -17,7 +17,17 @@ class SendAiMessageRequest extends FormRequest
             'message' => ['required', 'string', 'max:4000'],
             // context opsional: nama halaman saat ini, dipakai buat batasi
             // tools yang dikirim ke AI (lihat AiChatController::allowedToolsForContext)
-            'context' => ['nullable', 'string', 'in:customer,quotation,order'],
+            //
+            // BUGFIX (root cause "AI kadang tidak mau CRUD"): whitelist ini
+            // sebelumnya TIDAK menyertakan 'user', padahal
+            // AiChatController::allowedToolsForContext() punya case khusus
+            // untuk 'user' (dan tool CRUD yang benar-benar ada di
+            // config/ai_tools.php sejauh ini HANYA untuk entity User).
+            // Akibatnya: begitu halaman manapun mengirim context=user,
+            // request ditolak validasi (422) SEBELUM sempat sampai ke
+            // AiChatService — dari sisi user terasa persis seperti "AI
+            // menolak melakukan CRUD".
+            'context' => ['nullable', 'string', 'in:customer,quotation,order,user'],
 
             // BUGFIX (celah keamanan): sebelumnya field ini TIDAK divalidasi
             // sama sekali di server. Frontend punya accept="image/*" tapi itu

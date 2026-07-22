@@ -187,7 +187,7 @@ class AiWidgetController extends Controller
 
     private function renderMessages(AiConversation $conversation): string
     {
-        $conversation->loadMissing('messages');
+        $conversation->loadMissing('messages.actionLog');
 
         return $conversation->messages->map(function ($message) {
             if ($message->role === 'user') {
@@ -196,6 +196,17 @@ class AiWidgetController extends Controller
 
             if ($message->role === 'assistant' && $message->content) {
                 return view('ai.partials._message-ai', ['message' => $message])->render();
+            }
+
+            // BUGFIX (draft CRUD hilang saat widget dibuka ulang): pesan
+            // tool_call (content=null) sebelumnya SELALU jatuh ke branch
+            // kosong di bawah — draft yang masih 'proposed' (atau riwayat
+            // draft yang sudah diproses) jadi tidak pernah muncul lagi
+            // begitu widget ditutup-buka/direfresh, padahal actionLog-nya
+            // masih ada. Render ulang kartu konfirmasinya, sama seperti di
+            // halaman /ai/chat penuh (lihat resources/views/ai/chat.blade.php).
+            if ($message->isToolCall() && $message->actionLog) {
+                return view('ai.partials._tool-confirm-card', ['actionLog' => $message->actionLog])->render();
             }
 
             return '';
